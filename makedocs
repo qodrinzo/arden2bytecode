@@ -21,7 +21,7 @@ export GIT_SSL_NO_VERIFY=true
 git clone $REPOSRC/example-mlms.git
 git clone $REPOSRC/arden2bytecode-homepage.git
 git clone $REPOSRC/ardensyntax-eclipse-plugin.git
-git clone $REPOSRC/hflicka/arden2bytecode.git
+git clone $REPOSRC/arden2bytecode.git
 
 # clone and compile markdown parser
 git clone https://github.com/vmg/sundown.git
