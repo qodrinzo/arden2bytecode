@@ -4,7 +4,7 @@
 echo "generating developer docs..."
 
 # repository url prefix:
-REPOSRC=https://github.com/hflicka
+REPOSRC=https://github.com/PLRI
 TMPDIR=$(mktemp -d)
 OUTPUT=/home/project-web/arden2bytecode/arden2bytecode-homepage/htdocs/includes/developerdocs.html
 

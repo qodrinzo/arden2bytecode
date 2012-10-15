@@ -3,7 +3,7 @@ exec 2>&1
 echo "update script"
 
 # repository url prefix:
-REPOSRC=http://github.com/hflicka
+REPOSRC=http://github.com/PLRI
 
 # variables pointing to directories
 PROJECT_WEB=/home/project-web/arden2bytecode

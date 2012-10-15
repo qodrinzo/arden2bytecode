@@ -8,7 +8,7 @@
 <html>
 <head>
     <?php 
-        $GIT_REPO_OWNER = "hflicka";
+        $GIT_REPO_OWNER = "PLRI";
         $GIT_REPO_PREFIX = "https://github.com/" . $GIT_REPO_OWNER;
     ?>
 	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
