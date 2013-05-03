@@ -24,7 +24,7 @@
   Malte and Marschollek, Michael and Song, Bianying and Wolf, Klaus-Hendrik<br>
   <em>Arden2ByteCode: A one-pass Arden Syntax compiler for service-oriented
   decision support systems based on the OSGi platform</em>
-  <a href="http://dx.doi.org/10.1016/j.cmpb.2011.11.003">[Link]</a><br>
+  <a href="http://www.sciencedirect.com/science/article/pii/S0169260711003087">[PDF]</a><br>
   Comput Methods Programs Biomed, 
   Peter L. Reichertz Institute for Medical Informatics, 
   University of Braunschweig - Institute of Technology and Hannover Medical School, 
