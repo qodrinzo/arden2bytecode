@@ -30,7 +30,7 @@ Gietzelt M, Goltz U, Grunwald D, Lochau M, Marschollek M, Song B, Wolf KH.<br>
 <strong>Arden2ByteCode: A one-pass Arden Syntax compiler 
 for service-oriented decision support systems based on the 
 OSGi platform.</strong><br>
-Comput Methods Programs Biomed. 2011 Dec 27. [Epub ahead of print]<br>
+Comput Methods Programs Biomed. Volume 106, Issue 2 , Pages 114-125, May 2012<br>
 PMID: 22206864 
 DOI: <a href="http://dx.doi.org/10.1016/j.cmpb.2011.11.003">10.1016/j.cmpb.2011.11.003</a></p>
 
