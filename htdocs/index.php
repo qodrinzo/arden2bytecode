@@ -26,12 +26,10 @@ and the
 
 <p>To cite Arden2ByteCode in publications, use:</p>
 <p>
-Gietzelt M, Goltz U, Grunwald D, Lochau M, Marschollek M, Song B, Wolf KH.<br>
-<strong>Arden2ByteCode: A one-pass Arden Syntax compiler 
-for service-oriented decision support systems based on the 
-OSGi platform.</strong><br>
-Comput Methods Programs Biomed. Volume 106, Issue 2 , Pages 114-125, May 2012<br>
-PMID: 22206864 
+Gietzelt M, Goltz U, Grunwald D, Lochau M, Marschollek M, Song B and Wolf K-H.<br>
+<strong>Arden2ByteCode: A one-pass Arden Syntax compiler for service-oriented decision support systems based on the OSGi platform.</strong><br>
+Comput Methods Programs Biomed. 2012;106(2):114-25.<br>
+PMID: <a href="http://www.ncbi.nlm.nih.gov/pubmed/22206864">22206864</a><br>
 DOI: <a href="http://dx.doi.org/10.1016/j.cmpb.2011.11.003">10.1016/j.cmpb.2011.11.003</a></p>
 
 <p>A BibTeX file is available <a href="/downloads/arden2bytecode.bib">here</a>.</p>
