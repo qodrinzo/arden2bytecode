@@ -1,29 +1,28 @@
-<?php include "includes/head.php"; ?>
+---
+layout: page
+title: Bug reports
+nav_title: Bug reports
+permalink: /issues/
+custom_js:
+ - https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js
+ - ../js/showdown.min.js
+---
 
-<h2>Bug reports</h2>
+If you find a bug in Arden2ByteCode, please post it at [{{ site.compiler.repo }}/issues/new]({{ site.compiler.repo }}/issues/new).
 
-<p>If you find a bug in Arden2ByteCode, please post it at 
-<a href="<?php echo $GIT_REPO_PREFIX; ?>/arden2bytecode/issues/new"
-><?php echo $GIT_REPO_PREFIX; ?>/arden2bytecode/issues/new</a>.</p>
+### Open issues of [Arden2ByteCode]({{ site.compiler.repo }}) at GitHub
 
-<h3>Open issues of <a href="<?php echo $GIT_REPO_PREFIX; ?>/arden2bytecode">Arden2ByteCode</a> at GitHub</h3>
 <ul id="arden2bytecode" class="issues"><li style="list-style-type: none;">Loading (requires JavaScript)...</li></ul>
 
-<hr>
+* * *
 
-<h3>Open issues of the <a href="<?php echo $GIT_REPO_PREFIX; ?>/ardensyntax-eclipse-plugin">Arden Syntax Eclipse plugin</a> at GitHub</h3>
+### Open issues of the [Arden Syntax Eclipse plugin]({{ site.plugin.repo }}) at GitHub
+
 <ul id="eclipseplugin" class="issues"><li style="list-style-type: none;">Loading (requires JavaScript)...</li></ul>
 
-<script type="text/javascript">//<![CDATA[
-$('head').append($('<script />', {
-  src: 'github-flavored-markdown.js',
-  type: 'text/javascript'
-}));
-//]]>
-</script>
-<script type="text/javascript">//<![CDATA[
 
-var converter = new Showdown.converter();
+<script type="text/javascript">
+var converter = new showdown.Converter();
 
 function escapeHtml(str) {   
 	return (str + '')
@@ -64,10 +63,7 @@ function queryIssues(issuesurl, divselector, clear) {
 }
 
 $(function() {
-	queryIssues('https://api.github.com/repos/<?php echo $GIT_REPO_OWNER; ?>/arden2bytecode/issues', '#arden2bytecode');
-	queryIssues('https://api.github.com/repos/<?php echo $GIT_REPO_OWNER; ?>/ardensyntax-eclipse-plugin/issues', '#eclipseplugin');	
+	queryIssues('{{ site.compiler.api }}/issues', '#arden2bytecode');
+	queryIssues('{{ site.plugin.api }}/issues', '#eclipseplugin');	
 });
-//]]>
 </script>
-
-<?php include "includes/foot.php"; ?>

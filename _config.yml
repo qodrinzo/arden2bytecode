@@ -1,0 +1,36 @@
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'jekyll serve'. If you change this file, please restart the server process.
+
+# urls
+baseurl: "/arden2bytecode-homepage" # the subpath of your site, e.g. /blog
+url: "https://github.com/Tetr4/arden2bytecode-homepage" # the base hostname & protocol for your site
+organization: "https://github.com/PLRI"
+compiler: {
+  repo: "https://github.com/PLRI/arden2bytecode",
+  api: "https://api.github.com/repos/PLRI/arden2bytecode",
+  git: "git://github.com/PLRI/arden2bytecode.git"
+}
+plugin: {
+  repo: "https://github.com/PLRI/ardensyntax-eclipse-plugin",
+  git: "git://github.com/PLRI/ardensyntax-eclipse-plugin.git",
+  api: "https://api.github.com/repos/PLRI/ardensyntax-eclipse-plugin",
+  update_site: {
+    url: "http://arden2bytecode.sf.net/eclipse/update/",
+    #/arden4eclipse/update
+    # https://raw.githubusercontent.com/PLRI/ardensyntax-eclipse-plugin-update-site/master/update/ArdenSyntaxEditor/
+    repo: "https://github.com/PLRI/ardensyntax-eclipse-plugin-update-site",
+    git: "git://github.com/PLRI/ardensyntax-eclipse-plugin-update-site.git"
+  }
+}
+homepage: {
+  repo: "https://github.com/PLRI/arden2bytecode-homepage",
+  git: "git://github.com/PLRI/arden2bytecode-homepage.git"
+}
+
+# Site settings
+title: Arden2ByteCode Arden Syntax Compiler
+
+# Build settings
+markdown: kramdown
+
+
