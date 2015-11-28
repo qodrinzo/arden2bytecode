@@ -3,7 +3,7 @@
 
 # urls
 baseurl: "/arden2bytecode-homepage" # the subpath of your site, e.g. /blog
-url: "https://github.com/Tetr4/arden2bytecode-homepage" # the base hostname & protocol for your site
+url: "https://tetr4.github.io" # the base hostname & protocol for your site
 organization: "https://github.com/PLRI"
 compiler: {
   repo: "https://github.com/PLRI/arden2bytecode",
@@ -15,9 +15,8 @@ plugin: {
   git: "git://github.com/PLRI/ardensyntax-eclipse-plugin.git",
   api: "https://api.github.com/repos/PLRI/ardensyntax-eclipse-plugin",
   update_site: {
-    url: "http://arden2bytecode.sf.net/eclipse/update/",
-    #/arden4eclipse/update
-    # https://raw.githubusercontent.com/PLRI/ardensyntax-eclipse-plugin-update-site/master/update/ArdenSyntaxEditor/
+    url: "https://tetr4.github.io/arden2bytecode-homepage/arden4eclipse/update", # TODO concatenate url + baseurl + '/arden4eclipse/update-site'
+    # url: "http://arden2bytecode.sf.net/eclipse/update/",
     repo: "https://github.com/PLRI/ardensyntax-eclipse-plugin-update-site",
     git: "git://github.com/PLRI/ardensyntax-eclipse-plugin-update-site.git"
   }
@@ -32,5 +31,3 @@ title: Arden2ByteCode Arden Syntax Compiler
 
 # Build settings
 markdown: kramdown
-
-
