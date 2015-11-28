@@ -1,10 +1,8 @@
 ---
-layout: page
 title: Arden2ByteCode Source Code
 nav_title: Source Code
-permalink: /source/
 ---
- 
+
 The source code of Arden2ByteCode is made freely available under the terms of the GNU [General Public License](http://www.gnu.org/copyleft/gpl.html).
 
 ### View Source Code with Web Browser

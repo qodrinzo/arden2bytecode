@@ -1,8 +1,6 @@
 ---
-layout: page
 title: Arden4Eclipse plugin
 nav_title: Arden4Eclipse
-permalink: /arden4eclipse/
 ---
 
 There is an Arden Syntax Editor made with [xText](http://www.xtext.org/) available as Eclipse plugin.
@@ -18,7 +16,7 @@ You can choose between two ways of installing:
 
 To install via Eclipse Marketplace, follow these steps:
 
-1.  Drag and drop the following Button onto a running Eclipse window to install the Arden Syntax Tools: [![Install Button](http://marketplace.eclipse.org/misc/installbutton.png)](http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=209263 "Drag and drop into a running Eclipse Indigo workspace to install Arden Syntax Tools") 
+1.  Drag and drop the following Button onto a running Eclipse window to install the Arden Syntax Tools: [![Install Button](http://marketplace.eclipse.org/misc/installbutton.png)](http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=209263 "Drag and drop into a running Eclipse Indigo workspace to install Arden Syntax Tools")
 2.  Follow the installation procedure. When asked if you want to install unsigned software, click OK.
 
 #### via Eclipse Update Site

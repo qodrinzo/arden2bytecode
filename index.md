@@ -1,5 +1,4 @@
 ---
-layout: page
 title: About Arden2ByteCode
 nav_title: About
 permalink: /

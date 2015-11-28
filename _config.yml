@@ -1,6 +1,17 @@
 # For technical reasons, this file is *NOT* reloaded automatically when you use
 # 'jekyll serve'. If you change this file, please restart the server process.
 
+defaults:
+  -
+    scope:
+      path: "" # everything
+      type: "pages"
+    values:
+      layout: "default"
+
+title: Arden2ByteCode Arden Syntax Compiler
+permalink: pretty
+
 # urls
 baseurl: "/arden2bytecode-homepage" # the subpath of your site, e.g. /blog
 url: "https://tetr4.github.io" # the base hostname & protocol for your site
@@ -25,9 +36,6 @@ homepage: {
   repo: "https://github.com/PLRI/arden2bytecode-homepage",
   git: "git://github.com/PLRI/arden2bytecode-homepage.git"
 }
-
-# Site settings
-title: Arden2ByteCode Arden Syntax Compiler
 
 # Build settings
 markdown: kramdown

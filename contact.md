@@ -1,14 +1,12 @@
 ---
-layout: page
 title: Contact the Arden2ByteCode Team
 nav_title: Contact
-permalink: /contact/
 custom_js:
  - https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js
 ---
 
 ![TU Braunschweig Logo](https://www.tu-braunschweig.de/icons/tubsdesign/siegel_rot.jpg)
- 
+
 Arden2ByteCode was created at the [Technische Universität Braunschweig](http://www.tu-braunschweig.de) in cooperation between the [Peter L. Reichertz Institute for Medical Informatics](http://www.plri.de/Arden2ByteCode.html) and the [Institute for Programming and Reactive Systems](http://www.ips.cs.tu-bs.de/).
 
 Please refer to the following list (in alphabetical order).  

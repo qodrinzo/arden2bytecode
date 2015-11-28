@@ -1,8 +1,6 @@
 ---
-layout: page
 title: Links and References
 nav_title: Links
-permalink: /links/
 ---
 
 ### General Information about Arden Syntax

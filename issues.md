@@ -1,8 +1,6 @@
 ---
-layout: page
 title: Bug reports
 nav_title: Bug reports
-permalink: /issues/
 custom_js:
  - https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js
  - ../js/showdown.min.js
@@ -36,12 +34,12 @@ function formatIssue(issue) {
 				+ '<a href="' + issue.html_url
 				+ '">' + escapeHtml(issue.title)
 				+ '</a>'
-				+ '<span class="issueowner"> - posted by: <a href="' + issue.user.url + '">' 
-				+ issue.user.login + '</a></span></span>' 
+				+ '<span class="issueowner"> - posted by: <a href="' + issue.user.url + '">'
+				+ issue.user.login + '</a></span></span>'
 				+ '<div class="issuebody">' + converter.makeHtml(issue.body) + '</div></li>';
 }
 
-function queryIssues(issuesurl, divselector, clear) {	
+function queryIssues(issuesurl, divselector, clear) {
 	clear = typeof clear !== 'undefined' ? clear : true;
     $.ajax({
 		url: issuesurl,
@@ -64,6 +62,6 @@ function queryIssues(issuesurl, divselector, clear) {
 
 $(function() {
 	queryIssues('{{ site.compiler.api }}/issues', '#arden2bytecode');
-	queryIssues('{{ site.plugin.api }}/issues', '#eclipseplugin');	
+	queryIssues('{{ site.plugin.api }}/issues', '#eclipseplugin');
 });
 </script>

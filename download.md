@@ -1,8 +1,6 @@
 ---
-layout: page
 title: Arden2ByteCode Downloads
 nav_title: Downloads
-permalink: /download/
 custom_js:
  - https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js
 ---
@@ -24,15 +22,15 @@ $(function() {
 		$.each(result.data, function(index, value) {
 			$('#downloads').append(
 				'<li><a href="' + value.html_url
-				+ '">' + value.name 
+				+ '">' + value.name
 				+ '</a> - ' + value.description + '</li>');
 		});
 	});
 });
 </script>
 
-<!-- TODO changelog 
-<?php 
+<!-- TODO changelog
+<?php
 	echo render_file('Changelog', '<h2><a href="/docs/changelog">$title</a></h2>');
 ?>
 </div>
@@ -46,4 +44,4 @@ Clone with:
     $ git clone /arden2bytecode.git
 
 You can download it from GitHub as [.tar.gz]({{ site.compiler.repo }}/tarball/master) or [.zip]({{ site.compiler.repo }}/zipball/master).  
-To build, follow the [instructions](docs/compiling-arden2bytecode-from-source) in the documentation wiki. It's basically typing `ant` at the command prompt.
+To build, follow the [instructions](../docs/compiling-arden2bytecode-from-source) in the documentation wiki. It's basically typing `ant` at the command prompt.
