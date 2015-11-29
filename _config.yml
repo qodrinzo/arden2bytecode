@@ -12,6 +12,10 @@ defaults:
 title: Arden2ByteCode Arden Syntax Compiler
 permalink: pretty
 
+# collections
+collections:
+  - wiki_files
+
 # urls
 baseurl: "/arden2bytecode-homepage" # the subpath of your site, e.g. /blog
 url: "https://tetr4.github.io" # the base hostname & protocol for your site
@@ -38,4 +42,7 @@ homepage: {
 }
 
 # Build settings
+exclude: ['README.md', 'Gemfile.lock', 'Gemfile', 'arden4eclipse/README.md', 'arden4eclipse/build.xml', 'arden4eclipse/update/.htaccess']
 markdown: kramdown
+gems:
+  - jekyll-redirect-from # allowed on github pages
