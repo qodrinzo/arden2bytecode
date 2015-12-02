@@ -9,7 +9,7 @@ The source code of Arden2ByteCode is made freely available under the terms of th
 
 The source code of Arden2ByteCode ist hosted at GitHub: [{{ site.compiler.repo }}]({{ site.compiler.repo }})
 
-If you want to contribute, sign up to GitHub and fork the project or, alternatively, ask me (hflicka@GitHub) to add you to the project.
+If you want to contribute, sign up to GitHub and fork the project or, alternatively, ask me [(hflicka@GitHub)](https://github.com/hflicka) to add you to the project.
 
 ### Public Git Repository
 
@@ -21,13 +21,15 @@ To clone, type:
 
 ### Developer Documentation
 
-The documentation for developers is contained in the source code itself and in various README.md [Markdown](http://en.wikipedia.org/wiki/Markdown) files in the according GitHub repositories.
+The documentation for developers is contained in the source code itself and in various README.md [Markdown](https://en.wikipedia.org/wiki/Markdown) files in the according GitHub repositories.
 
-The Markdown documentation is available in gathered form [on this website](/developerdocs).
+{% comment %}
+The Markdown documentation is available in gathered form [on this website]({{ site.baseurl }}/developerdocs).
+{% endcomment %}
 
 ### History
 
-The programming work was initiated in 2010 by Daniel Grunwald as it can be seen on [GitHub](http://github.com/dgrunwald/arden2bytecode).  
+The programming work was initiated in 2010 by Daniel Grunwald as it can be seen on [GitHub](https://github.com/dgrunwald/arden2bytecode).  
 Daniel did the major work, namely the bytecode compiler and runtime environment itself.  
 In 2010, I forked the repository and added a command line interface. Still, work has to be done until Arden2ByteCode is production ready.
 

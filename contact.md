@@ -12,16 +12,16 @@ Arden2ByteCode was created at the [Technische Universität Braunschweig](http://
 Please refer to the following list (in alphabetical order).  
 You may contact any of the projects contributors via their respective profile pages. :
 
-*   [Hannes Flicka](http://github.com/hflicka) (E-Mail: <a class="mail" href="vmyzi2wtozxjyz@bhvdg.xjh"></a>)
-*   [Matthias Gietzelt](http://www.plri.de/index.php?id=gietzelt)
+*   [Hannes Flicka](https://github.com/hflicka) (E-Mail: <a class="mail" href="vmyzi2wtozxjyz@bhvdg.xjh"></a>)
+*   Matthias Gietzelt
 *   [Prof. Dr. Ursula Goltz](https://www.tu-braunschweig.de/ips/staff/goltz)
 *   [Daniel Grunwald](https://github.com/dgrunwald)
-*   [Prof. Dr. Reinhold Haux](http://www.plri.de/mitarbeiter/haux.html)
+*   [Prof. Dr. Reinhold Haux](https://plri.de/en/mitarbeiter/reinhold-haux)
 *   [Mike Klimek](https://github.com/Tetr4)
-*   [Malte Lochau](https://www.tu-braunschweig.de/ips/staff/lochau)
-*   [Prof. Dr. Dr. Michael Marschollek](http://www.plri.de/index.php?id=marschollek)
-*   [Bianying Song](http://www.plri.de/index.php?id=song)
-*   [Dr. Klaus-Hendrik Wolf](http://www.plri.de/mitarbeiter/wolf.html)
+*   [Malte Lochau](https://www.tu-braunschweig.de/ips/staff/former/lochau)
+*   [Prof. Dr. Dr. Michael Marschollek](https://plri.de/en/mitarbeiter/michael_marschollek)
+*   Bianying Song
+*   [Dr. Klaus-Hendrik Wolf](https://plri.de/en/mitarbeiter/klaus-hendrik_wolf)
 
 <script type="text/javascript">
 $(function() {

@@ -5,16 +5,16 @@ nav_title: Links
 
 ### General Information about Arden Syntax
 
-*   [HL7 Wiki Page about Arden Syntax](http://wiki.hl7.org/index.php?title=Product_Arden)
-*   [HL7 Arden Syntax workgroup](http://www.hl7.org/special/Committees/arden/index.cfm)
+*   [HL7 Wiki Page about Arden Syntax](https://wiki.hl7.org/index.php?title=Product_Arden)
+*   [HL7 Arden Syntax workgroup](https://www.hl7.org/special/Committees/arden/index.cfm)
 
 ### Work related to Arden2ByteCode
 
 *   Gietzelt, Matthias and Goltz, Ursula and Grunwald, Daniel and Lochau, Malte and Marschollek, Michael and Song, Bianying and Wolf, Klaus-Hendrik  
-    _Arden2ByteCode: A one-pass Arden Syntax compiler for service-oriented decision support systems based on the OSGi platform_ [[Link]](http://dx.doi.org/10.1016/j.cmpb.2011.11.003)  
+    _Arden2ByteCode: A one-pass Arden Syntax compiler for service-oriented decision support systems based on the OSGi platform_ [[Link]](https://dx.doi.org/10.1016/j.cmpb.2011.11.003)  
     Comput Methods Programs Biomed, Peter L. Reichertz Institute for Medical Informatics, University of Braunschweig - Institute of Technology and Hannover Medical School, Institute for Programming and Reactive Systems, Mühlenpfordtstrasse 23, 38106 Braunschweig, Germany
 *   Gao, X.; Johansson, B.; Shahsavar, N.; Arkad, K.; Ahlfeldt, H. & Wigertz, O.  
-    _Pre-compiling medical logic modules into C++ in building medical decision support systems_ [[PDF]](http://www.sciencedirect.com/science/article/pii/0169260793900702)  
+    _Pre-compiling medical logic modules into C++ in building medical decision support systems_ [[PDF]](https://www.sciencedirect.com/science/article/pii/0169260793900702)  
     Comput Methods Programs Biomed, Department of Medical Informatics, Linköping University, Sweden., 1993, 41, 107-119
 *   Grunwald, D.  
     _Arden2ByteCode - Open source Arden Syntax compiler implementation_  
@@ -32,14 +32,14 @@ nav_title: Links
     _Mid-term report on the Arden Syntax in a clinical event monitor_ [[PDF]](http://www.sciencedirect.com/science/article/pii/0010482594900051)  
     Comput Biol Med, Institute for Medical Informatics, Ameritech Knowledge Data, Palo Alto, CA 94301, USA., 1994, 24, 377-383
 *   McCallum, G.  
-    _EGADSS: A Clinical Decision Support System for use in a Service- oriented Architecture_ [[PDF]](http://dspace.library.uvic.ca:8080/handle/1828/2296)  
+    _EGADSS: A Clinical Decision Support System for use in a Service- oriented Architecture_ [[PDF]](https://dspace.library.uvic.ca:8080/handle/1828/2296)  
     Computer Science, University of Victoria, 2006  
 *   McCauley, B.; Young, I.; Clark, I. & Peters, M.  
-    _Incorporation of the Arden Syntax within the reimplementation of a closed-loop decision support system_ [[PDF]](http://www.sciencedirect.com/science/article/pii/S0010480996900373)  
+    _Incorporation of the Arden Syntax within the reimplementation of a closed-loop decision support system_ [[PDF]](https://www.sciencedirect.com/science/article/pii/S0010480996900373)  
     Comput Biomed Res, Wolfson Computer Laboratory, University of Birmingham, United Kingdom., 1996, 29, 507-518
 *   [SableCC Parser Generator](http://sablecc.org/)
 *   Song, B.; Wolf, K.-H.; Gietzelt, M.; Scharaa, O. A.; Tegtbur, U.; Haux, R. & Marschollek, M.  
-    _Decision support for teletraining of COPD patients_ [[PDF]](http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=5191193&tag=1)  
+    _Decision support for teletraining of COPD patients_ [[PDF]](https://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=5191193&tag=1)  
     Methods Inf Med, Bianying Song, Peter L. Reichertz Institute for Medical Informatics, University of Braunschweig - Institute of Technology and Hannover Medical School, Mühlenpfordtstrasse 23, 38106 Braunschweig, Germany, 2010, 49, 96-102
 *   Spates, R. P. & Aller, K. C.  
     _One vendor's experience: preliminary development of a reminder system based on the Arden Syntax_ [[PDF]](http://www.sciencedirect.com/science/article/pii/0010482594900043)  

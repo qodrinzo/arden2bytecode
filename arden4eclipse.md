@@ -3,7 +3,7 @@ title: Arden4Eclipse plugin
 nav_title: Arden4Eclipse
 ---
 
-There is an Arden Syntax Editor made with [xText](http://www.xtext.org/) available as Eclipse plugin.
+There is an Arden Syntax Editor made with [xText](https://www.xtext.org/) available as Eclipse plugin.
 
 ### Installation Instructions
 
@@ -16,7 +16,7 @@ You can choose between two ways of installing:
 
 To install via Eclipse Marketplace, follow these steps:
 
-1.  Drag and drop the following Button onto a running Eclipse window to install the Arden Syntax Tools: [![Install Button](http://marketplace.eclipse.org/misc/installbutton.png)](http://marketplace.eclipse.org/marketplace-client-intro?mpc_install=209263 "Drag and drop into a running Eclipse Indigo workspace to install Arden Syntax Tools")
+1.  Drag and drop the following Button onto a running Eclipse window to install the Arden Syntax Tools: [![Install Button](https://marketplace.eclipse.org/misc/installbutton.png)](https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=209263 "Drag and drop into a running Eclipse Indigo workspace to install Arden Syntax Tools")
 2.  Follow the installation procedure. When asked if you want to install unsigned software, click OK.
 
 #### via Eclipse Update Site
@@ -24,7 +24,7 @@ To install via Eclipse Marketplace, follow these steps:
 To install via the [Arden2ByteCode Update Site]({{ site.plugin.update_site.url }}), follow these steps:
 
 1.  Start a recent version of the Eclipse IDE.  
-    If you don't have Eclipse yet, you may download the Eclipse IDE for Java Developers at [http://www.eclipse.org/downloads/](http://www.eclipse.org/downloads/).
+    If you don't have Eclipse yet, you may download the Eclipse IDE for Java Developers at <https://www.eclipse.org/downloads/>.
 2.  Go to **Help -> Install new Software...** in the Eclipse menu.
 3.  Uncheck the **Contact all update sites during install to find required software** checkbox (this is useful to speed up the installation process).
 4.  Add [{{ site.plugin.update_site.url }}]({{ site.plugin.update_site.url }}) as a Software Site.  

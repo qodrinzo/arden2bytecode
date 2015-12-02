@@ -44,4 +44,4 @@ Clone with:
     $ git clone /arden2bytecode.git
 
 You can download it from GitHub as [.tar.gz]({{ site.compiler.repo }}/tarball/master) or [.zip]({{ site.compiler.repo }}/zipball/master).  
-To build, follow the [instructions](../docs/compiling-arden2bytecode-from-source) in the documentation wiki. It's basically typing `ant` at the command prompt.
+To build, follow the [instructions]({{ site.baseurl }}/docs/compiling-arden2bytecode-from-source) in the documentation wiki. It's basically typing `ant` at the command prompt.
