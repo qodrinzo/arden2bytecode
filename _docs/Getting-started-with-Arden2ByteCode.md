@@ -1,3 +1,7 @@
+---
+# GENERATED - DO NOT EDIT
+title: Getting started with Arden2ByteCode
+---
 In the following, I will explain how to run a simple Hello World program with Arden2ByteCode.
 
 Arden2ByteCode is a Java program, thus it requires a Java Runtime Environment (JRE) on your machine. If you already have such a JRE, you can proceed with step 2.

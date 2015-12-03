@@ -1,3 +1,7 @@
+---
+# GENERATED - DO NOT EDIT
+title: Arden2ByteCode Command Line Reference
+---
 ### Synopsis
 `arden2bytecode [OPTIONS] [FILE] [FILE...]`
 
@@ -16,7 +20,7 @@
 * **-n**, **--nologo**  
   Don't display the header with program name and licensing information.
 * **-a**, **--arguments**  
-  Specify arguments to the MLM. These are available in the MLM
+  Specify arguments to the MLM. These are available in the MLM 
   data slot via the `argument` identifier.  
   The parameter after the **-a** flag must be a valid Arden Syntax
   expression, such as `("arg 1", "arg 2", 34.5)`.  
@@ -28,7 +32,7 @@
   Also note that you may pass multiple arguments to the **-a** flag,
   which are then treated as lists and concatenated.
 * **--daemon**  
-  Starts a daemon that invokes the MLMs given as input files on the
+  Starts a daemon that invokes the MLMs given as input files on the 
   schedule given in the respective evoke slots.  
   This option replaces **-r** or **-c**.
 
@@ -61,5 +65,5 @@ All further command line arguments will be regarded as input files.
   Run MLM without displaying logo.
 * `arden2bytecode -nvc *.mlm`  
   Compile all MLMs in one directory verbosely. Don't display logo.  
-  This will only work if your command line interpreter
+  This will only work if your command line interpreter 
   supports expansion of `*` arguments.

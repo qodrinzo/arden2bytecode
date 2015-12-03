@@ -1,3 +1,7 @@
+---
+# GENERATED - DO NOT EDIT
+title: Changelog
+---
 ### September 2012
 
 * Implemented reading of MLM variables from the 'outside' via `MedicalLogicModule.getValue(String name)`

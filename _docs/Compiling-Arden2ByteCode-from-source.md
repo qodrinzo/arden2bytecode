@@ -1,3 +1,7 @@
+---
+# GENERATED - DO NOT EDIT
+title: Compiling Arden2ByteCode from source
+---
 ## Getting the source
 To use [Arden2ByteCode](https://github.com/PLRI/arden2bytecode), first download or clone the source.
 

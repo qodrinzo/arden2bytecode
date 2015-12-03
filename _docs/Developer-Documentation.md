@@ -1,3 +1,7 @@
+---
+# GENERATED - DO NOT EDIT
+title: Developer Documentation
+---
 Information for developers such as how to build Arden2ByteCode 
 and the associated Eclipse plugins can be found at:  
 <http://arden2bytecode.sf.net/developerdocs>.

@@ -2,10 +2,8 @@
 # 'jekyll serve'. If you change this file, please restart the server process.
 
 defaults:
-  -
-    scope:
+  - scope:
       path: "" # everything
-      type: "pages"
     values:
       layout: "default"
 
@@ -14,32 +12,32 @@ permalink: pretty
 
 # collections
 collections:
-  - wiki_files
+  docs:
+    output: true
 
 # urls
-baseurl: "/arden2bytecode-homepage" # the subpath of your site, e.g. /blog
-url: "https://tetr4.github.io" # the base hostname & protocol for your site
-organization: "https://github.com/PLRI"
-compiler: {
-  repo: "https://github.com/PLRI/arden2bytecode",
-  api: "https://api.github.com/repos/PLRI/arden2bytecode",
-  git: "git://github.com/PLRI/arden2bytecode.git"
-}
-plugin: {
-  repo: "https://github.com/PLRI/ardensyntax-eclipse-plugin",
-  git: "git://github.com/PLRI/ardensyntax-eclipse-plugin.git",
-  api: "https://api.github.com/repos/PLRI/ardensyntax-eclipse-plugin",
-  update_site: {
-    url: "https://tetr4.github.io/arden2bytecode-homepage/arden4eclipse/update", # TODO concatenate url + baseurl + '/arden4eclipse/update-site'
-    # url: "http://arden2bytecode.sf.net/eclipse/update/",
-    repo: "https://github.com/PLRI/ardensyntax-eclipse-plugin-update-site",
-    git: "git://github.com/PLRI/ardensyntax-eclipse-plugin-update-site.git"
-  }
-}
-homepage: {
-  repo: "https://github.com/PLRI/arden2bytecode-homepage",
-  git: "git://github.com/PLRI/arden2bytecode-homepage.git"
-}
+baseurl: /arden2bytecode-homepage # the subpath of your site, e.g. /blog
+url: https://tetr4.github.io # the base hostname & protocol for your site
+organization: https://github.com/PLRI
+
+compiler:
+  repo: https://github.com/PLRI/arden2bytecode
+  api: https://api.github.com/repos/PLRI/arden2bytecode
+  git: git://github.com/PLRI/arden2bytecode.git
+
+plugin:
+  repo: https://github.com/PLRI/ardensyntax-eclipse-plugin
+  git: git://github.com/PLRI/ardensyntax-eclipse-plugin.git
+  api: https://api.github.com/repos/PLRI/ardensyntax-eclipse-plugin
+  update_site:
+    url: https://tetr4.github.io/arden2bytecode-homepage/arden4eclipse/update # TODO concatenate url + baseurl + '/arden4eclipse/update-site'
+    # url: http://arden2bytecode.sf.net/eclipse/update/
+    repo: https://github.com/PLRI/ardensyntax-eclipse-plugin-update-site
+    git: git://github.com/PLRI/ardensyntax-eclipse-plugin-update-site.git
+
+homepage:
+  repo: https://github.com/PLRI/arden2bytecode-homepage
+  git: git://github.com/PLRI/arden2bytecode-homepage.git
 
 # Build settings
 exclude: ['README.md', 'Gemfile.lock', 'Gemfile', 'arden4eclipse/README.md', 'arden4eclipse/build.xml', 'arden4eclipse/update/.htaccess']

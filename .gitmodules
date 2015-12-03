@@ -1,6 +1,3 @@
-[submodule "wiki-files"]
-	path = _wiki-files
-	url = https://github.com/PLRI/arden2bytecode.wiki.git
 [submodule "update-site"]
 	path = arden4eclipse
 	url = https://github.com/PLRI/ardensyntax-eclipse-plugin-update-site.git

@@ -1,3 +1,7 @@
+---
+# GENERATED - DO NOT EDIT
+title: Writing an replacement execution context
+---
 This document is intended to be read by people who are capable of Java programming.
 
 Replacing the execution context of Arden2ByteCode means providing a class that serves as information gateway to the "outer world" of a Medical Logic Module. Thus, via an execution context, you can integrate Arden2ByteCode into your data infrastructure.

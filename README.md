@@ -14,7 +14,7 @@ Usage
 ---------------
 See [Using Jekyll with Pages](https://help.github.com/articles/using-jekyll-with-pages/#keeping-jekyll-up-to-date) and [Jyekyll Documentation](https://jekyllrb.com/docs/home/).
 
-Don't forget to initialize the submodules:
+Don't forget to initialize the submodules after cloning:
 
     $ git clone http://github.com/PLRI/arden2bytecode-homepage.git
     $ cd arden2bytecode-homepage
@@ -25,3 +25,14 @@ all submodules use:
 
     $ git pull
     $ git submodule foreach git pull origin master
+
+Updating the wiki file pages:
+
+    ./makedocs    
+
+Running a local server:
+0. Install Ruby (version > 2.0.0)
+0. Install Bundler: `gem install bundler`
+0. Install github-pages gem: `bundle install`
+0. Start local server: `bundle exec jekyll serve`
+0. Go to <http://127.0.0.1:4000/arden2bytecode-homepage/>

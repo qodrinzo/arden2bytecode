@@ -1,3 +1,7 @@
+---
+# GENERATED - DO NOT EDIT
+title: Hello World! in Arden Syntax
+---
 The following shows how to output a Hello World! message on standard output using Arden Syntax.  
 File `hello_world.mlm`:
 

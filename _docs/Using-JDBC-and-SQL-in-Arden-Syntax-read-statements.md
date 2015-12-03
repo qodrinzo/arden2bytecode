@@ -1,3 +1,7 @@
+---
+# GENERATED - DO NOT EDIT
+title: Using JDBC and SQL in Arden Syntax read statements
+---
 Arden2ByteCode supports usage of JDBC drivers in order to connect to external data sources. If properly set up, SQL statements can be issued in read statements.  
 Let's have a look at an example:
 

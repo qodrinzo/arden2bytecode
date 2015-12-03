@@ -1,3 +1,7 @@
+---
+# GENERATED - DO NOT EDIT
+title: Home
+---
 ## Welcome to the Arden2ByteCode wiki!
 
 This is the common place for documentation regarding the Arden2ByteCode compiler.

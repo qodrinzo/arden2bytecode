@@ -1,3 +1,7 @@
+---
+# GENERATED - DO NOT EDIT
+title: Passing Arguments to a MLM
+---
 In Arden2ByteCode, you can pass arguments to Medical Logic Modules (MLMs) and access them in the MLM via the `ARGUMENT` identifier.
 
 An example of how to pass arguments to a MLM and process them is given here:  

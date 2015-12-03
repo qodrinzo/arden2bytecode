@@ -1,3 +1,7 @@
+---
+# GENERATED - DO NOT EDIT
+title: Using the Arden Syntax Editor Eclipse plugin
+---
 ## Overview
 
 Using the Arden Syntax Editor Eclipse plugin is pretty much straightforward.  

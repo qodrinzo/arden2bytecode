@@ -1,0 +1,35 @@
+#!/bin/bash
+set -e
+
+# This script downloads the markdown wiki pages from the arden2bytecode
+# repository and appends the YAML frontmatter, so they can be included in the
+# homepage without difficulty.
+
+# repository url prefix:
+WIKI_REPO_URL=https://github.com/PLRI/arden2bytecode.wiki.git
+OUTDIR=_docs
+FRONTMATTER_START="---\n# GENERATED - DO NOT EDIT"
+FRONTMATTER_END="---"
+
+# Get only the files, not the .git repo
+echo "Downloading..."
+git clone $WIKI_REPO_URL $OUTDIR
+rm -rf $OUTDIR/.git/
+
+# Prepend frontmatter to every file
+echo "Adding frontmatter..."
+for file in $OUTDIR/*.md; do
+    # generate a title from the file name
+    filename=$(basename "$file") # get filename from long path
+    filename="${filename%.*}" # remove extension
+    filename=${filename//-/ } # replace dashes with spaces
+    FRONTMATTER="title: $filename"
+
+    # TODO replace links
+    #sed -i 's/|\[\[([^\[\]]*)\]\]|/<a href="...">...</a>/g' file
+
+    # prepend frontmatter
+    echo -e "$FRONTMATTER_START\n$FRONTMATTER\n$FRONTMATTER_END\n$(cat $file)" > $file
+done
+
+echo "Done."
