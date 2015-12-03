@@ -8,13 +8,13 @@ custom_js:
 
 If you find a bug in Arden2ByteCode, please post it at [{{ site.compiler.repo }}/issues/new]({{ site.compiler.repo }}/issues/new).
 
-### Open issues of [Arden2ByteCode]({{ site.compiler.repo }}) at GitHub:
+### Open issues of [Arden2ByteCode]({{ site.compiler.repo }}) at GitHub
 
 <ul id="arden2bytecode" class="issues"><li style="list-style-type: none;">Loading (requires JavaScript)...</li></ul>
 
 * * *
 
-### Open issues of the [Arden Syntax Eclipse plugin]({{ site.plugin.repo }}) at GitHub:
+### Open issues of the [Arden Syntax Eclipse plugin]({{ site.plugin.repo }}) at GitHub
 
 <ul id="eclipseplugin" class="issues"><li style="list-style-type: none;">Loading (requires JavaScript)...</li></ul>
 
