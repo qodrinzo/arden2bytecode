@@ -1,35 +1,64 @@
 #!/bin/bash
-set -e
+set -e #exit on error
 
 # This script downloads the markdown wiki pages from the arden2bytecode
 # repository and appends the YAML frontmatter, so they can be included in the
 # homepage without difficulty.
+# It also changes the links to point to the correct files.
 
-# repository url prefix:
 WIKI_REPO_URL=https://github.com/PLRI/arden2bytecode.wiki.git
 OUTDIR=_docs
 FRONTMATTER_START="---\n# GENERATED - DO NOT EDIT"
 FRONTMATTER_END="---"
 
-# Get only the files, not the .git repo
+# Download the files
 echo "Downloading..."
-git clone $WIKI_REPO_URL $OUTDIR
-rm -rf $OUTDIR/.git/
+git clone $WIKI_REPO_URL $OUTDIR --quiet
+rm -rf $OUTDIR/.git/ # discard .git repo
 
 # Prepend frontmatter to every file
 echo "Adding frontmatter..."
 for file in $OUTDIR/*.md; do
-    # generate a title from the file name
+    # generate a title from the filename
     filename=$(basename "$file") # get filename from long path
     filename="${filename%.*}" # remove extension
-    filename=${filename//-/ } # replace dashes with spaces
-    FRONTMATTER="title: $filename"
-
-    # TODO replace links
-    #sed -i 's/|\[\[([^\[\]]*)\]\]|/<a href="...">...</a>/g' file
+    title=${filename//-/ } # replace dashes with spaces
+    FRONTMATTER="title: $title"
 
     # prepend frontmatter
     echo -e "$FRONTMATTER_START\n$FRONTMATTER\n$FRONTMATTER_END\n$(cat $file)" > $file
 done
 
-echo "Done."
+# Change all files to lowercase for consistent links
+rename 'y/A-Z/a-z/' $OUTDIR/*.md
+
+# Replace links
+# [[Hello World! in Arden Syntax]]  -->  [Hello World! in Arden Syntax](Hello-World!-in-Arden-Syntax.md)
+# TODO maybe with awk/sed so python isn't required?
+echo "Replacing links..."
+python - <<END
+import re
+import os
+import glob
+
+def replace_links_callback(match):
+    title = match.group(1)
+    return '[%s](%s)' % (title, title_to_filename(title))
+
+def title_to_filename(title):
+    return title.replace(' ', '-').lower() + '.html'
+
+pattern = re.compile('\[\[([^\]]+)\]\]') # [[...]]
+for filename in glob.glob('$OUTDIR/*.md'):
+    with open(filename, 'r') as f:
+        text = f.read()
+
+    # replace links
+    text = pattern.sub(replace_links_callback, text)
+
+    # write back to same file
+    with open(filename, 'w') as f:
+        f.write(text)
+END
+
+echo "Done. Docs are in $OUTDIR."

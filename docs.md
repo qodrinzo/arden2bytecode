@@ -3,10 +3,10 @@ title: Documentation
 nav_title: Documentation
 ---
 
-{% assign doc_pages = site.docs | sort:"title" %}
-{{ doc_pages | where:"title","Home" |first }}
+{{ site.docs | where:"title","Home" }}
 
 ### List of Wiki files
+{% assign doc_pages = site.docs | sort:"title" %}
 {% for page in doc_pages %}
 <a href="{{ page.url | prepend: site.baseurl }}">{{ page.title }}</a>
 {% endfor %}

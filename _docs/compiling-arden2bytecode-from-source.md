@@ -42,10 +42,10 @@ Having built the source, you can now launch the Arden2ByteCode compiler.
    E.g. `java arden.MainClass -r ../src/arden/tests/x2.1.mlm`
 
 ### Alternatively: Launching the .jar file
-You can also launch the .jar binary package as explained in [[Getting started with Arden2ByteCode]].
+You can also launch the .jar binary package as explained in [Getting started with Arden2ByteCode](getting-started-with-arden2bytecode.html).
 
 1. Switch to `dist/` subdirectory: `cd dist`
 1. Enter `arden2bytecode -r ../src/arden/tests/x2.5.mlm` on the command prompt to run `x2.5.mlm`.  
    On Linux, type `./arden2bytecode -r ../src/arden/tests/x2.5.mlm`.
 
-More information about the command line options are given in [[Arden2ByteCode Command Line Reference]].
+More information about the command line options are given in [Arden2ByteCode Command Line Reference](arden2bytecode-command-line-reference.html).
