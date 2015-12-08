@@ -126,9 +126,9 @@
     $(document).ready(function () {
         // apply dropdownHover to all elements with the data-hover="dropdown" attribute
         $('[data-hover="dropdown"]').dropdownHover();
-        // make every link on the dropdown menu clickable
+        // make every link on the dropdown menu clickable, except when the collapsed navbar is shown (e.g. on mobile devices)
         $('.navbar .dropdown > a').click(function(){
-            if($(window).width()>768) {
+            if(! $('.navbar-toggle').is(':visible')) {
                 location.href = this.href;
             }
         });
