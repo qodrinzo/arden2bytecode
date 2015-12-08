@@ -126,11 +126,12 @@
     $(document).ready(function () {
         // apply dropdownHover to all elements with the data-hover="dropdown" attribute
         $('[data-hover="dropdown"]').dropdownHover();
-        if($(window).width()>768){
-            // make every link on the dropdown menu clickable
-            $('.navbar .dropdown > a').click(function(){
+        // make every link on the dropdown menu clickable
+        $('.navbar .dropdown > a').click(function(){
+            if($(window).width()>768) {
                 location.href = this.href;
-            });
-        }
+            }
+        });
     });
+
 })(jQuery, window);
