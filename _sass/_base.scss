@@ -1,10 +1,12 @@
 body {
   background: $body-color;
 }
+
 body > .container {
   padding: $site-margin;
 }
+
 .footer > .container {
-    text-align: right;
-    @include vertical-align();
+  text-align: right;
+  @include vertical-align();
 }

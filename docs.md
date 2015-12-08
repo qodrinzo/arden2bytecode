@@ -1,6 +1,7 @@
 ---
 title: Documentation
 nav_title: Documentation
+nav_collection: docs
 ---
 
 {{ site.docs | where:"title","Home" }}
