@@ -15,20 +15,20 @@
             <ul class="nav navbar-nav">
               {% assign pages = site.pages | sort:"nav_title"  %}
               {% for p in pages %}
-                {% if p.nav_title == blank %}{% continue %}{% endif %}
+                {% if p.nav_title == null %}{% continue %}{% endif %}
 
-                {% assign has_dropdown = false %}
+                {% assign dropdown_collection = null %}
                 {% for collection in site.collections %}
-                  {% if p.nav_collection == collection[1].label %}{% assign has_dropdown = true %}{% endif %}
+                  {% if p.nav_collection == collection[1].label %}{% assign dropdown_collection = collection %}{% endif %}
                 {% endfor %}
 
-                {% if p.url == page.url or has_dropdown and page.collection == p.nav_collection %}{% assign active_class = "active" %}{% else %}{% assign active_class = "" %}{% endif %}
+                {% if p.url == page.url or dropdown_collection and page.collection == p.nav_collection %}{% assign active_class = "active" %}{% else %}{% assign active_class = "" %}{% endif %}
 
-                {% if has_dropdown %}
-              <li class="{{ active_class }} dropdown"><a href="{{ p.url | prepend: site.baseurl }}" role="button" aria-haspopup="true" aria-expanded="false">{{ p.nav_title }}<span class="caret"></span></a>
+                {% if dropdown_collection %}
+              <li class="{{ active_class }} dropdown">
+                <a href="{{ p.url | prepend: site.baseurl }}" data-toggle="dropdown" data-hover="dropdown" data-delay="200" role="button" aria-haspopup="true" aria-expanded="false">{{ p.nav_title }}<span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                  {% assign doc_pages = site.docs | sort:"title" %}
-                  {% for doc_page in doc_pages %}
+                  {% for doc_page in dropdown_collection[1].docs | sort:"title" %}
                     <li><a href="{{ doc_page.url | prepend: site.baseurl }}">{{ doc_page.title }}</a></li>
                   {% endfor %}
                 </ul>
@@ -36,7 +36,7 @@
                 {% else %}
               <li class="{{ active_class }}"><a href="{{ p.url | prepend: site.baseurl }}">{{ p.nav_title }}</a></li>
                 {% endif %}
-                
+
               {% endfor %}
             </ul>
           </div>
