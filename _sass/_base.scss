@@ -1,9 +1,11 @@
 body {
   background: $body-color;
+  padding-top: $navbar-height
 }
 
 body > .container {
-  padding: $site-margin;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 
 .footer > .container {

@@ -2,15 +2,18 @@
 ---
 
 /*** bootstrap ***/
+$screen-sm: 992px; // collapse navbar sooner -> prevent creation a new row
+//$navbar-height: 50px;
 @import 'bootstrap';
 
 
 /*** other css ***/
 // definitions
+$card-padding: 30px;
 $footer-height: 50px;
 $footer-color: #f5f5f5;
-$site-margin: 60px 15px 0;
-$body-color: #FFFFFF;
+$body-color: #e8e8e8;
+$card-color: #FFF;
 
 // helper "functions"
 @import 'mixins';
@@ -18,5 +21,6 @@ $body-color: #FFFFFF;
 // imported from _sass folder
 @import
         'base',
-        'sticky-footer-navbar'
+        'sticky-footer-navbar',
+        'card'
 ;
