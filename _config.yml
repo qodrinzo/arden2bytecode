@@ -7,7 +7,7 @@ defaults:
     values:
       layout: "default"
 
-title: Arden2ByteCode Arden Syntax Compiler
+title: Arden2ByteCode # Arden Syntax Compiler
 permalink: pretty
 
 # collections

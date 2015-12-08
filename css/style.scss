@@ -1,0 +1,22 @@
+---
+---
+
+/*** bootstrap ***/
+@import 'bootstrap';
+
+
+/*** other css ***/
+// definitions
+$footer-height: 50px;
+$footer-color: #f5f5f5;
+$site-margin: 60px 15px 0;
+$body-color: #FFFFFF;
+
+// helper "functions"
+@import 'mixins';
+
+// imported from _sass folder
+@import
+        'base',
+        'sticky-footer-navbar'
+;
