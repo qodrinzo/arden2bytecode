@@ -1,0 +1,24 @@
+/* dont edit this selector. these settings should keep the logo always fitting by default.  */
+.navbar-brand>img {
+  max-height: 100%;
+  height: 100%;
+  max-width: 100%;
+  width: auto;
+  margin: 0 auto;
+  -o-object-fit: contain; /* Opera Support */
+  object-fit: contain;
+}
+
+
+
+/* Use this to resize or move your logo up and down */
+.navbar-brand {
+  margin-top: 0px; /* adjust to move logo up/down */
+  height: $navbar-height;
+  padding: 7px 0; /* adjust to make logo larger */
+}
+
+.container-fluid {
+  padding-left: $navbar-padding;
+  padding-right: $navbar-padding;
+}
