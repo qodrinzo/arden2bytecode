@@ -1,0 +1,12 @@
+[submodule "htdocs/includes/php-markdown"]
+	path = htdocs/includes/php-markdown
+	url = http://github.com/wolfie/php-markdown.git
+[submodule "htdocs/includes/textile"]
+	path = htdocs/includes/textile
+	url = http://github.com/netcarver/textile.git
+[submodule "htdocs/wiki-files"]
+	path = htdocs/wiki-files
+	url = http://github.com/PLRI/arden2bytecode.wiki.git
+[submodule "htdocs/eclipse"]
+	path = htdocs/eclipse
+	url = http://github.com/PLRI/ardensyntax-eclipse-plugin-update-site.git
