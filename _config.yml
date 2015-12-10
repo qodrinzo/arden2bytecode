@@ -17,9 +17,9 @@ collections:
     permalink: /:collection/:path/
 
 # urls
-baseurl: /arden2bytecode-homepage # the subpath of your site, e.g. /blog
-url: https://tetr4.github.io # the base hostname & protocol for your site
-organization: https://github.com/PLRI
+# leave the following two fields blank to determine url from github metadata
+#url: https://plri.github.io
+#baseurl: /arden2bytecode # the subpath of your site, e.g. /blog
 
 compiler:
   repo: https://github.com/PLRI/arden2bytecode
@@ -31,8 +31,8 @@ plugin:
   git: git://github.com/PLRI/ardensyntax-eclipse-plugin.git
   api: https://api.github.com/repos/PLRI/ardensyntax-eclipse-plugin
   update_site:
-    url: https://tetr4.github.io/arden2bytecode-homepage/arden4eclipse/update # TODO concatenate url + baseurl + '/arden4eclipse/update-site'
-    # url: http://arden2bytecode.sf.net/eclipse/update/
+    # leave the following field blank to determine url from github metadata
+    #url: http://arden2bytecode.sf.net/eclipse/update/
     repo: https://github.com/PLRI/ardensyntax-eclipse-plugin-update-site
     git: git://github.com/PLRI/ardensyntax-eclipse-plugin-update-site.git
 

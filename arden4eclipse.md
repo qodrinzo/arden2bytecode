@@ -2,6 +2,7 @@
 title: Arden4Eclipse plugin
 nav_title: Arden4Eclipse
 ---
+{% include get_url %}
 
 There is an Arden Syntax Editor made with [xText](https://www.eclipse.org/Xtext/) available as Eclipse plugin.
 
@@ -21,13 +22,13 @@ To install via Eclipse Marketplace, follow these steps:
 
 #### via Eclipse Update Site
 
-To install via the [Arden2ByteCode Update Site]({{ site.plugin.update_site.url }}), follow these steps:
+To install via the [Arden2ByteCode Update Site]({{ updateurl }}), follow these steps:
 
 1.  Start a recent version of the Eclipse IDE.  
     If you don't have Eclipse yet, you may download the Eclipse IDE for Java Developers at <https://www.eclipse.org/downloads/>.
 2.  Go to **Help -> Install new Software...** in the Eclipse menu.
 3.  Uncheck the **Contact all update sites during install to find required software** checkbox (this is useful to speed up the installation process).
-4.  Add [{{ site.plugin.update_site.url }}]({{ site.plugin.update_site.url }}) as a Software Site.  
+4.  Add [{{ updateurl }}]({{ updateurl }}) as a Software Site.  
     The name you enter for that site does not matter.  
     Note that the loading of the Software Site content may take a while as the Eclipse servers are slow. During this time, you will see a "Pending..." notice.
 5.  Uncheck the **Group items by category** checkbox.

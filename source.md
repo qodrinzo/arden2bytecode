@@ -2,6 +2,7 @@
 title: Arden2ByteCode Source Code
 nav_title: Source Code
 ---
+{% include get_url %}
 
 The source code of Arden2ByteCode is made freely available under the terms of the GNU [General Public License](http://www.gnu.org/copyleft/gpl.html).
 
@@ -23,7 +24,7 @@ To clone, type:
 
 The documentation for developers is contained in the source code itself and in various README.md [Markdown](https://en.wikipedia.org/wiki/Markdown) files in the according GitHub repositories.
 
-A list of all documentation files is available [here]({{ site.baseurl }}/docs/developer-documentation).
+A list of all documentation files is available [here]({{ baseurl }}/docs/developer-documentation).
 
 ### History
 

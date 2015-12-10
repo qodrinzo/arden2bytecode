@@ -1,7 +1,7 @@
 ---
 title: Update-Site
 permalink: /arden4eclipse/update/
-paths: []
 ---
+{% include get_url %}
 
-Please follow these [instructions]({{site.baseurl}}/arden4eclipse) on how to install the eclipse plugin.
+Please follow these [instructions]({{ baseurl }}/arden4eclipse) on how to install the eclipse plugin.
