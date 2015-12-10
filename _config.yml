@@ -14,6 +14,7 @@ permalink: pretty
 collections:
   docs:
     output: true
+    permalink: /:collection/:path/
 
 # urls
 baseurl: /arden2bytecode-homepage # the subpath of your site, e.g. /blog
@@ -40,7 +41,7 @@ homepage:
   git: git://github.com/PLRI/arden2bytecode-homepage.git
 
 # Build settings
-exclude: ['README.md', 'Gemfile.lock', 'Gemfile', 'arden4eclipse/README.md', 'arden4eclipse/build.xml', 'arden4eclipse/update/.htaccess']
+exclude: ['README.md', 'makedocs', 'Gemfile.lock', 'Gemfile', 'arden4eclipse/README.md', 'arden4eclipse/build.xml']
 markdown: kramdown
 gems:
   - jekyll-redirect-from # allowed on github pages

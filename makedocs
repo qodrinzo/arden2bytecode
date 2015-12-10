@@ -43,10 +43,10 @@ import glob
 
 def replace_links_callback(match):
     title = match.group(1)
-    return '[%s](%s)' % (title, title_to_filename(title))
+    return '[%s](%s)' % (title, title_to_filepath(title))
 
-def title_to_filename(title):
-    return title.replace(' ', '-').lower() + '.html'
+def title_to_filepath(title):
+    return '../' + title.replace(' ', '-').lower() + '/'
 
 pattern = re.compile('\[\[([^\]]+)\]\]') # [[...]]
 for filename in glob.glob('$OUTDIR/*.md'):

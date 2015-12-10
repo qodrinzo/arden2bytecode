@@ -23,9 +23,7 @@ To clone, type:
 
 The documentation for developers is contained in the source code itself and in various README.md [Markdown](https://en.wikipedia.org/wiki/Markdown) files in the according GitHub repositories.
 
-{% comment %}
-The Markdown documentation is available in gathered form [on this website]({{ site.baseurl }}/developerdocs).
-{% endcomment %}
+A list of all documentation files is available [here]({{ site.baseurl }}/docs/developer-documentation).
 
 ### History
 
@@ -37,9 +35,9 @@ In 2010, I forked the repository and added a command line interface. Still, work
 
 Other repositories associated with Arden2ByteCode include:
 
-*   The Eclipse plugin repository: [{{ site.plugin.git }}]({{ site.plugin.git }})  
+*   [The Eclipse plugin repository]({{ site.plugin.repo }})  
     Clone with: `git clone {{ site.plugin.git }}`
-*   A repository containing the Eclipse update site with binaries for the Arden Syntax Editor feature: [{{ site.plugin.update_site.git }}]({{ site.plugin.update_site.git }})  
+*   [A repository containing the Eclipse update site with binaries for the Arden Syntax Editor feature]({{ site.plugin.update_site.repo }})  
     Clone with: `git clone {{ site.plugin.update_site.git }}`
-*   The repository of this website you're looking at: [{{ site.homepage.git }}]({{ site.homepage.git }})  
+*   [The repository of this website you're looking at]({{ site.homepage.repo }})  
     Clone with: `git clone {{ site.homepage.git }}`

@@ -9,4 +9,4 @@ An example of how to pass arguments to a MLM and process them is given here:
 
 An explanation of how to pass the command line parameters with the **-a** flag and properly escape them is given in the according 
 [README.md](https://github.com/PLRI/example-mlms/blob/master/passing%20arguments/README.md).  
-Concerning how to use the **-a** flag, you may also look at the [Arden2ByteCode Command Line Reference](arden2bytecode-command-line-reference.html).
+Concerning how to use the **-a** flag, you may also look at the [Arden2ByteCode Command Line Reference](../arden2bytecode-command-line-reference/).

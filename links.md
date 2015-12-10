@@ -5,8 +5,8 @@ nav_title: Links
 
 ### General Information about Arden Syntax
 
-*   [HL7 Wiki Page about Arden Syntax](https://wiki.hl7.org/index.php?title=Product_Arden)
-*   [HL7 Arden Syntax workgroup](https://www.hl7.org/special/Committees/arden/index.cfm)
+*   [HL7 Wiki Page about Arden Syntax](http://wiki.hl7.org/index.php?title=Product_Arden)
+*   [HL7 Arden Syntax workgroup](http://www.hl7.org/special/Committees/arden/index.cfm)
 
 ### Work related to Arden2ByteCode
 

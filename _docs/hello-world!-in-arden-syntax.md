@@ -61,4 +61,4 @@ The output should be:
 	"Hello world!"
 	There was no return value.
 
-Now that you have a starting point for working with Arden Syntax, you can experiment with the Arden Syntax ([Introduction to Arden Syntax](introduction-to-arden-syntax.html)) or try out different command line parameters ([Arden2ByteCode command line reference](arden2bytecode-command-line-reference.html)).
+Now that you have a starting point for working with Arden Syntax, you can experiment with the Arden Syntax ([Introduction to Arden Syntax](../introduction-to-arden-syntax/)) or try out different command line parameters ([Arden2ByteCode command line reference](../arden2bytecode-command-line-reference/)).

@@ -3,7 +3,7 @@ title: Arden4Eclipse plugin
 nav_title: Arden4Eclipse
 ---
 
-There is an Arden Syntax Editor made with [xText](https://www.xtext.org/) available as Eclipse plugin.
+There is an Arden Syntax Editor made with [xText](https://www.eclipse.org/Xtext/) available as Eclipse plugin.
 
 ### Installation Instructions
 
