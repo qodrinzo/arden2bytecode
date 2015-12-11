@@ -2,6 +2,7 @@
 # GENERATED - DO NOT EDIT
 title: Installing the Arden Syntax Editor Eclipse plugin
 ---
+{% include get_url %}
 There is an Eclipse plugin including Arden2ByteCode available that simplifies editing and starting MLM files.
 
 Two general ways of installing that plugin are available:

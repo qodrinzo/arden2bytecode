@@ -2,6 +2,7 @@
 # GENERATED - DO NOT EDIT
 title: Arden2ByteCode Command Line Reference
 ---
+{% include get_url %}
 ### Synopsis
 `arden2bytecode [OPTIONS] [FILE] [FILE...]`
 

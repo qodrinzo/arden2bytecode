@@ -2,6 +2,7 @@
 # GENERATED - DO NOT EDIT
 title: Using the evoke slot
 ---
+{% include get_url %}
 As of September 2012, it is possible to declare events in the evoke slot of a MLM.
 
 An example would be:

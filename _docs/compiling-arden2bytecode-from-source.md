@@ -2,6 +2,7 @@
 # GENERATED - DO NOT EDIT
 title: Compiling Arden2ByteCode from source
 ---
+{% include get_url %}
 ## Getting the source
 To use [Arden2ByteCode](https://github.com/PLRI/arden2bytecode), first download or clone the source.
 
@@ -42,10 +43,10 @@ Having built the source, you can now launch the Arden2ByteCode compiler.
    E.g. `java arden.MainClass -r ../src/arden/tests/x2.1.mlm`
 
 ### Alternatively: Launching the .jar file
-You can also launch the .jar binary package as explained in [Getting started with Arden2ByteCode](../getting-started-with-arden2bytecode/).
+You can also launch the .jar binary package as explained in [Getting started with Arden2ByteCode]({{ baseurl }}/docs/getting-started-with-arden2bytecode/).
 
 1. Switch to `dist/` subdirectory: `cd dist`
 1. Enter `arden2bytecode -r ../src/arden/tests/x2.5.mlm` on the command prompt to run `x2.5.mlm`.  
    On Linux, type `./arden2bytecode -r ../src/arden/tests/x2.5.mlm`.
 
-More information about the command line options are given in [Arden2ByteCode Command Line Reference](../arden2bytecode-command-line-reference/).
+More information about the command line options are given in [Arden2ByteCode Command Line Reference]({{ baseurl }}/docs/arden2bytecode-command-line-reference/).

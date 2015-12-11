@@ -9,7 +9,8 @@ set -e #exit on error
 WIKI_REPO_URL=https://github.com/PLRI/arden2bytecode.wiki.git
 OUTDIR=_docs
 FRONTMATTER_START="---\n# GENERATED - DO NOT EDIT"
-FRONTMATTER_END="---"
+FRONTMATTER_END="---\n{% include get_url %}"
+BASEDIR="{{ baseurl }}/docs"
 
 # Download the files
 echo "Downloading..."
@@ -46,7 +47,7 @@ def replace_links_callback(match):
     return '[%s](%s)' % (title, title_to_filepath(title))
 
 def title_to_filepath(title):
-    return '../' + title.replace(' ', '-').lower() + '/'
+    return '$BASEDIR' + '/' + title.replace(' ', '-').lower() + '/'
 
 pattern = re.compile('\[\[([^\]]+)\]\]') # [[...]]
 for filename in glob.glob('$OUTDIR/*.md'):

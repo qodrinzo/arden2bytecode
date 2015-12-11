@@ -2,6 +2,7 @@
 # GENERATED - DO NOT EDIT
 title: Using the Arden Syntax Editor Eclipse plugin
 ---
+{% include get_url %}
 ## Overview
 
 Using the Arden Syntax Editor Eclipse plugin is pretty much straightforward.  
