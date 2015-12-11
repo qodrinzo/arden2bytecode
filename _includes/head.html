@@ -11,15 +11,15 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
   <script src="{{ baseurl }}/js/bootstrap.min.js"></script>
-  <script src="{{ baseurl }}/js/bootstrap-hover-dropdown.min.js""></script>
+  <script src="{{ baseurl }}/js/bootstrap-hover-dropdown.min.js"></script>
   <link rel="stylesheet" type="text/css" href="{{ baseurl }}/css/style.css">
 
 {% for stylesheet in page.custom_css %}
-  <link rel="stylesheet" href="/css/{{ stylesheet }} " media="screen" type="text/css">
+  <link rel="stylesheet" href="/css/{{ stylesheet }}" media="screen" type="text/css">
 {% endfor %}
 
 {% for js in page.custom_js %}
-  <script type="text/javascript" src="{{ js }} "></script>
+  <script type="text/javascript" src="{{ js }}"></script>
 {% endfor %}
 
 </head>
