@@ -1,6 +1,7 @@
 ---
 title: Arden4Eclipse plugin
 nav_title: Arden4Eclipse
+nav_order: 2
 ---
 {% include get_url %}
 

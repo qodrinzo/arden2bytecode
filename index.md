@@ -1,6 +1,7 @@
 ---
 title: About Arden2ByteCode
 nav_title: About
+nav_order: 1
 redirect_from: /about/
 permalink: /
 ---

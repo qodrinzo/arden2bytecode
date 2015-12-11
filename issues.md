@@ -1,8 +1,8 @@
 ---
 title: Bug reports
 nav_title: Bug reports
+nav_order: 6
 custom_js:
- - https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js
  - ../js/showdown.min.js
 ---
 

@@ -1,8 +1,7 @@
 ---
 title: Arden2ByteCode Downloads
 nav_title: Downloads
-custom_js:
- - https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js
+nav_order: 3
 ---
 {% include get_url %}
 

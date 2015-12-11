@@ -6,6 +6,7 @@ defaults:
       path: "" # everything
     values:
       layout: "default"
+      nav_order: 999 # add pages without nav_order to the end of the navbar
 
 title: Arden2ByteCode # Arden Syntax Compiler
 permalink: pretty

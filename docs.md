@@ -1,6 +1,7 @@
 ---
 title: Documentation
 nav_title: Documentation
+nav_order: 4
 nav_collection: docs
 ---
 {% include get_url %}

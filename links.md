@@ -1,6 +1,7 @@
 ---
 title: Links and References
 nav_title: Links
+nav_order: 5
 ---
 
 ### General Information about Arden Syntax
