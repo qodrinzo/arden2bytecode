@@ -1,15 +1,16 @@
 # For technical reasons, this file is *NOT* reloaded automatically when you use
 # 'jekyll serve'. If you change this file, please restart the server process.
 
+title: Arden2ByteCode # Arden Syntax Compiler
+permalink: pretty
+
+# default frontmatter values
 defaults:
   - scope:
       path: "" # everything
     values:
       layout: "default"
       nav_order: 999 # add pages without nav_order to the end of the navbar
-
-title: Arden2ByteCode # Arden Syntax Compiler
-permalink: pretty
 
 # collections
 collections:
@@ -18,7 +19,7 @@ collections:
     permalink: /:collection/:path/
 
 # urls
-# leave the following two fields blank to determine url from github metadata
+# leave the following two fields blank to determine the urls from github metadata
 #url: https://plri.github.io
 #baseurl: /arden2bytecode # the subpath of your site, e.g. /blog
 
@@ -32,7 +33,7 @@ plugin:
   git: git://github.com/PLRI/ardensyntax-eclipse-plugin.git
   api: https://api.github.com/repos/PLRI/ardensyntax-eclipse-plugin
   update_site:
-    # leave the following field blank to determine url from github metadata
+    # leave the following field blank to determine the url from github metadata
     #url: http://arden2bytecode.sf.net/eclipse/update/
     repo: https://github.com/PLRI/ardensyntax-eclipse-plugin-update-site
     git: git://github.com/PLRI/ardensyntax-eclipse-plugin-update-site.git

@@ -24,6 +24,8 @@ Usage:
     {{ site.url | append:site.baseurl }}
   {% elsif site.github.url %}
     {{ site.github.url }}
+  {% elsif baseurl %}
+    {{ baseurl }}
   {% endif %}
 {% endcapture %}
 {% capture fullurl %}{{ fullurl | strip_newlines | remove:' ' }}{% endcapture %}
