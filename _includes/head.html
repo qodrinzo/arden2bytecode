@@ -15,7 +15,7 @@
   <link rel="stylesheet" type="text/css" href="{{ baseurl }}/css/style.css">
 
 {% for stylesheet in page.custom_css %}
-  <link rel="stylesheet" href="{{baseurl}}/css/{{ stylesheet.file }}" media="screen" type="text/css">
+  <link rel="stylesheet" href="{{baseurl}}/css/{{ stylesheet.file }}" type="text/css">
 {% endfor %}
 
 {% for js in page.custom_js %}

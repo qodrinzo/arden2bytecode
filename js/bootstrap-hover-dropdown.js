@@ -56,7 +56,7 @@
                 openDropdown(event);
             }, function () {
                 // clear timer for hover event
-                window.clearTimeout(timeoutHover)
+                window.clearTimeout(timeoutHover);
                 timeout = window.setTimeout(function () {
                     $this.attr('aria-expanded', 'false');
                     $parent.removeClass('open');
