@@ -2,7 +2,7 @@
 ---
 
 /*** bootstrap ***/
-$screen-sm: 1035px; // collapse navbar sooner -> prevent creation a new row
+$grid-float-breakpoint: 1035px; // collapse navbar sooner -> prevent creation a new row
 $navbar-height: 50px;
 @import 'bootstrap';
 
