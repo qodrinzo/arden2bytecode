@@ -1,0 +1,5 @@
+{% for js in page.custom_js %}
+  {% if js.foot %}
+  <script type="text/javascript" src="{{ baseurl }}/js/{{ js.file }}"></script>
+  {% endif %}
+{% endfor %}

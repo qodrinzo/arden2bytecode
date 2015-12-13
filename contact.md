@@ -2,8 +2,6 @@
 title: Contact the Arden2ByteCode Team
 nav_title: Contact
 nav_order: 7
-custom_js:
- - https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js
 ---
 
 ![TU Braunschweig Logo](https://www.tu-braunschweig.de/icons/tubsdesign/siegel_rot.jpg)

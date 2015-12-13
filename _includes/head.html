@@ -15,11 +15,13 @@
   <link rel="stylesheet" type="text/css" href="{{ baseurl }}/css/style.css">
 
 {% for stylesheet in page.custom_css %}
-  <link rel="stylesheet" href="/css/{{ stylesheet }}" media="screen" type="text/css">
+  <link rel="stylesheet" href="{{baseurl}}/css/{{ stylesheet.file }}" media="screen" type="text/css">
 {% endfor %}
 
 {% for js in page.custom_js %}
-  <script type="text/javascript" src="{{ js }}"></script>
+  {% unless js.foot %}
+  <script type="text/javascript" src="{{ baseurl }}/js/{{ js.file }}"></script>
+  {% endunless %}
 {% endfor %}
 
 </head>
