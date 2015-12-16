@@ -1,45 +1,30 @@
 ---
-title: Arden2ByteCode Source Code
+title: Source Code
 nav_title: Source Code
-nav_order: 6
+nav_order: 5
 ---
 {% include get_url %}
 
-The source code of Arden2ByteCode is made freely available under the terms of the GNU [General Public License](http://www.gnu.org/copyleft/gpl.html).
+The source code of Arden2ByteCode is made freely available under the terms of the GNU [General Public License](http://www.gnu.org/copyleft/gpl.html).  
 
-### View Source Code with Web Browser
+## Repositories
+Arden2ByteCode, Arden4Eclipse and associated projects are hosted at [GitHub](https://github.com/). To have a look at the source code with your browser, visit the projects page on GitHub:
 
-The source code of Arden2ByteCode ist hosted at GitHub: [{{ site.compiler.repo }}]({{ site.compiler.repo }})
++ [The Arden2ByteCode repository]({{ site.compiler.repo }})  
++ [The Arden4Eclipse repository]({{ site.plugin.repo }})  
++ [A repository containing the Eclipse update site with binaries for Arden4Eclipse]({{ site.plugin.update_site.repo }})  
++ [The GitHub Pages branch of this website you're looking at]({{ site.homepage_new.repo }})  
++ [A repository with example MLMs]({{ site.examples.repo }})  
 
-If you want to contribute, sign up to GitHub and fork the project or, alternatively, ask me [(hflicka@GitHub)](https://github.com/hflicka) to add you to the project.
-
-### Public Git Repository
-
-A public read-only version of the Arden2ByteCode Git repository is located at: [{{ site.compiler.git }}]({{ site.compiler.git }}).
-
-To clone, type:
-
-`git clone {{ site.compiler.git }}`
-
-### Developer Documentation
-
+## Developer Documentation
 The documentation for developers is contained in the source code itself and in various README.md [Markdown](https://en.wikipedia.org/wiki/Markdown) files in the according GitHub repositories.
 
 A list of all documentation files is available [here]({{ baseurl }}/docs/developer-documentation).
 
-### History
+## Contributing
+If you want to contribute, [sign up to GitHub](https://github.com/join) and [fork](https://help.github.com/articles/fork-a-repo/) a project, submit your issues, ideas or proposals via the [Arden2ByteCode issue tracker]({{ site.compiler.repo }}/issues/) and [Arden4Eclipse issue tracker]({{ site.plugin.repo }}/issues/), or [contact us]({{ baseurl }}/contact).
 
-The programming work was initiated in 2010 by Daniel Grunwald as it can be seen on [GitHub](https://github.com/dgrunwald/arden2bytecode).  
-Daniel did the major work, namely the bytecode compiler and runtime environment itself.  
-In 2010, I forked the repository and added a command line interface. Still, work has to be done until Arden2ByteCode is production ready.
-
-### Auxiliary Repositories
-
-Other repositories associated with Arden2ByteCode include:
-
-*   [The Eclipse plugin repository]({{ site.plugin.repo }})  
-    Clone with: `git clone {{ site.plugin.git }}`
-*   [A repository containing the Eclipse update site with binaries for the Arden Syntax Editor feature]({{ site.plugin.update_site.repo }})  
-    Clone with: `git clone {{ site.plugin.update_site.git }}`
-*   [The repository of this website you're looking at]({{ site.homepage.repo }})  
-    Clone with: `git clone {{ site.homepage.git }}`
+## History
+The programming work was initiated in 2010 by [Daniel Grunwald](https://github.com/dgrunwald) as it can be seen on [GitHub](https://github.com/dgrunwald/arden2bytecode). He did the major work, namely the bytecode compiler and runtime environment itself.  
+In 2010 [Hannes Flicka](https://github.com/hflicka) resumed work on the compiler and added a command line interface. He also created a basic [Eclipse plugin]({{ site.plugin.repo }}) and [a website]({{ site.homepage.repo }}), hosted on [Sourceforge](http://arden2bytecode.sourceforge.net/).  
+In 2015 [Mike Klimek](https://github.com/Tetr4) resumed work on the eclipse plugin by adding new features. He gave the website an new look and ported it to [Github Pages]({{ site.homepage-new.repo }}).

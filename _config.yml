@@ -39,8 +39,20 @@ plugin:
     git: git://github.com/PLRI/ardensyntax-eclipse-plugin-update-site.git
 
 homepage:
+  url: http://arden2bytecode.sf.net
   repo: https://github.com/PLRI/arden2bytecode-homepage
   git: git://github.com/PLRI/arden2bytecode-homepage.git
+
+homepage_new:
+  url: https://plri.github.io/arden2bytecode
+  repo: https://github.com/PLRI/arden2bytecode/tree/gh-pages
+  git: --recursive -b gh-pages https://github.com/PLRI/arden2bytecode.git
+
+examples:
+  repo: https://github.com/PLRI/example-mlms
+  git: https://github.com/PLRI/example-mlms.git
+
+
 
 # Build settings
 exclude: ['README.md', 'makedocs', 'Gemfile.lock', 'Gemfile', 'arden4eclipse/README.md', 'arden4eclipse/build.xml']
