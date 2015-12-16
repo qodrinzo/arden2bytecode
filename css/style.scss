@@ -2,8 +2,9 @@
 ---
 
 /*** bootstrap ***/
-$grid-float-breakpoint: 1035px; // collapse navbar sooner -> prevent creation a new row
+$grid-float-breakpoint: 1099px; // collapse navbar sooner -> prevent creation a new row
 $navbar-height: 50px;
+//$line-height-base: 1.78571428571429; // 25px / $font-size-base
 @import 'bootstrap';
 
 
