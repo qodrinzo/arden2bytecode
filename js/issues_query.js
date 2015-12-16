@@ -8,7 +8,7 @@ function escapeHtml(str) {
 }
 
 function formatIssue(issue) {
-	return '<li class="issue"><span class="issuetitle">'
+	return '<li class="issue list-group-item"><span class="issuetitle">'
 				+ '<a href="' + issue.html_url
 				+ '">' + escapeHtml(issue.title)
 				+ '</a>'
@@ -17,18 +17,28 @@ function formatIssue(issue) {
 				+ '<div class="issuebody">' + converter.makeHtml(issue.body) + '</div></li>';
 }
 
-function queryIssues(issuesurl, divselector, clear) {
-	clear = typeof clear !== 'undefined' ? clear : true;
+function queryIssues(issuesurl, divselector, countselector) {
     $.ajax({
 		url: issuesurl,
-		dataType: 'jsonp'
+		dataType: 'jsonp',
 	}).done(function(result) {
-		if (clear) {
-			$(divselector).empty();
-		}
-		$.each(result.data, function(index, issue) {
-			$(divselector).append(formatIssue(issue));
-		});
+        $(divselector).empty();
+        $(countselector).empty();
+
+        if(result.meta.status === 403) {
+            $(divselector).append('<li class="alert alert-danger list-group-item" role="alert">Too many requests</li>');
+            return;
+        }
+
+        $(countselector).append(result.data.length);
+        if(result.data.length !== 0) {
+            $.each(result.data, function(index, issue) {
+                $(divselector).append(formatIssue(issue));
+            });
+        } else {
+            $(divselector).append('<li class="list-group-item">None</li>');
+        }
+
 		if (result.meta.Link) { // paging
 			var next = result.meta.Link.filter(function(obj){return obj[1].rel==="next";});
 			if (next.length) {
