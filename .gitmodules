@@ -1,3 +1,0 @@
-[submodule "update-site"]
-	path = arden4eclipse
-	url = https://github.com/PLRI/ardensyntax-eclipse-plugin-update-site.git

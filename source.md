@@ -12,8 +12,8 @@ Arden2ByteCode, Arden4Eclipse and associated projects are hosted at [GitHub](htt
 
 + [The Arden2ByteCode repository]({{ site.compiler.repo }})  
 + [The Arden4Eclipse repository]({{ site.plugin.repo }})  
-+ [A repository containing the Eclipse update site with binaries for Arden4Eclipse]({{ site.plugin.update_site.repo }})  
-+ [The GitHub Pages branch of this website you're looking at]({{ site.homepage_new.repo }})  
++ [A GitHub Pages branch of this website you're looking at]({{ site.homepage_new.repo }})  
++ [A GitHub Pages branch containing the Eclipse update site with binaries for Arden4Eclipse]({{ site.plugin.update_site.repo }})
 + [A repository with example MLMs]({{ site.examples.repo }})  
 
 ## Developer Documentation
@@ -27,4 +27,4 @@ If you want to contribute, [sign up to GitHub](https://github.com/join) and [for
 ## History
 The programming work was initiated in 2010 by [Daniel Grunwald](https://github.com/dgrunwald) as it can be seen on [GitHub](https://github.com/dgrunwald/arden2bytecode). He did the major work, namely the bytecode compiler and runtime environment itself.  
 In 2010 [Hannes Flicka](https://github.com/hflicka) resumed work on the compiler and added a command line interface. He also created a basic [Eclipse plugin]({{ site.plugin.repo }}) and [a website]({{ site.homepage.repo }}), hosted on [Sourceforge](http://arden2bytecode.sourceforge.net/).  
-In 2015 [Mike Klimek](https://github.com/Tetr4) resumed work on the eclipse plugin by adding new features. He gave the website an new look and ported it to [Github Pages]({{ site.homepage-new.repo }}).
+In 2015 [Mike Klimek](https://github.com/Tetr4) resumed work on the eclipse plugin by adding new features. He gave the website an new look and ported it to [Github Pages]({{ site.homepage_new.repo }}).
