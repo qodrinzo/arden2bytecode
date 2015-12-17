@@ -1,0 +1,56 @@
+# For technical reasons, this file is *NOT* reloaded automatically when you use
+# 'jekyll serve'. If you change this file, please restart the server process.
+
+title: Arden2ByteCode # Arden Syntax Compiler
+permalink: pretty
+
+# default frontmatter values
+defaults:
+  - scope:
+      path: "" # everything
+    values:
+      layout: "default"
+      nav_order: 999 # add pages without nav_order to the end of the navbar
+
+# collections
+collections:
+  docs:
+    output: true
+    permalink: /:collection/:path/
+
+# urls
+# leave the following two fields blank to determine the urls from github metadata
+#url: https://plri.github.io
+#baseurl: /arden2bytecode # the subpath of your site, e.g. /blog
+
+compiler:
+  repo: https://github.com/PLRI/arden2bytecode
+  api: https://api.github.com/repos/PLRI/arden2bytecode
+  git: git://github.com/PLRI/arden2bytecode.git
+
+plugin:
+  repo: https://github.com/PLRI/ardensyntax-eclipse-plugin
+  api: https://api.github.com/repos/PLRI/ardensyntax-eclipse-plugin
+  update_site:
+    # leave the following field blank to determine the url from github metadata (url + '/arden4eclipse/update/')
+    url: https://plri.github.io/ardensyntax-eclipse-plugin/update/
+    repo: https://github.com/PLRI/ardensyntax-eclipse-plugin/tree/gh-pages
+
+homepage:
+  url: http://arden2bytecode.sf.net
+  repo: https://github.com/PLRI/arden2bytecode-homepage
+
+homepage_new:
+  url: https://plri.github.io/arden2bytecode
+  repo: https://github.com/PLRI/arden2bytecode/tree/gh-pages
+
+examples:
+  repo: https://github.com/PLRI/example-mlms
+
+
+
+# Build settings
+exclude: ['README.md', 'makedocs', 'Gemfile.lock', 'Gemfile']
+markdown: kramdown
+gems:
+  - jekyll-redirect-from # allowed on github pages

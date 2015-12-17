@@ -1,0 +1,39 @@
+{% comment %}
+Use this to create the variables 'baseurl' and 'fullurl'.
+They are taken from github metadata if not defined in _config.yml and metadata is available.
+These are either
+- site.baseurl and site.url+site.baseurl
+- repository name (e.g. '/arden2bytecode') and full github url (e.g. 'http://plri.github.io/arden2bytecode')
+- blank
+
+Usage:
+1. Include this function: {% include get_url %}
+2. Access the url: {{ baseurl }} or {{ fullurl }}
+
+{% endcomment %}
+{% capture baseurl %}
+  {% if site.baseurl != "" %}
+    {{ site.baseurl }}
+  {% elsif site.github.repository_name %}
+    {{ site.github.repository_name | prepend:'/' }}
+  {% endif %}
+{% endcapture %}
+{% capture baseurl %}{{ baseurl | strip_newlines | remove:' ' }}{% endcapture %}
+{% capture fullurl %}
+  {% if site.url != :empty %}
+    {{ site.url | append:site.baseurl }}
+  {% elsif site.github.url %}
+    {{ site.github.url }}
+  {% elsif baseurl %}
+    {{ baseurl }}
+  {% endif %}
+{% endcapture %}
+{% capture fullurl %}{{ fullurl | strip_newlines | remove:' ' }}{% endcapture %}
+{% capture updateurl %}
+  {% if site.plugin.update_site.url %}
+    {{ site.plugin.update_site.url }}
+  {% elsif fullurl %}
+    {{ fullurl | append:'/arden4eclipse/update/' }}
+  {% endif %}
+{% endcapture %}
+{% capture updateurl %}{{ updateurl | strip_newlines | remove:' ' }}{% endcapture %}
