@@ -6,7 +6,6 @@ custom_js:
   - {file: lightbox.min.js, foot: true}
   - {file: lightbox_options.js, foot: true}
   - {file: clipboard.min.js, foot: true}
-  - {file: clipboard_tooltip.js, foot: true}
   - {file: clipboard_button.js, foot: true}
 custom_css:
   - {file: lightbox.css}
@@ -53,7 +52,7 @@ If you don't have Eclipse yet, you may download the Eclipse IDE for Java Develop
 You can choose between two ways of installing the Editor:
 
 + via Eclipse Marketplace (**recommended**)
-    0.  Drag and drop the following Button onto a running Eclipse window to install the Arden Syntax Tools: [![Install Button](https://marketplace.eclipse.org/misc/installbutton.png)](https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=209263 "Drag and drop into a running Eclipse workspace to install Arden Syntax Tools")
+    0.  Drag and drop the following Button onto a running Eclipse window to install the Arden Syntax Tools: [![Install Button](https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/components/drag-drop/installbutton.png)](https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=209263 "Drag and drop into a running Eclipse workspace to install Arden Syntax Tools")
     0. Follow the installation procedure. When asked if you want to install unsigned software, click OK.
 + via Eclipse Update Site (more complicated, but faster)
     0.  Go to *Help* &rArr; *Install new Software...* in the Eclipse menu.
