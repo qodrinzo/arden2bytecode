@@ -54,3 +54,5 @@ exclude: ['README.md', 'makedocs', 'Gemfile.lock', 'Gemfile']
 markdown: kramdown
 gems:
   - jekyll-redirect-from # allowed on github pages
+compress_html:
+  blanklines: true
