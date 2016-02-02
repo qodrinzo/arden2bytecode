@@ -1,0 +1,25 @@
+maintenance:
+    title: Test;;
+    mlmname: test_mlm;;
+    arden: Version 2.5;;
+    version: 1.00;;
+    institution: PLRI;;
+    author: Mike;;
+    specialist: Mike;;
+    date: 2016-01-31;;
+    validation: testing;;
+library:
+    purpose: Template for unit tests;;
+    explanation: This MLM is a template for several unit tests.;;
+    keywords: test; testing; unit tests; template;;
+    citations: ;;
+    links: ;;
+knowledge:
+    type: data_driven;;
+    data: ;;
+    priority: 50;;
+    evoke: ;;
+    logic: CONCLUDE TRUE; ;;
+    action: ;;
+    urgency: 50;;
+end:
