@@ -59,6 +59,7 @@ import arden.compiler.node.PUrgencySlot;
 import arden.compiler.node.PUrgencyVal;
 import arden.compiler.node.Start;
 import arden.compiler.node.TIdentifier;
+import arden.compiler.node.TNumberLiteral;
 import arden.compiler.parser.Parser;
 import arden.compiler.parser.ParserException;
 import arden.runtime.ArdenValue;
@@ -304,8 +305,11 @@ public final class Compiler {
 			// {num} P.number
 			// | {id} identifier;
 			if (val instanceof ANumUrgencyVal) {
-				urgency = ParseHelpers
-						.getLiteralDoubleValue(((ANumUrgencyVal) val).getNumberLiteral());
+				TNumberLiteral literal = ((ANumUrgencyVal) val).getNumberLiteral();
+				urgency = ParseHelpers.getLiteralDoubleValue(literal);
+				if(urgency < 1 || urgency > 99) {
+					throw new RuntimeCompilerException(literal, "Urgency must be a number from 1 to 99");
+				}
 				context.writer.loadDoubleConstant(urgency);
 			} else if (val instanceof AIdUrgencyVal) {
 				TIdentifier ident = ((AIdUrgencyVal) val).getIdentifier();

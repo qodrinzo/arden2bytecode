@@ -30,7 +30,30 @@ package arden.compiler;
 import java.util.Date;
 
 import arden.compiler.analysis.DepthFirstAdapter;
-import arden.compiler.node.*;
+import arden.compiler.node.AAuthorSlot;
+import arden.compiler.node.ACitationsSlot;
+import arden.compiler.node.ADateMlmDate;
+import arden.compiler.node.ADateSlot;
+import arden.compiler.node.ADtimeMlmDate;
+import arden.compiler.node.AEmptyArdenVersionSlot;
+import arden.compiler.node.AEmptyPrioritySlot;
+import arden.compiler.node.AExpValidationCode;
+import arden.compiler.node.AExplanationSlot;
+import arden.compiler.node.AFnameMlmnameSlot;
+import arden.compiler.node.AInstitutionSlot;
+import arden.compiler.node.AKeywordsSlot;
+import arden.compiler.node.ALinksSlot;
+import arden.compiler.node.AMnameMlmnameSlot;
+import arden.compiler.node.APriPrioritySlot;
+import arden.compiler.node.AProdValidationCode;
+import arden.compiler.node.APurposeSlot;
+import arden.compiler.node.AResValidationCode;
+import arden.compiler.node.ASpecialistSlot;
+import arden.compiler.node.ATestValidationCode;
+import arden.compiler.node.ATitleSlot;
+import arden.compiler.node.AVersionSlot;
+import arden.compiler.node.AVrsnArdenVersionSlot;
+import arden.compiler.node.TNumberLiteral;
 import arden.runtime.LibraryMetadata;
 import arden.runtime.MaintenanceMetadata;
 import arden.runtime.RuntimeHelpers;
@@ -209,6 +232,10 @@ final class MetadataCompiler extends DepthFirstAdapter {
 
 	@Override
 	public void caseAPriPrioritySlot(APriPrioritySlot node) {
-		priority = ParseHelpers.getLiteralDoubleValue(node.getNumberLiteral());
+		TNumberLiteral literal = node.getNumberLiteral();
+		priority = ParseHelpers.getLiteralDoubleValue(literal);
+		if(priority < 1 || priority > 99) {
+			throw new RuntimeCompilerException(literal, "Priority must be a number from 1 to 99");
+		}
 	}
 }
