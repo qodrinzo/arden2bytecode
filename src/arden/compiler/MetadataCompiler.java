@@ -93,7 +93,11 @@ final class MetadataCompiler extends DepthFirstAdapter {
 	// | {fname} filename mlmname_text semicolons;
 	@Override
 	public void caseAMnameMlmnameSlot(AMnameMlmnameSlot node) {
-		maintenance.setMlmName(node.getMlmnameText().getText().trim());
+		String mlmname = node.getMlmnameText().getText().trim();
+		if(mlmname.isEmpty() || mlmname.length() > 80) {
+			throw new RuntimeCompilerException(node.getMlmnameText(), "The mlmname must be 1 to 80 characters in length");
+		}
+		maintenance.setMlmName(mlmname);
 	}
 
 	@Override
@@ -120,14 +124,24 @@ final class MetadataCompiler extends DepthFirstAdapter {
 	// version_slot = version colon text semicolons;
 	@Override
 	public void caseAVersionSlot(AVersionSlot node) {
-		if (node.getText() != null)
-			maintenance.setVersion(node.getText().getText().trim());
+		if (node.getText() != null) {
+			String version = node.getText().getText().trim();
+			if(version.length() > 80) {
+				throw new RuntimeCompilerException(node.getText(), "Version must be shorter than 81 characters");
+			}
+			maintenance.setVersion(version);
+		}
 	}
 
 	@Override
 	public void caseAInstitutionSlot(AInstitutionSlot node) {
-		if (node.getText() != null)
-			maintenance.setInstitution(node.getText().getText().trim());
+		if (node.getText() != null) {
+			String institution = node.getText().getText().trim();
+			if(institution.length() > 80) {
+				throw new RuntimeCompilerException(node.getText(), "Institution must be shorter than 81 characters");
+			}
+			maintenance.setInstitution(institution);
+		}
 	}
 
 	// author_slot = author text? semicolons;
