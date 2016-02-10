@@ -27,13 +27,24 @@
 
 package arden.compiler;
 
+import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import arden.compiler.node.*;
+import arden.compiler.node.ACommaExpr;
+import arden.compiler.node.AExsortExpr;
+import arden.compiler.node.AMappingFactor;
+import arden.compiler.node.ASortExpr;
+import arden.compiler.node.PExpr;
+import arden.compiler.node.PExprSort;
+import arden.compiler.node.PMappingFactor;
+import arden.compiler.node.TIsoDate;
+import arden.compiler.node.TIsoDateTime;
+import arden.compiler.node.TNumberLiteral;
+import arden.compiler.node.TStringLiteral;
+import arden.compiler.node.TTerm;
 import arden.runtime.ArdenTime;
 
 /**
@@ -95,33 +106,69 @@ final class ParseHelpers {
 			throw new RuntimeCompilerException(number, "Invalid number literal: " + input);
 		return d;
 	}
-
+	
 	public static long parseIsoDateTime(TIsoDateTime dateTime) {
-		String text = dateTime.getText();
-		ParsePosition parsePos = new ParsePosition(0);
-		Date date = ArdenTime.isoDateTimeFormat.parse(text, parsePos);
-		if (date == null)
-			throw new RuntimeCompilerException(dateTime, "Invalid DateTime literal");
-		long time = date.getTime();
-		int pos = parsePos.getIndex();
-		if (pos < text.length() && text.charAt(pos) == '.') {
-			// fractional seconds
-			pos++;
+		/*
+		 * SimpleDateFormat is very bad at parsing ISO 8601. Therefore we change
+		 * the text to a parsable format by extracing the fractional seconds and
+		 * changing the timezone part.
+		 */
+		String text = dateTime.getText().toUpperCase(); // allow lowercase 't' and 'z'
+		StringBuilder parsableText = new StringBuilder(text);
+		DateFormat format;
+		long millis = 0;
+		
+		// parse fractional seconds if present
+		int millisPos = ArdenTime.isoDateTimeLength;
+		if(millisPos < text.length() && text.charAt(millisPos) == '.') {
 			int multiplier = 100;
-			while (pos < text.length()) {
-				char c = text.charAt(pos);
-				if (c >= '0' && c <= '9') {
-					time += (c - '0') * multiplier;
+			millisPos++;
+			while (millisPos < text.length()) {
+				char c = text.charAt(millisPos);
+				boolean isDigit = c >= '0' && c <= '9';
+				if (isDigit) {
+					millis += (c - '0') * multiplier;
 					multiplier /= 10;
-					pos++;
+					millisPos++;
 				} else {
+					// timezone follows
 					break;
 				}
 			}
+			// remove fractional seconds part
+			parsableText.delete(ArdenTime.isoDateTimeLength, millisPos);
 		}
-		if (pos != text.length())
+		
+		// parse timezone if present
+		int timezonePos = ArdenTime.isoDateTimeLength;
+		if(timezonePos < parsableText.length()) {
+			// has timezone
+			format = ArdenTime.isoDateTimeFormatWithGmtTimeZone;
+			switch (parsableText.charAt(timezonePos)) {
+			case 'Z':
+				// 2000-01-01T00:00:00Z -> 2000-01-01T00:00:00ZGMT-00:00
+				parsableText.replace(timezonePos, timezonePos+1, "GMT-00:00");
+				break;
+			case '+': // fall through
+			case '-':
+				// 2000-01-01T00:00:00+01:00 -> 2000-01-01T00:00:00GMT+01:00 
+				parsableText.insert(timezonePos, "GMT");
+				break;
+			default:
+				throw new RuntimeCompilerException(dateTime, "Invalid DateTime literal");
+			}
+		} else {
+			// no timezone
+			format = ArdenTime.isoDateTimeFormat;
+		}
+		
+		Date date;
+		try {
+			date = format.parse(parsableText.toString());
+		} catch (ParseException e) {
 			throw new RuntimeCompilerException(dateTime, "Invalid DateTime literal");
-		return time;
+		}
+		return date.getTime() + millis;
 	}
 
 	public static long parseIsoDate(TIsoDate date) {

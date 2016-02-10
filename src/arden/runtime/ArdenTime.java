@@ -57,7 +57,9 @@ public final class ArdenTime extends ArdenValue {
 
 	public static final DateFormat isoDateTimeFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	public static final DateFormat isoDateTimeFormatWithMillis = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+	public static final DateFormat isoDateTimeFormatWithGmtTimeZone = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
 	public static final DateFormat isoDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	public static final int isoDateTimeLength = 19;
 
 	@Override
 	public String toString() {
