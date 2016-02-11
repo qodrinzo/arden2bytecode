@@ -82,7 +82,21 @@ public abstract class UnaryOperator {
 	public static final UnaryOperator TIME = new UnaryOperator("TIME") {
 		@Override
 		public ArdenValue runElement(ArdenValue val) {
-			if (val.primaryTime == ArdenValue.NOPRIMARYTIME)
+			if(val instanceof ArdenObject) {
+				// check primary time of fields
+				ArdenValue[] fields = ((ArdenObject) val).fields;
+				if(fields.length == 0) {
+					return ArdenNull.INSTANCE;
+				}
+				long firstTime = fields[0].primaryTime;
+				for(ArdenValue field : fields) {
+					if (field instanceof ArdenList || field.primaryTime == ArdenValue.NOPRIMARYTIME
+							|| field.primaryTime != firstTime) {
+						return ArdenNull.INSTANCE;
+					}
+				}
+				return new ArdenTime(firstTime);
+			} else if (val.primaryTime == ArdenValue.NOPRIMARYTIME)
 				return ArdenNull.INSTANCE;
 			else
 				return new ArdenTime(val.primaryTime, val.primaryTime);
