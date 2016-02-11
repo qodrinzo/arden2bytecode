@@ -97,7 +97,7 @@ public final class ExpressionHelpers {
 		}
 		if (alreadySorted)
 			return input;
-		ArdenValue[] result = (ArdenValue[]) input.values.clone();
+		ArdenValue[] result = input.values.clone();
 		Arrays.sort(result, new Comparator<ArdenValue>() {
 			@Override
 			public int compare(ArdenValue o1, ArdenValue o2) {
@@ -117,7 +117,7 @@ public final class ExpressionHelpers {
 			if (val.primaryTime == ArdenValue.NOPRIMARYTIME)
 				return ArdenNull.INSTANCE;
 		}
-		ArdenValue[] result = (ArdenValue[]) input.values.clone();
+		ArdenValue[] result = input.values.clone();
 		Arrays.sort(result, new Comparator<ArdenValue>() {
 			@Override
 			public int compare(ArdenValue o1, ArdenValue o2) {
@@ -329,7 +329,7 @@ public final class ExpressionHelpers {
 		return new ArdenList(result);
 	}
 
-	/** implements the SEQTO operator */
+	/** implements the REVERSE operator */
 	public static ArdenValue reverse(ArdenValue input) {
 		ArdenValue[] inputs = unaryComma(input).values;
 		ArdenValue[] result = new ArdenValue[inputs.length];
@@ -368,6 +368,22 @@ public final class ExpressionHelpers {
 			outputs[i] = BinaryOperator.MUL.runElement(
 					BinaryOperator.DIV.runElement(BinaryOperator.SUB.runElement(inputs[i + 1], inputs[i]), inputs[i]),
 					ArdenNumber.ONE_HUNDRED).setTime(inputs[i + 1].primaryTime);
+		}
+		return new ArdenList(outputs);
+	}
+	
+	/** implements the INTERVAL operator */
+	public static ArdenValue interval(ArdenValue input) {
+		ArdenValue[] inputs = unaryComma(input).values;
+		if (inputs.length == 0)
+			return ArdenNull.INSTANCE;
+		ArdenValue[] outputs = new ArdenValue[inputs.length - 1];
+		for (int i = 0; i < outputs.length; i++) {
+			if (inputs[i].primaryTime == ArdenValue.NOPRIMARYTIME || inputs[i+1].primaryTime == ArdenValue.NOPRIMARYTIME)
+				return ArdenNull.INSTANCE;
+			ArdenTime first = new ArdenTime(inputs[i].primaryTime);
+			ArdenTime second = new ArdenTime(inputs[i+1].primaryTime);
+			outputs[i] = BinaryOperator.SUB.runElement(second, first);
 		}
 		return new ArdenList(outputs);
 	}

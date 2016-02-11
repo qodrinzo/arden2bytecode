@@ -29,7 +29,78 @@ package arden.compiler;
 
 import java.util.GregorianCalendar;
 
-import arden.compiler.node.*;
+import arden.compiler.node.AAbsOfNoreadFuncOp;
+import arden.compiler.node.AAcosOfNoreadFuncOp;
+import arden.compiler.node.AAllOfNoreadFuncOp;
+import arden.compiler.node.AAnyOfNoreadFuncOp;
+import arden.compiler.node.AAsFuncOp;
+import arden.compiler.node.AAsinOfNoreadFuncOp;
+import arden.compiler.node.AAtanOfNoreadFuncOp;
+import arden.compiler.node.AAvgOfReadFuncOp;
+import arden.compiler.node.AAvgeOfReadFuncOp;
+import arden.compiler.node.ACeilOfNoreadFuncOp;
+import arden.compiler.node.ACloneOfNoreadFuncOp;
+import arden.compiler.node.ACntOfReadFuncOp;
+import arden.compiler.node.ACosOfNoreadFuncOp;
+import arden.compiler.node.ACsinOfNoreadFuncOp;
+import arden.compiler.node.ADecOfNoreadFuncOp;
+import arden.compiler.node.AEarFromOfFuncOp;
+import arden.compiler.node.AEarliestIndexFromOfFuncOp;
+import arden.compiler.node.AExOfReadFuncOp;
+import arden.compiler.node.AExattrOfNoreadFuncOp;
+import arden.compiler.node.AExcOfNoreadFuncOp;
+import arden.compiler.node.AExdOfNoreadFuncOp;
+import arden.compiler.node.AExhOfNoreadFuncOp;
+import arden.compiler.node.AExmiOfNoreadFuncOp;
+import arden.compiler.node.AExmoOfNoreadFuncOp;
+import arden.compiler.node.AExpOfNoreadFuncOp;
+import arden.compiler.node.AExsOfNoreadFuncOp;
+import arden.compiler.node.AExsOfReadFuncOp;
+import arden.compiler.node.AExyOfNoreadFuncOp;
+import arden.compiler.node.AFirFromOfFuncOp;
+import arden.compiler.node.AFlrOfNoreadFuncOp;
+import arden.compiler.node.AIncOfNoreadFuncOp;
+import arden.compiler.node.AIndexmaxIndexFromOfFuncOp;
+import arden.compiler.node.AIndexminIndexFromOfFuncOp;
+import arden.compiler.node.AIntOfNoreadFuncOp;
+import arden.compiler.node.AInterOfNoreadFuncOp;
+import arden.compiler.node.ALastFromOfFuncOp;
+import arden.compiler.node.ALatFromOfFuncOp;
+import arden.compiler.node.ALatestIndexFromOfFuncOp;
+import arden.compiler.node.ALcOfNoreadFuncOp;
+import arden.compiler.node.ALenOfNoreadFuncOp;
+import arden.compiler.node.ALogOfNoreadFuncOp;
+import arden.compiler.node.ALogtOfNoreadFuncOp;
+import arden.compiler.node.AMaxFromOfFuncOp;
+import arden.compiler.node.AMaxiFromOfFuncOp;
+import arden.compiler.node.AMaximumIndexFromOfFuncOp;
+import arden.compiler.node.AMedOfReadFuncOp;
+import arden.compiler.node.AMinFromOfFuncOp;
+import arden.compiler.node.AMiniFromOfFuncOp;
+import arden.compiler.node.AMinimumIndexFromOfFuncOp;
+import arden.compiler.node.AModdOfNoreadFuncOp;
+import arden.compiler.node.AModiOfNoreadFuncOp;
+import arden.compiler.node.ANoOfNoreadFuncOp;
+import arden.compiler.node.AOfnrOfFuncOp;
+import arden.compiler.node.AOfrOfFuncOp;
+import arden.compiler.node.APerdOfNoreadFuncOp;
+import arden.compiler.node.APeriOfNoreadFuncOp;
+import arden.compiler.node.ARevOfNoreadFuncOp;
+import arden.compiler.node.ARoundOfNoreadFuncOp;
+import arden.compiler.node.ASinOfNoreadFuncOp;
+import arden.compiler.node.ASineOfNoreadFuncOp;
+import arden.compiler.node.ASlpOfNoreadFuncOp;
+import arden.compiler.node.ASqrtOfNoreadFuncOp;
+import arden.compiler.node.AStdvOfNoreadFuncOp;
+import arden.compiler.node.AStrOfNoreadFuncOp;
+import arden.compiler.node.ASumOfReadFuncOp;
+import arden.compiler.node.ATanOfNoreadFuncOp;
+import arden.compiler.node.ATangOfNoreadFuncOp;
+import arden.compiler.node.ATimeOfNoreadFuncOp;
+import arden.compiler.node.ATruncOfNoreadFuncOp;
+import arden.compiler.node.AUcOfNoreadFuncOp;
+import arden.compiler.node.AVarOfNoreadFuncOp;
+import arden.compiler.node.Node;
 import arden.runtime.ArdenValue;
 import arden.runtime.UnaryOperator;
 
@@ -257,8 +328,8 @@ final class UnaryOperatorCompiler extends VisitorBase {
 
 	@Override
 	public void caseAInterOfNoreadFuncOp(AInterOfNoreadFuncOp node) {
-		parent.invokeOperator(UnaryOperator.TIME, argument);
-		context.writer.invokeStatic(ExpressionCompiler.getMethod("increase", ArdenValue.class));
+		argument.apply(parent);
+		context.writer.invokeStatic(ExpressionCompiler.getMethod("interval", ArdenValue.class));
 	}
 
 	@Override
