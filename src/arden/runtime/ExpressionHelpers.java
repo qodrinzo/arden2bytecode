@@ -692,7 +692,7 @@ public final class ExpressionHelpers {
 		ArdenValue pivot = ((ArdenList) sortedInput).values[arr.length - numberOfElements];
 		int pos = 0;
 		for (int i = 0; i < arr.length; i++) {
-			if (arr[i].primaryTime <= pivot.primaryTime) {
+			if (arr[i].primaryTime >= pivot.primaryTime) {
 				output[pos++] = ArdenNumber.create(i + 1, ArdenValue.NOPRIMARYTIME);
 				if (pos == numberOfElements)
 					break;
