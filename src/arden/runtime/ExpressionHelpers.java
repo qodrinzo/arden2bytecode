@@ -75,8 +75,8 @@ public final class ExpressionHelpers {
 		return new ArdenList(result);
 	}
 
-	/** implements the SORT DATA operator */
-	public static ArdenValue sortByData(ArdenValue inputVal) {
+	/** helper for sorting operators and operators which uses sorted data in their algorithms */
+	private static ArdenValue sort(ArdenValue inputVal, Comparator<ArdenValue> comparator) {
 		ArdenList input = unaryComma(inputVal);
 		if (input.values.length == 0)
 			return input;
@@ -86,7 +86,7 @@ public final class ExpressionHelpers {
 		boolean alreadySorted = true;
 		for (int i = 1; i < input.values.length; i++) {
 			ArdenValue thisElement = input.values[i];
-			int r = lastElement.compareTo(thisElement);
+			int r = comparator.compare(lastElement, thisElement);
 			if (r == Integer.MIN_VALUE) {
 				// list contains non-ordered element types or invalid comparison
 				return ArdenNull.INSTANCE;
@@ -98,13 +98,66 @@ public final class ExpressionHelpers {
 		if (alreadySorted)
 			return input;
 		ArdenValue[] result = input.values.clone();
-		Arrays.sort(result, new Comparator<ArdenValue>() {
-			@Override
-			public int compare(ArdenValue o1, ArdenValue o2) {
-				return o1.compareTo(o2);
-			};
-		});
+		Arrays.sort(result, comparator);
 		return new ArdenList(result);
+	}
+	
+	private static final Comparator<ArdenValue> dataAndTimeComparator = new Comparator<ArdenValue>() {
+		@Override
+		public int compare(ArdenValue o1, ArdenValue o2) {
+			int compare = o1.compareTo(o2);
+			if(compare == 0) {
+				if (o1.primaryTime < o2.primaryTime)
+					return -1;
+				else if (o1.primaryTime > o2.primaryTime)
+					return 1;
+				else
+					return 0;
+			} else {
+				return compare;
+			}
+		};
+	};
+	
+	private static final Comparator<ArdenValue> dataAndReverseTimeComparator = new Comparator<ArdenValue>() {
+		@Override
+		public int compare(ArdenValue o1, ArdenValue o2) {
+			int compare = o1.compareTo(o2);
+			if(compare == 0) {
+				if (o1.primaryTime < o2.primaryTime)
+					return 1;
+				else if (o1.primaryTime > o2.primaryTime)
+					return -1;
+				else
+					return 0;
+			} else {
+				return compare;
+			}
+		};
+	};
+	
+	private static final Comparator<ArdenValue> dataComparator = new Comparator<ArdenValue>() {
+		@Override
+		public int compare(ArdenValue o1, ArdenValue o2) {
+				return o1.compareTo(o2);
+		}
+	};
+	
+	private static final Comparator<ArdenValue> timeComparator = new Comparator<ArdenValue>() {
+		@Override
+		public int compare(ArdenValue o1, ArdenValue o2) {
+			if (o1.primaryTime < o2.primaryTime)
+				return -1;
+			else if (o1.primaryTime > o2.primaryTime)
+				return 1;
+			else
+				return 0;
+		};
+	};
+
+	/** implements the SORT DATA operator */
+	public static ArdenValue sortByData(ArdenValue inputVal) {
+		return sort(inputVal, dataComparator);
 	}
 
 	/** implements the SORT TIME operator */
@@ -118,17 +171,7 @@ public final class ExpressionHelpers {
 				return ArdenNull.INSTANCE;
 		}
 		ArdenValue[] result = input.values.clone();
-		Arrays.sort(result, new Comparator<ArdenValue>() {
-			@Override
-			public int compare(ArdenValue o1, ArdenValue o2) {
-				if (o1.primaryTime < o2.primaryTime)
-					return -1;
-				else if (o1.primaryTime > o2.primaryTime)
-					return 1;
-				else
-					return 0;
-			};
-		});
+		Arrays.sort(result, timeComparator);
 		return new ArdenList(result);
 	}
 
@@ -481,7 +524,8 @@ public final class ExpressionHelpers {
 	/** Implements the INDEX MINIMUM transformation operator. */
 	public static ArdenValue indexMinimum(ArdenValue input, int numberOfElements) {
 		ArdenValue[] arr = unaryComma(input).values;
-		ArdenValue sortedInput = sortByData(input);
+		// sort the input by values and equal values by time (reverse order)
+		ArdenValue sortedInput = sort(input, dataAndReverseTimeComparator);
 		if (!(sortedInput instanceof ArdenList))
 			return ArdenNull.INSTANCE;
 		if (numberOfElements > arr.length)
@@ -489,10 +533,17 @@ public final class ExpressionHelpers {
 		if (numberOfElements == 0)
 			return ArdenList.EMPTY;
 		ArdenValue[] output = new ArdenValue[numberOfElements];
+		/*
+		 * The array is sorted, thus pivot=arr[nrElements-1] ensures that
+		 * <nrElements> elements are smaller than the pivot or are equal and
+		 * have a later primary time. In other words, the pivot is the greatest
+		 * element in the returned list or has a earlier primary time than equal
+		 * elements.
+		 */
 		ArdenValue pivot = ((ArdenList) sortedInput).values[numberOfElements - 1];
 		int pos = 0;
 		for (int i = 0; i < arr.length; i++) {
-			if (arr[i].compareTo(pivot) <= 0) {
+			if (dataAndReverseTimeComparator.compare(arr[i], pivot) <= 0) {
 				output[pos++] = ArdenNumber.create(i + 1, ArdenValue.NOPRIMARYTIME);
 				if (pos == numberOfElements)
 					break;
@@ -518,11 +569,12 @@ public final class ExpressionHelpers {
 		}
 		return ArdenNumber.create(max + 1, arr[max].primaryTime);
 	}
-
+	
 	/** Implements the INDEX MAXIMUM transformation operator. */
 	public static ArdenValue indexMaximum(ArdenValue input, int numberOfElements) {
 		ArdenValue[] arr = unaryComma(input).values;
-		ArdenValue sortedInput = sortByData(input);
+		// sort the input by values and equal values by time
+		ArdenValue sortedInput = sort(input, dataAndTimeComparator);
 		if (!(sortedInput instanceof ArdenList))
 			return ArdenNull.INSTANCE;
 		if (numberOfElements > arr.length)
@@ -530,10 +582,17 @@ public final class ExpressionHelpers {
 		if (numberOfElements == 0)
 			return ArdenList.EMPTY;
 		ArdenValue[] output = new ArdenValue[numberOfElements];
-		ArdenValue pivot = ((ArdenList) sortedInput).values[arr.length - numberOfElements];
+		/*
+		 * The array is sorted, thus pivot=arr[arr.length-nrElements] ensures
+		 * that <nrElements> elements are greater than the pivot or are equal
+		 * and have a later primary time. In other words, the pivot is the
+		 * smallest element in the returned list or has a earlier primary time
+		 * than equal elements.
+		 */
+		ArdenValue pivot = ((ArdenList)sortedInput).values[arr.length - numberOfElements];
 		int pos = 0;
 		for (int i = 0; i < arr.length; i++) {
-			if (arr[i].compareTo(pivot) >= 0) {
+			if (dataAndTimeComparator.compare(arr[i], pivot) >= 0) {
 				output[pos++] = ArdenNumber.create(i + 1, ArdenValue.NOPRIMARYTIME);
 				if (pos == numberOfElements)
 					break;
