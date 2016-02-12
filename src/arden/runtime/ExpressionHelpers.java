@@ -248,16 +248,36 @@ public final class ExpressionHelpers {
 
 	/** implements the MEDIAN operator */
 	public static ArdenValue median(ArdenValue sequence) {
-		ArdenValue sorted = sortByData(sequence);
+		// sort by data and time
+		ArdenValue sorted = sort(sequence, dataAndTimeComparator);
 		if (!(sorted instanceof ArdenList))
 			return sorted; // error during sorting
 		ArdenValue[] values = ((ArdenList) sorted).values;
 		if (values.length == 0) {
 			return ArdenNull.INSTANCE;
 		} else if ((values.length % 2) == 1) {
-			return values[values.length / 2];
+			ArdenValue median = values[values.length / 2];
+			// get the element with the same value but the latest primary time by going towards the end
+			for(int i = values.length / 2; i < values.length; i++) {
+				if(values[i].compareTo(median) == 0) 
+					median = values[i];
+				else
+					break;
+			}
+			return median;
 		} else {
-			return average(binaryComma(values[values.length / 2 - 1], values[values.length / 2]));
+			ArdenValue leftMedian = values[values.length / 2 - 1];
+			ArdenValue rightMedian = values[values.length / 2];
+			for(int i = values.length / 2 + 1; i < values.length; i++) {
+				if(values[i].compareTo(rightMedian) == 0) {
+					if(leftMedian.compareTo(rightMedian) == 0)
+						leftMedian = rightMedian;
+					rightMedian = values[i];
+				} else {
+					break;
+				}
+			}
+			return average(binaryComma(leftMedian, rightMedian));
 		}
 	}
 
