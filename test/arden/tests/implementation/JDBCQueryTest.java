@@ -1,6 +1,9 @@
 package arden.tests.implementation;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -11,13 +14,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.junit.Test;
 import org.junit.Assert;
-import org.junit.internal.ArrayComparisonFailure;
-
-import uk.co.flamingpenguin.jewel.cli.CliFactory;
+import org.junit.Test;
 
 import arden.CommandLineOptions;
+import arden.compiler.CompiledMlm;
+import arden.compiler.Compiler;
+import arden.compiler.CompilerException;
 import arden.runtime.ArdenList;
 import arden.runtime.ArdenNumber;
 import arden.runtime.ArdenString;
@@ -27,12 +30,26 @@ import arden.runtime.MedicalLogicModule;
 import arden.runtime.jdbc.DriverHelper;
 import arden.runtime.jdbc.JDBCExecutionContext;
 import arden.runtime.jdbc.JDBCQuery;
+import uk.co.flamingpenguin.jewel.cli.CliFactory;
 
-public class JDBCQueryTests {
+public class JDBCQueryTest extends ImplementationTest {
 	private static boolean SQLiteLoaded = false;
 	private static final String SQLITE_PATH = "./sqlite-jdbc-3.7.2.jar";
 	
-	public Driver loadSQLite() throws 
+	private static CompiledMlm parseTemplate(String dataCode, String logicCode, String actionCode)
+			throws CompilerException {
+		try {
+			InputStream s = JDBCQueryTest.class.getResourceAsStream("ActionTemplate.mlm");
+			String fullCode = inputStreamToString(s).replace("$ACTION", actionCode).replace("$DATA", dataCode).replace(
+					"$LOGIC", logicCode);
+			Compiler c = new Compiler();
+			return c.compileMlm(new StringReader(fullCode));
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private Driver loadSQLite() throws 
 			MalformedURLException, 
 			InstantiationException, 
 			IllegalAccessException, 
@@ -58,7 +75,7 @@ public class JDBCQueryTests {
 		return driver;
 	}
 	
-	public Statement initDb() {
+	private Statement initDb() {
 		Connection connection = null;
 		Statement statement = null;
 		try {
@@ -77,7 +94,7 @@ public class JDBCQueryTests {
 	}
 	
 	@Test
-	public void ObjectToArdenValue() throws Exception {
+	public void testObjectToArdenValue() throws Exception {
 		Assert.assertEquals(new ArdenNumber(1.0), 
 				JDBCQuery.objectToArdenValue(new Integer(1)));
 		Assert.assertEquals(new ArdenNumber(1.0), 
@@ -86,20 +103,8 @@ public class JDBCQueryTests {
 				JDBCQuery.objectToArdenValue(new String("hey")));
 	}
 	
-	private static void assertArrayNotEquals(Object[] expecteds, Object[] actuals) throws AssertionError {
-		boolean exceptionThrown = false;
-		try {
-			Assert.assertArrayEquals(expecteds, actuals);
-		} catch (ArrayComparisonFailure f) {
-			exceptionThrown = true;
-		}
-		if (!exceptionThrown) {
-			throw new AssertionError("Array is same.");
-		}
-	}
-	
 	@Test
-	public void ResultSetToArdenValues() throws Exception {
+	public void testResultSetToArdenValues() throws Exception {
 		if (loadSQLite() == null) {
 			return;
 		}
@@ -122,7 +127,7 @@ public class JDBCQueryTests {
 	}
 	
 	@Test
-	public void JDBCExecutionContextRead() throws Exception {
+	public void testJDBCExecutionContextRead() throws Exception {
 		if (loadSQLite() == null) {
 			return;
 		}
@@ -131,7 +136,7 @@ public class JDBCQueryTests {
 				CliFactory.parseArguments(CommandLineOptions.class, args);
 		
 		ExecutionContext testContext = new JDBCExecutionContext(options);
-		MedicalLogicModule mlm = ActionTests.parseTemplate(
+		MedicalLogicModule mlm = parseTemplate(
 				"varA := read {drop table if exists person};\n" +
 				"varB := read {create table person (id integer, name string)};\n" +
 				"varC := read {insert into person values (1, 'A')};\n" +

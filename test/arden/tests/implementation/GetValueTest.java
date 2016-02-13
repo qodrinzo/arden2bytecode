@@ -1,29 +1,17 @@
 package arden.tests.implementation;
 
-import java.io.InputStreamReader;
-
 import org.junit.Assert;
 import org.junit.Test;
 
-import arden.compiler.CompiledMlm;
-import arden.compiler.Compiler;
 import arden.runtime.ArdenNumber;
 import arden.runtime.ArdenValue;
 import arden.runtime.MedicalLogicModule;
 
-public class GetValueTests {
+public class GetValueTest extends ImplementationTest {
 
-	private MedicalLogicModule compile(String filename) throws Exception {
-		Compiler c = new Compiler();
-		c.enableDebugging(filename + ".mlm");
-		CompiledMlm mlm = c
-				.compileMlm(new InputStreamReader(ExampleTests.class.getResourceAsStream(filename + ".mlm")));
-		return mlm;
-	}
-	
 	@Test
-	public void X27() throws Exception {
-		MedicalLogicModule mlm = compile("x2.7");
+	public void x37() throws Exception {
+		MedicalLogicModule mlm = compile("x3.7.mlm");
 
 		// mlm has not been not run yet:
 		Assert.assertNull(mlm.getValue("low_dose_beta_use"));
@@ -36,8 +24,8 @@ public class GetValueTests {
 	}
 	
 	@Test
-	public void X28() throws Exception {
-		MedicalLogicModule mlm = compile("x2.8");
+	public void x38() throws Exception {
+		MedicalLogicModule mlm = compile("x3.8.mlm");
 
 		// mlm has not been not run yet:
 		Assert.assertNull(mlm.getValue("num"));

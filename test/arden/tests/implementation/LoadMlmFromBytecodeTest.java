@@ -7,8 +7,8 @@ import java.io.InputStreamReader;
 import org.junit.Assert;
 import org.junit.Test;
 
-import arden.compiler.Compiler;
 import arden.compiler.CompiledMlm;
+import arden.compiler.Compiler;
 import arden.runtime.ArdenList;
 import arden.runtime.ArdenNull;
 import arden.runtime.ArdenString;
@@ -20,12 +20,13 @@ import arden.runtime.MedicalLogicModule;
 import arden.runtime.MemoryQuery;
 import arden.runtime.RuntimeHelpers;
 
-public class LoadMlmFromBytecodeTests {
-	private MedicalLogicModule compile(String filename) throws Exception {
+public class LoadMlmFromBytecodeTest extends ImplementationTest {
+	
+	private static MedicalLogicModule compileBytecode(String filename) throws Exception {
 		Compiler c = new Compiler();
-		c.enableDebugging(filename + ".mlm");
+		c.enableDebugging(filename);
 		CompiledMlm mlm = c
-				.compileMlm(new InputStreamReader(ExampleTests.class.getResourceAsStream(filename + ".mlm")));
+				.compileMlm(new InputStreamReader(ExampleTest.class.getResourceAsStream(filename)));
 		ByteArrayOutputStream bos = new ByteArrayOutputStream();
 		mlm.saveClassFile(bos);
 		bos.close();		
@@ -34,8 +35,8 @@ public class LoadMlmFromBytecodeTests {
 	
 
 	@Test
-	public void X21() throws Exception {
-		MedicalLogicModule mlm = compile("x2.1");
+	public void x31() throws Exception {
+		MedicalLogicModule mlm = compileBytecode("x3.1.mlm");
 
 		TestContext context = new TestContext();
 		mlm.run(context, null);
@@ -44,8 +45,8 @@ public class LoadMlmFromBytecodeTests {
 	}
 
 	@Test
-	public void X22() throws Exception {
-		MedicalLogicModule mlm = compile("x2.2");
+	public void x32() throws Exception {
+		MedicalLogicModule mlm = compileBytecode("x3.2.mlm");
 
 		TestContext context = new TestContext();
 		mlm.run(context, null);
@@ -54,16 +55,16 @@ public class LoadMlmFromBytecodeTests {
 	}
 
 	@Test
-	public void X23noAllergies() throws Exception {
-		MedicalLogicModule mlm = compile("x2.3");
+	public void x33noAllergies() throws Exception {
+		MedicalLogicModule mlm = compile("x3.3.mlm");
 		TestContext context = new TestContext();
 		mlm.run(context, null);
 		Assert.assertEquals("", context.getOutputText());
 	}
 
 	@Test
-	public void X23allergies() throws Exception {
-		MedicalLogicModule mlm = compile("x2.3");
+	public void x33allergies() throws Exception {
+		MedicalLogicModule mlm = compileBytecode("x3.3.mlm");
 		TestContext context = new TestContext() {
 			@Override
 			public DatabaseQuery createQuery(String mapping) {
@@ -78,8 +79,8 @@ public class LoadMlmFromBytecodeTests {
 	}
 
 	@Test
-	public void X23allergiesButLastIsNull() throws Exception {
-		MedicalLogicModule mlm = compile("x2.3");
+	public void x33allergiesButLastIsNull() throws Exception {
+		MedicalLogicModule mlm = compileBytecode("x3.3.mlm");
 		TestContext context = new TestContext() {
 			@Override
 			public DatabaseQuery createQuery(String mapping) {
@@ -93,14 +94,14 @@ public class LoadMlmFromBytecodeTests {
 	}
 
 	@Test
-	public void X23urgency() throws Exception {
-		MedicalLogicModule mlm = compile("x2.3");
+	public void x33urgency() throws Exception {
+		MedicalLogicModule mlm = compileBytecode("x3.3.mlm");
 		Assert.assertEquals(51.0, mlm.createInstance(new TestContext(), null).getUrgency(), 0);
 	}
 
 	@Test
-	public void X24() throws Exception {
-		MedicalLogicModule mlm = compile("x2.4");
+	public void x34() throws Exception {
+		MedicalLogicModule mlm = compileBytecode("x3.4.mlm");
 
 		TestContext context = new TestContext();
 		mlm.run(context, null);
@@ -109,8 +110,8 @@ public class LoadMlmFromBytecodeTests {
 	}
 
 	@Test
-	public void X25() throws Exception {
-		MedicalLogicModule mlm = compile("x2.5");
+	public void x35() throws Exception {
+		MedicalLogicModule mlm = compileBytecode("x3.5.mlm");
 
 		TestContext context = new TestContext();
 		mlm.run(context, null);
@@ -121,8 +122,8 @@ public class LoadMlmFromBytecodeTests {
 	}
 
 	@Test
-	public void X26() throws Exception {
-		MedicalLogicModule mlm = compile("x2.6");
+	public void x36() throws Exception {
+		MedicalLogicModule mlm = compileBytecode("x3.6.mlm");
 
 		TestContext context = new TestContext();
 		mlm.run(context, null);
@@ -131,8 +132,8 @@ public class LoadMlmFromBytecodeTests {
 	}
 
 	@Test
-	public void X27() throws Exception {
-		MedicalLogicModule mlm = compile("x2.7");
+	public void x37() throws Exception {
+		MedicalLogicModule mlm = compileBytecode("x3.7.mlm");
 
 		TestContext context = new TestContext();
 		mlm.run(context, null);
@@ -141,8 +142,8 @@ public class LoadMlmFromBytecodeTests {
 	}
 
 	@Test
-	public void X28() throws Exception {
-		MedicalLogicModule mlm = compile("x2.8");
+	public void x38() throws Exception {
+		MedicalLogicModule mlm = compileBytecode("x3.8.mlm");
 
 		TestContext context = new TestContext();
 		ArdenList medOrders = new ArdenList(new ArdenValue[] { new ArdenString("order1"), new ArdenString("order2"),
@@ -165,8 +166,8 @@ public class LoadMlmFromBytecodeTests {
 	}
 	
 	@Test
-	public void X21Metadata() throws Exception {
-		MedicalLogicModule compiledMlm = compile("x2.1");
+	public void x31Metadata() throws Exception {
+		MedicalLogicModule compiledMlm = compileBytecode("x3.1.mlm");
 
 		MaintenanceMetadata m = compiledMlm.getMaintenance();
 		Assert.assertEquals("Fractional excretion of sodium", m.getTitle());
@@ -190,8 +191,8 @@ public class LoadMlmFromBytecodeTests {
 	}
 	
 	@Test
-	public void X23Metadata() throws Exception {
-		MedicalLogicModule compiledMlm = compile("x2.3");
+	public void x33Metadata() throws Exception {
+		MedicalLogicModule compiledMlm = compileBytecode("x3.3.mlm");
 
 		MaintenanceMetadata m = compiledMlm.getMaintenance();
 		Assert.assertEquals("Check for penicillin allergy", m.getTitle());

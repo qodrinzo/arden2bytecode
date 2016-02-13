@@ -27,23 +27,19 @@
 
 package arden.tests.implementation;
 
-import java.io.InputStreamReader;
-
 import org.junit.Assert;
 import org.junit.Test;
 
-import arden.compiler.Compiler;
-import arden.compiler.CompiledMlm;
 import arden.runtime.ExecutionContext;
 import arden.runtime.LibraryMetadata;
 import arden.runtime.MaintenanceMetadata;
+import arden.runtime.MedicalLogicModule;
 import arden.runtime.MedicalLogicModuleImplementation;
 
-public class MetadataTests {
+public class MetadataTest extends ImplementationTest {
 	@Test
-	public void X21() throws Exception {
-		Compiler c = new Compiler();
-		CompiledMlm mlm = c.compileMlm(new InputStreamReader(MetadataTests.class.getResourceAsStream("x2.1.mlm")));
+	public void x31() throws Exception {
+		MedicalLogicModule mlm = compile("x3.1.mlm");
 
 		MaintenanceMetadata m = mlm.getMaintenance();
 		Assert.assertEquals("Fractional excretion of sodium", m.getTitle());
@@ -64,9 +60,8 @@ public class MetadataTests {
 	}
 	
 	@Test
-	public void X23() throws Exception {
-		Compiler c = new Compiler();
-		CompiledMlm mlm = c.compileMlm(new InputStreamReader(MetadataTests.class.getResourceAsStream("x2.3.mlm")));
+	public void x33() throws Exception {
+		MedicalLogicModule mlm = compile("x3.3.mlm");
 
 		MaintenanceMetadata m = mlm.getMaintenance();
 		Assert.assertEquals("Check for penicillin allergy", m.getTitle());
@@ -86,13 +81,12 @@ public class MetadataTests {
 	}
 	
 	@Test
-	public void X21FromByteCode() throws Exception {
-		Compiler c = new Compiler();
-		CompiledMlm compiledMlm = c.compileMlm(new InputStreamReader(MetadataTests.class.getResourceAsStream("x2.1.mlm")));
+	public void x31FromByteCode() throws Exception {
+		MedicalLogicModule mlm = compile("x3.1.mlm");
 		
 		ExecutionContext cx = new TestContext();
 		
-		MedicalLogicModuleImplementation impl = compiledMlm.createInstance(cx, null);
+		MedicalLogicModuleImplementation impl = mlm.createInstance(cx, null);
 
 		MaintenanceMetadata m = impl.getMaintenanceMetadata();
 		Assert.assertEquals("Fractional excretion of sodium", m.getTitle());
@@ -112,13 +106,12 @@ public class MetadataTests {
 	}
 	
 	@Test
-	public void X23FromByteCode() throws Exception {
-		Compiler c = new Compiler();
-		CompiledMlm compiledMlm = c.compileMlm(new InputStreamReader(MetadataTests.class.getResourceAsStream("x2.3.mlm")));
+	public void x33FromByteCode() throws Exception {
+		MedicalLogicModule mlm = compile("x3.3.mlm");
 
 		ExecutionContext cx = new TestContext();
 		
-		MedicalLogicModuleImplementation impl = compiledMlm.createInstance(cx, null);
+		MedicalLogicModuleImplementation impl = mlm.createInstance(cx, null);
 		
 		MaintenanceMetadata m = impl.getMaintenanceMetadata();
 		Assert.assertEquals("Check for penicillin allergy", m.getTitle());

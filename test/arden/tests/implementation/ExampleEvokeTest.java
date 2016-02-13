@@ -27,13 +27,9 @@
 
 package arden.tests.implementation;
 
-import java.io.InputStreamReader;
-
 import org.junit.Assert;
 import org.junit.Test;
 
-import arden.compiler.CompiledMlm;
-import arden.compiler.Compiler;
 import arden.runtime.ArdenDuration;
 import arden.runtime.ArdenList;
 import arden.runtime.ArdenNull;
@@ -49,18 +45,11 @@ import arden.runtime.events.EvokeEvent;
 import arden.runtime.events.FixedDateEvokeEvent;
 import arden.runtime.events.MappedEvokeEvent;
 
-public class ExampleEvokeTests {
-	private MedicalLogicModule compile(String filename) throws Exception {
-		Compiler c = new Compiler();
-		c.enableDebugging(filename + ".mlm");
-		CompiledMlm mlm = c
-				.compileMlm(new InputStreamReader(ExampleEvokeTests.class.getResourceAsStream(filename + ".mlm")));
-		return mlm;
-	}
+public class ExampleEvokeTest extends ImplementationTest {
 
 	@Test
-	public void X21() throws Exception {
-		MedicalLogicModule mlm = compile("x2.1");
+	public void x31() throws Exception {
+		MedicalLogicModule mlm = compile("x3.1.mlm");
 
 		TestContext context = new TestContext();
 		EvokeEvent e = mlm.getEvoke(context, null);
@@ -70,8 +59,8 @@ public class ExampleEvokeTests {
 	}
 
 	@Test
-	public void X22() throws Exception {
-		MedicalLogicModule mlm = compile("x2.2");
+	public void x32() throws Exception {
+		MedicalLogicModule mlm = compile("x3.2.mlm");
 
 		TestContext context = new TestContext();
 		EvokeEvent e = mlm.getEvoke(context, null);
@@ -81,8 +70,8 @@ public class ExampleEvokeTests {
 	}
 
 	@Test
-	public void X23noAllergies() throws Exception {
-		MedicalLogicModule mlm = compile("x2.3");
+	public void x33noAllergies() throws Exception {
+		MedicalLogicModule mlm = compile("x3.3.mlm");
 		TestContext context = new TestContext();
 		EvokeEvent e = mlm.getEvoke(context, null);
 		
@@ -91,8 +80,8 @@ public class ExampleEvokeTests {
 	}
 
 	@Test
-	public void X23allergies() throws Exception {
-		MedicalLogicModule mlm = compile("x2.3");
+	public void x33allergies() throws Exception {
+		MedicalLogicModule mlm = compile("x3.3.mlm");
 		TestContext context = new TestContext() {
 			@Override
 			public DatabaseQuery createQuery(String mapping) {
@@ -108,8 +97,8 @@ public class ExampleEvokeTests {
 	}
 
 	@Test
-	public void X23allergiesButLastIsNull() throws Exception {
-		MedicalLogicModule mlm = compile("x2.3");
+	public void x33allergiesButLastIsNull() throws Exception {
+		MedicalLogicModule mlm = compile("x3.3.mlm");
 		TestContext context = new TestContext() {
 			@Override
 			public DatabaseQuery createQuery(String mapping) {
@@ -125,8 +114,8 @@ public class ExampleEvokeTests {
 	}
 
 	@Test
-	public void X24() throws Exception {
-		MedicalLogicModule mlm = compile("x2.4");
+	public void x34() throws Exception {
+		MedicalLogicModule mlm = compile("x3.4.mlm");
 
 		TestContext context = new TestContext();
 		EvokeEvent e = mlm.getEvoke(context, null);
@@ -136,10 +125,10 @@ public class ExampleEvokeTests {
 	}
 
 	@Test
-	public void X25() throws Exception {
-		MedicalLogicModule mlm = compile("x2.5");
-		ArdenTime defaultTime = EvokeTests.createDateTime(1980, 0, 1, 0, 0, 0); // this is the default myExecutionContext.getCurrentTime()
-		ArdenTime defaultEventDate = EvokeTests.createDateTime(2000, 0, 1, 0, 0, 0); // this is the default myExecutionContext.getEvent()
+	public void x35() throws Exception {
+		MedicalLogicModule mlm = compile("x3.5.mlm");
+		ArdenTime defaultTime = createDateTime(1980, 0, 1, 0, 0, 0); // this is the default myExecutionContext.getCurrentTime()
+		ArdenTime defaultEventDate = createDateTime(2000, 0, 1, 0, 0, 0); // this is the default myExecutionContext.getEvent()
 		EvokeEvent defaultEvokeEvent = new FixedDateEvokeEvent(defaultEventDate);
 
 		TestContext context = new TestContext(defaultEvokeEvent, defaultTime);
@@ -152,7 +141,7 @@ public class ExampleEvokeTests {
 				false, 
 				context.getCurrentTime().value); 
 		ArdenTime fiveDaysLater = new ArdenTime(
-				defaultEventDate.add(fiveDays)); // add 5 days as in x2.5.mlm
+				defaultEventDate.add(fiveDays)); // add 5 days as in x3.5.mlm
 		// default runtime should be 5 days after the event as declared in the MLM:
 		Assert.assertEquals(
 				fiveDaysLater, 
@@ -169,8 +158,8 @@ public class ExampleEvokeTests {
 	}
 
 	@Test
-	public void X26() throws Exception {
-		MedicalLogicModule mlm = compile("x2.6");
+	public void x36() throws Exception {
+		MedicalLogicModule mlm = compile("x3.6.mlm");
 
 		TestContext context = new TestContext();
 		EvokeEvent e = mlm.getEvoke(context, null);
@@ -180,8 +169,8 @@ public class ExampleEvokeTests {
 	}
 
 	@Test
-	public void X27() throws Exception {
-		MedicalLogicModule mlm = compile("x2.7");
+	public void x37() throws Exception {
+		MedicalLogicModule mlm = compile("x3.7.mlm");
 
 		TestContext context = new TestContext();
 		EvokeEvent e = mlm.getEvoke(context, null);
@@ -190,8 +179,8 @@ public class ExampleEvokeTests {
 	}
 
 	@Test
-	public void X28() throws Exception {
-		MedicalLogicModule mlm = compile("x2.8");
+	public void x38() throws Exception {
+		MedicalLogicModule mlm = compile("x3.8.mlm");
 
 		TestContext context = new TestContext();
 		ArdenList medOrders = new ArdenList(new ArdenValue[] { new ArdenString("order1"), new ArdenString("order2"),

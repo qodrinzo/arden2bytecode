@@ -30,8 +30,6 @@ package arden.tests.implementation;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -39,39 +37,19 @@ import org.junit.Test;
 import arden.compiler.CompiledMlm;
 import arden.compiler.Compiler;
 import arden.compiler.CompilerException;
-import arden.runtime.ArdenTime;
 import arden.runtime.MedicalLogicModule;
 import arden.runtime.events.AfterEvokeEvent;
 import arden.runtime.events.CyclicEvokeEvent;
 import arden.runtime.events.EvokeEvent;
 import arden.runtime.events.FixedDateEvokeEvent;
 
-public class EvokeTests {
-	private static Calendar calendar = null;
+public class EvokeTest extends ImplementationTest {
 	
-	public static ArdenTime createDate(int year, int month, int day) {
-		if (calendar == null) {
-			calendar = new GregorianCalendar();
-		}
-		calendar.clear();
-		calendar.set(year, month, day);
-		return new ArdenTime(calendar.getTimeInMillis());
-	}
-	
-	public static ArdenTime createDateTime(int year, int month, int day, int hour, int minutes, int seconds) {
-		if (calendar == null) {
-			calendar = new GregorianCalendar();
-		}
-		calendar.clear();
-		calendar.set(year, month, day, hour, minutes, seconds);
-		return new ArdenTime(calendar.getTimeInMillis());
-	}
-	
-	public static CompiledMlm parseTemplate(String dataCode, String evokeCode, String logicCode, String actionCode)
+	private static CompiledMlm parseTemplate(String dataCode, String evokeCode, String logicCode, String actionCode)
 			throws CompilerException {
 		try {
-			InputStream s = EvokeTests.class.getResourceAsStream("EvokeTemplate.mlm");
-			String fullCode = ActionTests.inputStreamToString(s)
+			InputStream s = EvokeTest.class.getResourceAsStream("EvokeTemplate.mlm");
+			String fullCode = inputStreamToString(s)
 					.replace("$ACTION", actionCode)
 					.replace("$DATA", dataCode)
 					.replace("$EVOKE", evokeCode)
@@ -83,19 +61,19 @@ public class EvokeTests {
 		}
 	}
 	
-	public static CompiledMlm parseEvoke(String evokeCode) throws CompilerException {
+	private static CompiledMlm parseEvoke(String evokeCode) throws CompilerException {
 		return parseEvoke("", evokeCode);
 	}
 	
-	public static CompiledMlm parseEvoke(String data, String evokeCode) throws CompilerException {
+	private static CompiledMlm parseEvoke(String data, String evokeCode) throws CompilerException {
 		return parseEvoke(data, evokeCode, "");
 	}
 
-	public static CompiledMlm parseEvoke(String data, String evokeCode, String actionCode) throws CompilerException {
+	private static CompiledMlm parseEvoke(String data, String evokeCode, String actionCode) throws CompilerException {
 		return parseTemplate(data, evokeCode, "conclude true;", actionCode);
 	}
 	
-	public static TestContext createTestContext() {
+	private static TestContext createTestContext() {
 		return new TestContext(createDate(1990, 0, 1)) {
 			@Override
 			public EvokeEvent getEvent(String mapping) {
@@ -112,7 +90,7 @@ public class EvokeTests {
 	}
 	
 	@Test
-	public void AfterFixedDateOperator() throws Exception {
+	public void testAfterFixedDateOperator() throws Exception {
 		TestContext context = createTestContext();
 		
 		MedicalLogicModule mlm = parseEvoke("3 days after 1992-01-01T00:00:00");
@@ -122,7 +100,7 @@ public class EvokeTests {
 	}
 
 	@Test
-	public void EventVariable() throws Exception {
+	public void testEventVariable() throws Exception {
 		TestContext context = createTestContext();
 		
 		MedicalLogicModule mlm = parseEvoke("penicillin_storage := EVENT{penicillin storage}", "penicillin_storage");
@@ -132,7 +110,7 @@ public class EvokeTests {
 	}
 	
 	@Test
-	public void AfterTimeOfEventOperator() throws Exception {
+	public void testAfterTimeOfEventOperator() throws Exception {
 		TestContext context = createTestContext();
 		
 		CompiledMlm mlm = parseEvoke("event1 := EVENT{penicillin storage}", "3 days after time of event1");
@@ -142,7 +120,7 @@ public class EvokeTests {
 	}
 
 	@Test
-	public void FixedDate() throws Exception {
+	public void testFixedDate() throws Exception {
 		TestContext context = createTestContext();
 		
 		MedicalLogicModule mlm = parseEvoke("1992-03-04");
@@ -152,7 +130,7 @@ public class EvokeTests {
 	}
 	
 	@Test
-	public void FixedDateTime() throws Exception {
+	public void testFixedDateTime() throws Exception {
 		TestContext context = createTestContext();
 		
 		MedicalLogicModule mlm = parseEvoke("1992-01-03T14:23:17.0");
@@ -162,7 +140,7 @@ public class EvokeTests {
 	}	
 	
 	@Test
-	public void OrOperator() throws Exception {
+	public void testOrOperator() throws Exception {
 		TestContext context = createTestContext();
 		
 		MedicalLogicModule mlm = parseEvoke(
@@ -175,7 +153,7 @@ public class EvokeTests {
 	}
 	
 	@Test
-	public void OrOperator2() throws Exception {
+	public void testOrOperator2() throws Exception {
 		TestContext context = createTestContext();
 		
 		MedicalLogicModule mlm = parseEvoke(
@@ -187,7 +165,7 @@ public class EvokeTests {
 	}
 	
 	@Test
-	public void AnyOperator() throws Exception {
+	public void testAnyOperator() throws Exception {
 		TestContext context = createTestContext();
 		
 		MedicalLogicModule mlm = parseEvoke(
@@ -200,7 +178,7 @@ public class EvokeTests {
 	}
 	
 	@Test
-	public void AnyOperator2() throws Exception {
+	public void testAnyOperator2() throws Exception {
 		TestContext context = createTestContext();
 		
 		MedicalLogicModule mlm = parseEvoke(
@@ -212,7 +190,7 @@ public class EvokeTests {
 	}
 	
 	@Test
-	public void AfterTimeOfEventOperator2() throws Exception {
+	public void testAfterTimeOfEventOperator2() throws Exception {
 		TestContext context = createTestContext();
 		
 		CompiledMlm mlm = parseEvoke("event1 := EVENT{test}", "3 days after time of event1");
@@ -226,7 +204,7 @@ public class EvokeTests {
 	}
 	
 	@Test
-	public void CyclicEvent() throws Exception {
+	public void testCyclicEvent() throws Exception {
 		TestContext context = createTestContext();
 		
 		CompiledMlm mlm = parseEvoke("every 5 days for 10 years starting 5 days after 1992-03-04");
@@ -239,7 +217,7 @@ public class EvokeTests {
 	}
 	
 	@Test
-	public void CyclicEventBeginningInThePast() throws Exception {
+	public void testCyclicEventBeginningInThePast() throws Exception {
 		TestContext context = createTestContext();
 		
 		CompiledMlm mlm = parseEvoke("every 5 days for 10 years starting 5 days after 1989-03-04");

@@ -27,13 +27,9 @@
 
 package arden.tests.implementation;
 
-import java.io.InputStreamReader;
-
 import org.junit.Assert;
 import org.junit.Test;
 
-import arden.compiler.CompiledMlm;
-import arden.compiler.Compiler;
 import arden.runtime.ArdenList;
 import arden.runtime.ArdenNull;
 import arden.runtime.ArdenString;
@@ -42,21 +38,11 @@ import arden.runtime.DatabaseQuery;
 import arden.runtime.MedicalLogicModule;
 import arden.runtime.MemoryQuery;
 
-public class ExampleTests {
-	private MedicalLogicModule compile(String filename) throws Exception {
-		Compiler c = new Compiler();
-		c.enableDebugging(filename + ".mlm");
-		CompiledMlm mlm = c
-				.compileMlm(new InputStreamReader(ExampleTests.class.getResourceAsStream(filename + ".mlm")));
-		/*FileOutputStream fos = new FileOutputStream(filename + ".class");
-		mlm.saveClassFile(fos);
-		fos.close();*/
-		return mlm;
-	}
-
+public class ExampleTest extends ImplementationTest {
+	
 	@Test
-	public void X21() throws Exception {
-		MedicalLogicModule mlm = compile("x2.1");
+	public void x31() throws Exception {
+		MedicalLogicModule mlm = compile("x3.1.mlm");
 
 		TestContext context = new TestContext();
 		mlm.run(context, null);
@@ -65,8 +51,8 @@ public class ExampleTests {
 	}
 
 	@Test
-	public void X22() throws Exception {
-		MedicalLogicModule mlm = compile("x2.2");
+	public void x32() throws Exception {
+		MedicalLogicModule mlm = compile("x3.2.mlm");
 
 		TestContext context = new TestContext();
 		mlm.run(context, null);
@@ -75,16 +61,16 @@ public class ExampleTests {
 	}
 
 	@Test
-	public void X23noAllergies() throws Exception {
-		MedicalLogicModule mlm = compile("x2.3");
+	public void x33noAllergies() throws Exception {
+		MedicalLogicModule mlm = compile("x3.3.mlm");
 		TestContext context = new TestContext();
 		mlm.run(context, null);
 		Assert.assertEquals("", context.getOutputText());
 	}
 
 	@Test
-	public void X23allergies() throws Exception {
-		MedicalLogicModule mlm = compile("x2.3");
+	public void x33allergies() throws Exception {
+		MedicalLogicModule mlm = compile("x3.3.mlm");
 		TestContext context = new TestContext() {
 			@Override
 			public DatabaseQuery createQuery(String mapping) {
@@ -99,8 +85,8 @@ public class ExampleTests {
 	}
 
 	@Test
-	public void X23allergiesButLastIsNull() throws Exception {
-		MedicalLogicModule mlm = compile("x2.3");
+	public void x33allergiesButLastIsNull() throws Exception {
+		MedicalLogicModule mlm = compile("x3.3.mlm");
 		TestContext context = new TestContext() {
 			@Override
 			public DatabaseQuery createQuery(String mapping) {
@@ -114,14 +100,14 @@ public class ExampleTests {
 	}
 
 	@Test
-	public void X23urgency() throws Exception {
-		MedicalLogicModule mlm = compile("x2.3");
+	public void x33urgency() throws Exception {
+		MedicalLogicModule mlm = compile("x3.3.mlm");
 		Assert.assertEquals(51.0, mlm.createInstance(new TestContext(), null).getUrgency(), 0);
 	}
 
 	@Test
-	public void X24() throws Exception {
-		MedicalLogicModule mlm = compile("x2.4");
+	public void x34() throws Exception {
+		MedicalLogicModule mlm = compile("x3.4.mlm");
 
 		TestContext context = new TestContext();
 		mlm.run(context, null);
@@ -130,8 +116,8 @@ public class ExampleTests {
 	}
 
 	@Test
-	public void X25() throws Exception {
-		MedicalLogicModule mlm = compile("x2.5");
+	public void x35() throws Exception {
+		MedicalLogicModule mlm = compile("x3.5.mlm");
 
 		TestContext context = new TestContext();
 		mlm.run(context, null);
@@ -142,8 +128,8 @@ public class ExampleTests {
 	}
 
 	@Test
-	public void X26() throws Exception {
-		MedicalLogicModule mlm = compile("x2.6");
+	public void x36() throws Exception {
+		MedicalLogicModule mlm = compile("x3.6.mlm");
 
 		TestContext context = new TestContext();
 		mlm.run(context, null);
@@ -152,8 +138,8 @@ public class ExampleTests {
 	}
 
 	@Test
-	public void X27() throws Exception {
-		MedicalLogicModule mlm = compile("x2.7");
+	public void x37() throws Exception {
+		MedicalLogicModule mlm = compile("x3.7.mlm");
 
 		TestContext context = new TestContext();
 		mlm.run(context, null);
@@ -162,8 +148,8 @@ public class ExampleTests {
 	}
 
 	@Test
-	public void X28() throws Exception {
-		MedicalLogicModule mlm = compile("x2.8");
+	public void x38() throws Exception {
+		MedicalLogicModule mlm = compile("x3.8.mlm");
 
 		TestContext context = new TestContext();
 		ArdenList medOrders = new ArdenList(new ArdenValue[] { new ArdenString("order1"), new ArdenString("order2"),
