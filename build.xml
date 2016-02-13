@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE project>
 <!--
     Alternate build option for arden2bytecode.
     Used in Eclipse Project to launch SableCC.
@@ -23,6 +24,7 @@
         <property name="version" value="${DSTAMP}-${TSTAMP}" />
         <property name="name" value="${ant.project.name}" />
         <property name="src.dir" value="src" />
+        <property name="test.dir" value="test" />
         <property name="tools.dir" value="tools" />
         <property name="resource.dir" value="resource" />
         <property name="lib.dir" value="lib" />
@@ -131,7 +133,7 @@
     </target>
     
     <target name="compileOnly" depends="init"
-            description="compile all .java files in ./src except for tests">
+            description="compile all .java files in ./src">
         <mkdir dir="${build.dir}" />
         <copy todir="${build.dir}">
             <fileset dir="${src.dir}">
@@ -147,7 +149,6 @@
                source="1.6"
                includeantruntime="false">
             <include name="**/*.java" />
-            <exclude name="arden/tests/*.java"/>
         </javac>
     </target>
     
@@ -156,7 +157,7 @@
     </target>
     
     <target name="jarOnly" depends="init"
-            description="generate .jar bundle from compiled files without actually compiling the sources">
+            description="generate .jar bundle from compiled files (excluding tests) without actually compiling the sources">
         <mkdir dir="${dist.dir}" />
         <manifestclasspath property="manifest.classpath" jarfile="${dist.jar}">
             <classpath refid="jar.classpath" />
@@ -170,7 +171,7 @@
                 <attribute name="Implementation-Title" value="${name}" />
                 <attribute name="Implementation-Version" value="${version}" />
             </manifest>
-            <fileset dir="${build.dir}" />
+            <fileset dir="${build.dir}" excludes="${build.dir}/arden/tests" />
             <fileset file="${resource.dir}/arden2bytecode.config" />
             <zipgroupfileset dir="${lib.dir}" includes="*.jar" />
         </jar>

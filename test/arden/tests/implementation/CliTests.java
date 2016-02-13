@@ -1,4 +1,4 @@
-package arden.tests;
+package arden.tests.implementation;
 
 import org.junit.Assert;
 import org.junit.Test;

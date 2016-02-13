@@ -1,4 +1,4 @@
-package arden.tests;
+package arden.tests.implementation;
 
 import java.io.File;
 import java.net.MalformedURLException;
