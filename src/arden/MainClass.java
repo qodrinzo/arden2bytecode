@@ -42,11 +42,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import uk.co.flamingpenguin.jewel.cli.ArgumentValidationException;
-import uk.co.flamingpenguin.jewel.cli.CliFactory;
+import arden.compiler.CompiledMlm;
 import arden.compiler.Compiler;
 import arden.compiler.CompilerException;
-import arden.compiler.CompiledMlm;
 import arden.constants.ConstantParser;
 import arden.constants.ConstantParser.ConstantParserException;
 import arden.runtime.ArdenValue;
@@ -55,6 +53,8 @@ import arden.runtime.ExpressionHelpers;
 import arden.runtime.MedicalLogicModule;
 import arden.runtime.StdIOExecutionContext;
 import arden.runtime.jdbc.JDBCExecutionContext;
+import uk.co.flamingpenguin.jewel.cli.ArgumentValidationException;
+import uk.co.flamingpenguin.jewel.cli.CliFactory;
 
 public class MainClass {
 	public final static String MLM_FILE_EXTENSION = ".mlm";
@@ -363,8 +363,8 @@ public class MainClass {
 						+ "are non-options are regarded as input \n"
 						+ "files.");
 				System.err.println("For a command-line reference, see:\n"
-						+ "http://arden2bytecode.sourceforge.net/docs/"
-						+ "arden2bytecode-command-line-reference");
+						+ "https://plri.github.io/arden2bytecode/docs/"
+						+ "arden2bytecode-command-line-reference/");
 			}
 			
 			return 1;
