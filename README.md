@@ -60,8 +60,6 @@ Languages features not implemented:
 * From Arden Syntax 2.5 specification:
     * 11.2.5.2 Message As statement 
     * 11.2.5.6 Destination As statement
-    * A6.2 "Time of" always returns null for objects. (correct would be: if all attributes of an object share a common primary time, the time of operator will return that time when applied to the object) 
-    * Timezones for ArdenTime values.
     * Some string formatting specificiers are not implemented.
     * There is no way to use Arden variables within mapping clauses.
     * Citation/links slots are not syntax checked.
