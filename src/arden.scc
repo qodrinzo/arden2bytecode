@@ -500,7 +500,7 @@ knowledge_body =
 /****** maintenance slots ******/
 
 title_slot =
-                title text semicolons;
+                title text? semicolons;
 
 mlmname_slot =
       {mname}   mlmname mlmname_text semicolons
@@ -518,7 +518,7 @@ arden_version_slot =
                   /* form of < mlmname_slot >           */
 
 version_slot =
-                version colon text semicolons;
+                version colon text? semicolons;
 
 institution_slot =
                 institution colon text? semicolons;

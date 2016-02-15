@@ -30,7 +30,30 @@ package arden.compiler;
 import java.util.Date;
 
 import arden.compiler.analysis.DepthFirstAdapter;
-import arden.compiler.node.*;
+import arden.compiler.node.AAuthorSlot;
+import arden.compiler.node.ACitationsSlot;
+import arden.compiler.node.ADateMlmDate;
+import arden.compiler.node.ADateSlot;
+import arden.compiler.node.ADtimeMlmDate;
+import arden.compiler.node.AEmptyArdenVersionSlot;
+import arden.compiler.node.AEmptyPrioritySlot;
+import arden.compiler.node.AExpValidationCode;
+import arden.compiler.node.AExplanationSlot;
+import arden.compiler.node.AFnameMlmnameSlot;
+import arden.compiler.node.AInstitutionSlot;
+import arden.compiler.node.AKeywordsSlot;
+import arden.compiler.node.ALinksSlot;
+import arden.compiler.node.AMnameMlmnameSlot;
+import arden.compiler.node.APriPrioritySlot;
+import arden.compiler.node.AProdValidationCode;
+import arden.compiler.node.APurposeSlot;
+import arden.compiler.node.AResValidationCode;
+import arden.compiler.node.ASpecialistSlot;
+import arden.compiler.node.ATestValidationCode;
+import arden.compiler.node.ATitleSlot;
+import arden.compiler.node.AVersionSlot;
+import arden.compiler.node.AVrsnArdenVersionSlot;
+import arden.compiler.node.TNumberLiteral;
 import arden.runtime.LibraryMetadata;
 import arden.runtime.MaintenanceMetadata;
 import arden.runtime.RuntimeHelpers;
@@ -70,7 +93,11 @@ final class MetadataCompiler extends DepthFirstAdapter {
 	// | {fname} filename mlmname_text semicolons;
 	@Override
 	public void caseAMnameMlmnameSlot(AMnameMlmnameSlot node) {
-		maintenance.setMlmName(node.getMlmnameText().getText().trim());
+		String mlmname = node.getMlmnameText().getText().trim();
+		if(mlmname.isEmpty() || mlmname.length() > 80) {
+			throw new RuntimeCompilerException(node.getMlmnameText(), "The mlmname must be 1 to 80 characters in length");
+		}
+		maintenance.setMlmName(mlmname);
 	}
 
 	@Override
@@ -97,14 +124,24 @@ final class MetadataCompiler extends DepthFirstAdapter {
 	// version_slot = version colon text semicolons;
 	@Override
 	public void caseAVersionSlot(AVersionSlot node) {
-		if (node.getText() != null)
-			maintenance.setVersion(node.getText().getText().trim());
+		if (node.getText() != null) {
+			String version = node.getText().getText().trim();
+			if(version.length() > 80) {
+				throw new RuntimeCompilerException(node.getText(), "Version must be shorter than 81 characters");
+			}
+			maintenance.setVersion(version);
+		}
 	}
 
 	@Override
 	public void caseAInstitutionSlot(AInstitutionSlot node) {
-		if (node.getText() != null)
-			maintenance.setInstitution(node.getText().getText().trim());
+		if (node.getText() != null) {
+			String institution = node.getText().getText().trim();
+			if(institution.length() > 80) {
+				throw new RuntimeCompilerException(node.getText(), "Institution must be shorter than 81 characters");
+			}
+			maintenance.setInstitution(institution);
+		}
 	}
 
 	// author_slot = author text? semicolons;
@@ -209,6 +246,10 @@ final class MetadataCompiler extends DepthFirstAdapter {
 
 	@Override
 	public void caseAPriPrioritySlot(APriPrioritySlot node) {
-		priority = ParseHelpers.getLiteralDoubleValue(node.getNumberLiteral());
+		TNumberLiteral literal = node.getNumberLiteral();
+		priority = ParseHelpers.getLiteralDoubleValue(literal);
+		if(priority < 1 || priority > 99) {
+			throw new RuntimeCompilerException(literal, "Priority must be a number from 1 to 99");
+		}
 	}
 }
