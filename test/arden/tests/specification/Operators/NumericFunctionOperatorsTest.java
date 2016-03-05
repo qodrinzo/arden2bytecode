@@ -67,7 +67,7 @@ public class NumericFunctionOperatorsTest extends SpecificationTest {
 		
 		// primary time is preserved
 		String data = new ArdenCodeBuilder().addData("x := \"5\"; TIME x := 1997-10-31T00:00:00;").toString();
-		assertEvaluatesToWithData(data, "TIME x AS NUMBER", "1997-10-31T00:00:00");
+		assertEvaluatesToWithData(data, "TIME (x AS NUMBER)", "1997-10-31T00:00:00");
 	}
 	
 }
