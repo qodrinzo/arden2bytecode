@@ -160,6 +160,7 @@ public class TokensTest extends SpecificationTest {
 	public void testComments() throws Exception {
 		assertValidStatement("/* Lorem /* ipsum // */");
 		assertValidStatement("// Lorem // */ ipsum \n");
+		assertValidStatement("a/**/:=/*xyz*/5;");
 	}
 
 	@Test
