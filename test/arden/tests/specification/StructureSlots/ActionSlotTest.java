@@ -1,9 +1,8 @@
 package arden.tests.specification.StructureSlots;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -59,7 +58,7 @@ public class ActionSlotTest extends SpecificationTest {
 		
 		String multiReturn = new ArdenCodeBuilder().addAction("RETURN 5, (\"a\", \"b\");").toString();
 		List<String> returnValues = getCompiler().compileAndRun(multiReturn).returnValues;
-		assertTrue(returnValues.equals(Arrays.asList("5", "(\"a\",\"b\")")));
+		assertArrayEquals(new String[]{"5", "(\"a\",\"b\")"}, returnValues.toArray());
 		
 		String empty = new ArdenCodeBuilder().toString();
 		assertNoReturn(empty);
