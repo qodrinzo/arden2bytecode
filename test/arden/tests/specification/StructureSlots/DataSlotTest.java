@@ -211,21 +211,33 @@ public class DataSlotTest extends SpecificationTest {
 	public void testIncludeStatement() throws Exception {
 		String mlm1 = new ArdenCodeBuilder()
 				.replaceSlotContent("mlmname:", "mlm1")
-				.addData("a := 1;")
+				.addData("Patient := OBJECT [Name, DateOfBirth, Id];")
 				.toString();
 		String mlm2 = new ArdenCodeBuilder()
 				.replaceSlotContent("mlmname:", "mlm2")
-				.addData("a := 2;")
+				.addData("Patient := OBJECT [Id, Name, DateOfBirth, Gender, Phone];")
 				.toString();
+		
+		String include = new ArdenCodeBuilder()
+				.addMlm(mlm1)
+				.addData("othermlm := MLM 'mlm1';")
+				.addData("INCLUDE othermlm;")
+				.addData("p := NEW Patient;")
+				.addData("p.Id := 5;")
+				.addAction("RETURN p.Id;")
+				.toString();
+		assertReturns(include, "5");
 		
 		String localPrecedence = new ArdenCodeBuilder()
 				.addMlm(mlm1)
-				.addData("a := 3;")
+				.addData("Patient := OBJECT [Id, Name, Phone];")
 				.addData("othermlm := MLM 'mlm1';")
 				.addData("INCLUDE othermlm;")
-				.addAction("RETURN a;")
+				.addData("p := NEW Patient;")
+				.addData("p.Phone := 12345;")
+				.addAction("RETURN p.Phone;")
 				.toString();
-		assertReturns(localPrecedence, "3");
+		assertReturns(localPrecedence, "12345");
 		
 		String latestPrecedence = new ArdenCodeBuilder()
 				.addMlm(mlm1)
@@ -234,9 +246,11 @@ public class DataSlotTest extends SpecificationTest {
 				.addData("INCLUDE mlm1;")
 				.addData("mlm2 := MLM 'mlm2';")
 				.addData("INCLUDE mlm2;")
-				.addAction("RETURN a;")
+				.addData("p := NEW Patient;")
+				.addData("p.Gender := \"f\";")
+				.addAction("RETURN p.Gender;")
 				.toString();
-		assertReturns(latestPrecedence, "2");
+		assertReturns(latestPrecedence, "\"f\"");
 	}
 
 }
