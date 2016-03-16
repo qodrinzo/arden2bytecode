@@ -25,6 +25,7 @@
         <property name="name" value="${ant.project.name}" />
         <property name="src.dir" value="src" />
         <property name="test.dir" value="test" />
+        <property name="junit.output.dir" value="junit" />
         <property name="tools.dir" value="tools" />
         <property name="resource.dir" value="resource" />
         <property name="lib.dir" value="lib" />
@@ -43,6 +44,9 @@
             <path refid="build.classpath" />
             <path location="${build.dir}" />
             <path location="." />
+        </path>
+        <path id="test.classpath">
+            <path refid="run.classpath" />
         </path>
         <path id="jar.classpath">
             <path location="." />
@@ -85,8 +89,10 @@
     <target name="clean" depends="init,createSableCCDirectories,cleanClasses" 
             description="clean the 'bin' and 'dist' directories and delete sableCC-generated .java files">
         <mkdir dir="${dist.dir}" />
+        <mkdir dir="${junit.output.dir}"/>
         <delete includeemptydirs="true">
             <fileset dir="${dist.dir}" includes="**/*" />
+            <fileset dir="${junit.output.dir}" includes="**/*" />
             <fileset dir="${src.dir}/arden/compiler/analysis" includes="**/*" />
             <fileset dir="${src.dir}/arden/compiler/lexer" includes="**/*" />
             <fileset dir="${src.dir}/arden/compiler/node" includes="**/*" />
@@ -140,8 +146,12 @@
                 <exclude name="**/*.java"/>
                 <exclude name="**/*.class"/>
             </fileset>
+            <fileset dir="${test.dir}">
+                <exclude name="**/*.java"/>
+                <exclude name="**/*.class"/>
+            </fileset>
         </copy>
-        <javac srcdir="${src.dir}" 
+        <javac srcdir="${src.dir}:${test.dir}" 
                destdir="${build.dir}" 
                debug="${debug}" 
                classpathref="build.classpath" 
@@ -248,6 +258,41 @@
               fork="true" 
               output="output.txt" 
               logError="true"></java>
+    </target>
+
+    <target name="runImplementationTestSuite"
+	    depends="compile"
+            description="runs the jUnit test suite for the Arden2ByteCodeImplementation">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <classpath refid="test.classpath"/>
+            <test name="arden.tests.implementation.ImplementationTestSuite"
+		  todir="${junit.output.dir}"/>
+        </junit>
+    </target>
+
+    <target name="runSpecificationTestSuite"
+	    depends="compile"
+            description="runs the jUnit test suite for standard compliance">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <classpath refid="test.classpath"/>
+            <test name="arden.tests.specification.SpecificationTestSuite"
+		  todir="${junit.output.dir}"/>
+        </junit>
+    </target>
+
+    <target name="generateTestReport"
+	    depends="runSpecificationTestSuite,runImplementationTestSuite"
+            description="generate report of the jUnit test suites">
+        <junitreport todir="${junit.output.dir}">
+            <fileset dir="${junit.output.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="noframes" todir="${junit.output.dir}"/>
+        </junitreport>
     </target>
 </project>
 
