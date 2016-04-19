@@ -93,7 +93,7 @@
         </copy>
         
         <javac srcdir="${src.dir}:${test.dir}" destdir="${build.dir}" debug="${debug}"
-            classpathref="build.classpath" optimize="${optimize}" source="1.6" includeantruntime="false">
+            classpathref="build.classpath" optimize="${optimize}" source="1.7" includeantruntime="false">
             <include name="**/*.java" />
         </javac>
     </target>
