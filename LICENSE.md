@@ -17,15 +17,6 @@ But until this happens, this Arden Compiler as a whole is using the GNU GPL.
 Daniel Grunwald, 4th May 2010
 
 
-Libraries Used in Arden2ByteCode
---------------------------------
-
-Arden2ByteCode as of the repository forked by Hannes Flicka 
-(hflicka on GitHub) uses the JewelCLI binary distribution which 
-is licensed under the terms of the Apache License version 2.0.
-The Apache License is found in the accompanying file `jewelcli-license.txt`
-
-
 Arden2ByteCode License Text
 ---------------------------
 

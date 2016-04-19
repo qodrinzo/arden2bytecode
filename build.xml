@@ -6,7 +6,7 @@
     
     Author: Hannes Flicka (hflicka@github)
 -->
-<project name="arden2bytecode" default="jar" basedir=".">
+<project name="arden2bytecode" default="compile" basedir=".">
     <description>arden2bytecode ant build script</description>
 
     <!-- global properties -->
@@ -56,6 +56,21 @@
         <exclude name="hamcrest-core*.jar" />
         <exclude name="sqlite-jdbc*.jar" />
     </fileset>
+    
+    
+    <target name="dependencies" description="Download dependencies">
+        <mkdir dir="${tools.dir}" />
+        <get dest="${tools.dir}/sablecc.jar" skipexisting="true"
+            src="http://central.maven.org/maven2/sablecc/sablecc/3.2-1/sablecc-3.2-1.jar" />
+            
+        <mkdir dir="${lib.dir}" />
+        <get dest="${lib.dir}" skipexisting="true">
+            <url url="http://central.maven.org/maven2/com/lexicalscope/jewelcli/jewelcli/0.8.9/jewelcli-0.8.9.jar" />
+            <url url="http://central.maven.org/maven2/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" />
+            <url url="http://central.maven.org/maven2/junit/junit/4.12/junit-4.12.jar" />
+            <url url="http://central.maven.org/maven2/org/xerial/sqlite-jdbc/3.8.11.2/sqlite-jdbc-3.8.11.2.jar" />
+        </get>
+    </target>
 
     
     <target name="clean"
@@ -76,7 +91,7 @@
     </target>
 
     
-    <target name="compile" depends="sableCC"
+    <target name="compile" depends="sableCC, dependencies"
         description="Compile sources">
         <mkdir dir="${build.dir}" />
         
@@ -99,7 +114,7 @@
     </target>
 
     
-    <target name="sableCC" depends="sableCC.constants, sableCC.compiler"
+    <target name="sableCC" depends="dependencies, sableCC.constants, sableCC.compiler"
         description="Start sableCC to generate parsers from grammars">
     </target>
 
