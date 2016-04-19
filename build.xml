@@ -6,64 +6,106 @@
     
     Author: Hannes Flicka (hflicka@github)
 -->
-<project name="arden2bytecode" default="default" basedir=".">
-    <description>arden2bytecode ant build script.</description>
+<project name="arden2bytecode" default="jar" basedir=".">
+    <description>arden2bytecode ant build script</description>
+
+    <!-- global properties -->
+    <property name="debug" value="on" />
+    <property name="optimize" value="off" />
+    <property name="deprecation" value="on" />
+    <tstamp>
+        <format property="release.stamp" pattern="yyyy-MM-dd" locale="en,US" />
+    </tstamp>
+    <property name="version" value="${DSTAMP}-${TSTAMP}" />
+    <property name="name" value="${ant.project.name}" />
+    <property name="src.dir" value="src" />
+    <property name="test.dir" value="test" />
+    <property name="test.report.dir" value="report" />
+    <property name="tools.dir" value="tools" />
+    <property name="resource.dir" value="resource" />
+    <property name="lib.dir" value="lib" />
+    <property name="build.dir" value="bin" />
+    <property name="dist.dir" value="dist" />
+    <property name="dist.file" value="${name}-${version}.jar" />
+    <property name="mainclass" value="arden.MainClass" />
+    <property name="mainclass.test.implementation" value="arden.tests.implementation.ImplementationTestSuite" />
+    <property name="mainclass.test.specification" value="arden.tests.specification.SpecificationTestSuite" />
     
-    <target name="default" depends="jar" 
-            description="default target, depends on 'jar' which means a binary jar file will be built.">
+    <filter token="log" value="true" />
+    <filter token="verbose" value="true" />
+    
+    <path id="build.classpath">
+        <fileset dir="${lib.dir}">
+            <include name="*.jar" />
+        </fileset>
+    </path>
+    <path id="run.classpath">
+        <path refid="build.classpath" />
+        <path location="${build.dir}" />
+        <path location="." />
+    </path>
+    <path id="test.classpath">
+        <path refid="run.classpath" />
+    </path>
+    <path id="dist.classpath">
+        <path location="." />
+    </path>
+    <fileset id="dist.libs" dir="${lib.dir}" includes="*.jar">
+        <!-- exclude these libs from the generated jar -->
+        <exclude name="junit*.jar" />
+        <exclude name="hamcrest-core*.jar" />
+        <exclude name="sqlite-jdbc*.jar" />
+    </fileset>
+
+    
+    <target name="clean"
+        description="Clean the 'bin', 'dist' and 'reports' directories and delete SableCC-generated .java files">
+        <delete includeemptydirs="true" failonerror="false">
+            <fileset dir="${build.dir}" includes="**/*" />
+            <fileset dir="${dist.dir}" includes="**/*" />
+            <fileset dir="${test.report.dir}" includes="**/*" />
+            <fileset dir="${src.dir}/arden/constants/analysis" includes="**/*" />
+            <fileset dir="${src.dir}/arden/constants/lexer" includes="**/*" />
+            <fileset dir="${src.dir}/arden/constants/node" includes="**/*" />
+            <fileset dir="${src.dir}/arden/constants/parser" includes="**/*" />
+            <fileset dir="${src.dir}/arden/compiler/analysis" includes="**/*" />
+            <fileset dir="${src.dir}/arden/compiler/lexer" includes="**/*" />
+            <fileset dir="${src.dir}/arden/compiler/node" includes="**/*" />
+            <fileset dir="${src.dir}/arden/compiler/parser" includes="**/*" />
+        </delete>
     </target>
 
-    <target name="init" 
-            description="initializes used variables, mostly paths and directories">
-        <tstamp>
-            <format property="release.stamp" pattern="yyyy-MM-dd" locale="en,US" />
-        </tstamp>
-        <property name="debug" value="on" />
-        <property name="optimize" value="off" />
-        <property name="deprecation" value="on" />
-        <property name="version" value="${DSTAMP}-${TSTAMP}" />
-        <property name="name" value="${ant.project.name}" />
-        <property name="src.dir" value="src" />
-        <property name="test.dir" value="test" />
-        <property name="tools.dir" value="tools" />
-        <property name="resource.dir" value="resource" />
-        <property name="lib.dir" value="lib" />
-        <property name="build.dir" value="bin" />
-        <property name="dist.dir" value="dist" />
-        <property name="dist.jar" value="${name}-${version}.jar" />
-        <property name="run.entrypoint" value="arden.MainClass" />
-        <filter token="log" value="true" />
-        <filter token="verbose" value="true" />
-        <path id="build.classpath">
-            <fileset dir="${lib.dir}">
-                <include name="*.jar" />
+    
+    <target name="compile" depends="sableCC"
+        description="Compile sources">
+        <mkdir dir="${build.dir}" />
+        
+        <!-- copy other (not .java) files -->
+        <copy todir="${build.dir}">
+            <fileset dir="${src.dir}">
+                <exclude name="**/*.java" />
+                <exclude name="**/*.class" />
             </fileset>
-        </path>
-        <path id="run.classpath">
-            <path refid="build.classpath" />
-            <path location="${build.dir}" />
-            <path location="." />
-        </path>
-        <path id="jar.classpath">
-            <path location="." />
-        </path>
+            <fileset dir="${test.dir}">
+                <exclude name="**/*.java" />
+                <exclude name="**/*.class" />
+            </fileset>
+        </copy>
         
-        <condition property="sableCCDirectoriesExist">
-            <and>
-                <available file="${src.dir}/arden/compiler/analysis" type="dir" />
-                <available file="${src.dir}/arden/compiler/lexer" type="dir" />
-                <available file="${src.dir}/arden/compiler/node" type="dir" />
-                <available file="${src.dir}/arden/compiler/parser" type="dir" />
-                <available file="${src.dir}/arden/constants/analysis" type="dir" />
-                <available file="${src.dir}/arden/constants/lexer" type="dir" />
-                <available file="${src.dir}/arden/constants/node" type="dir" />
-                <available file="${src.dir}/arden/constants/parser" type="dir" />
-            </and>
-        </condition>
-        
+        <javac srcdir="${src.dir}:${test.dir}" destdir="${build.dir}" debug="${debug}"
+            classpathref="build.classpath" optimize="${optimize}" source="1.6" includeantruntime="false">
+            <include name="**/*.java" />
+        </javac>
     </target>
 
-    <target name="createSableCCDirectories" unless="sableCCDirectoriesExist">
+    
+    <target name="sableCC" depends="sableCC.constants, sableCC.compiler"
+        description="Start sableCC to generate parsers from grammars">
+    </target>
+
+    
+    <target name="init.sableCC">
+        <!-- create SableCC directories -->
         <mkdir dir="${src.dir}/arden/compiler/analysis" />
         <mkdir dir="${src.dir}/arden/compiler/lexer" />
         <mkdir dir="${src.dir}/arden/compiler/node" />
@@ -72,110 +114,60 @@
         <mkdir dir="${src.dir}/arden/constants/lexer" />
         <mkdir dir="${src.dir}/arden/constants/node" />
         <mkdir dir="${src.dir}/arden/constants/parser" />
-    </target>
-    
-    <target name="cleanClasses" depends="init" 
-            description="clean all java classes and files in the 'bin' directory">
-        <mkdir dir="${build.dir}" />
-        <delete includeemptydirs="true">
-            <fileset dir="${build.dir}" includes="**/*" />
-        </delete>
-    </target>
-    
-    <target name="clean" depends="init,createSableCCDirectories,cleanClasses" 
-            description="clean the 'bin' and 'dist' directories and delete sableCC-generated .java files">
-        <mkdir dir="${dist.dir}" />
-        <delete includeemptydirs="true">
-            <fileset dir="${dist.dir}" includes="**/*" />
-            <fileset dir="${src.dir}/arden/compiler/analysis" includes="**/*" />
-            <fileset dir="${src.dir}/arden/compiler/lexer" includes="**/*" />
-            <fileset dir="${src.dir}/arden/compiler/node" includes="**/*" />
-            <fileset dir="${src.dir}/arden/compiler/parser" includes="**/*" />
-            <fileset dir="${src.dir}/arden/constants/analysis" includes="**/*" />
-            <fileset dir="${src.dir}/arden/constants/lexer" includes="**/*" />
-            <fileset dir="${src.dir}/arden/constants/node" includes="**/*" />
-            <fileset dir="${src.dir}/arden/constants/parser" includes="**/*" />
-        </delete>
-    </target>
 
-    <target name="initSableCC" depends="init,createSableCCDirectories">
-        <uptodate property="arden.compiler.update.necessary" targetfile="${src.dir}/arden.scc">
+        <uptodate property="sableCC.compiler.update.necessary" targetfile="${src.dir}/arden.scc">
             <srcfiles dir="${src.dir}/arden/compiler/analysis" includes="**/*" />
             <srcfiles dir="${src.dir}/arden/compiler/lexer" includes="**/*" />
             <srcfiles dir="${src.dir}/arden/compiler/node" includes="**/*" />
             <srcfiles dir="${src.dir}/arden/compiler/parser" includes="**/*" />
         </uptodate>
-        <uptodate property="arden.constants.update.necessary" targetfile="${src.dir}/ardenConstants.scc">
+        <uptodate property="sableCC.constants.update.necessary" targetfile="${src.dir}/ardenConstants.scc">
             <srcfiles dir="${src.dir}/arden/constants/analysis" includes="**/*" />
             <srcfiles dir="${src.dir}/arden/constants/lexer" includes="**/*" />
             <srcfiles dir="${src.dir}/arden/constants/node" includes="**/*" />
             <srcfiles dir="${src.dir}/arden/constants/parser" includes="**/*" />
         </uptodate>
+
         <taskdef name="sablecc" classname="org.sablecc.ant.taskdef.Sablecc">
             <classpath>
-                <pathelement location="${tools.dir}/sablecc.jar"/>
+                <pathelement location="${tools.dir}/sablecc.jar" />
             </classpath>
         </taskdef>
     </target>
+
     
-    <target name="sableCC.constants" depends="init,initSableCC" if="arden.constants.update.necessary">
-        <sablecc src="${src.dir}" includes="ardenConstants.scc"
-            outputdirectory="${src.dir}"></sablecc>
+    <target name="sableCC.compiler" depends="init.sableCC" if="sableCC.compiler.update.necessary">
+        <sablecc src="${src.dir}" includes="arden.scc" outputdirectory="${src.dir}"/>
     </target>
-        
-    <target name="sableCC.compiler" depends="init,initSableCC" if="arden.compiler.update.necessary">
-        <sablecc src="${src.dir}" includes="arden.scc"
-            outputdirectory="${src.dir}"></sablecc>
-    </target>
+
     
-    <target name="sableCC" depends="init,initSableCC,sableCC.constants,sableCC.compiler"
-            description="start sableCC to generate parsers from grammars">
+    <target name="sableCC.constants" depends="init.sableCC" if="sableCC.constants.update.necessary">
+        <sablecc src="${src.dir}" includes="ardenConstants.scc" outputdirectory="${src.dir}"/>
     </target>
+
     
-    <target name="compileOnly" depends="init"
-            description="compile all .java files in ./src">
-        <mkdir dir="${build.dir}" />
-        <copy todir="${build.dir}">
-            <fileset dir="${src.dir}">
-                <exclude name="**/*.java"/>
-                <exclude name="**/*.class"/>
-            </fileset>
-        </copy>
-        <javac srcdir="${src.dir}" 
-               destdir="${build.dir}" 
-               debug="${debug}" 
-               classpathref="build.classpath" 
-               optimize="${optimize}" 
-               source="1.6"
-               includeantruntime="false">
-            <include name="**/*.java" />
-        </javac>
-    </target>
-    
-    <target name="compile" depends="sableCC,compileOnly"
-            description="start sableCC and, after that, compile sources">
-    </target>
-    
-    <target name="jarOnly" depends="init"
-            description="generate .jar bundle from compiled files (excluding tests) without actually compiling the sources">
+    <target name="jar" depends="compile" description="Generate .jar bundle">
         <mkdir dir="${dist.dir}" />
-        <manifestclasspath property="manifest.classpath" jarfile="${dist.jar}">
-            <classpath refid="jar.classpath" />
+        <manifestclasspath property="manifest.classpath" jarfile="${dist.file}">
+            <classpath refid="dist.classpath" />
         </manifestclasspath>
-        <jar destfile="${dist.dir}/${dist.jar}">
+        <jar destfile="${dist.dir}/${dist.file}">
             <manifest>
                 <attribute name="Built-By" value="${user.name}" />
-                <attribute name="Main-Class" value="${run.entrypoint}" />
+                <attribute name="Main-Class" value="${mainclass}" />
                 <!-- <attribute name="Class-Path" value="${manifest.classpath}" /> -->
                 <attribute name="Implementation-Vendor" value="${user.name}" />
                 <attribute name="Implementation-Title" value="${name}" />
                 <attribute name="Implementation-Version" value="${version}" />
             </manifest>
+            <!-- exclude tests -->
             <fileset dir="${build.dir}" excludes="${build.dir}/arden/tests" />
             <fileset file="${resource.dir}/arden2bytecode.config" />
-            <zipgroupfileset dir="${lib.dir}" includes="*.jar" />
+            <zipgroupfileset refid="dist.libs" />
         </jar>
-        <basename property="jar.filename" file="${dist.jar}" />
+        <basename property="jar.filename" file="${dist.file}" />
+        
+        <!-- generated cmd and shell script -->
         <echo file="${dist.dir}/${name}.cmd" append="false">@echo off
              java -jar "%~dp0${jar.filename}" %*
              rem pause
@@ -186,28 +178,24 @@
         <chmod file="${dist.dir}/${name}" perm="ugo+x" />
     </target>
 
-    <target name="jar" depends="compile,jarOnly"
-            description="compile, then package everything into a .jar">
-    </target>
     
-    <target name="distOnly" depends="jarOnly"
-            description="build distribution .tar and .zip file">
-        <tar destfile="${dist.dir}/${name} - binary release ${release.stamp}.tar.gz"
-            compression="gzip">
+    <target name="dist" depends="jar" description="Build distribution .tar and .zip file">
+        <tar destfile="${dist.dir}/${name} - binary release ${release.stamp}.tar.gz" compression="gzip">
             <tarfileset dir="${dist.dir}">
-                <include name="${dist.jar}"/>
-                <include name="${name}.cmd"/>
+                <include name="${dist.file}" />
+                <include name="${name}.cmd" />
             </tarfileset>
             <tarfileset dir="${dist.dir}" filemode="755">
-                <include name="${name}"/>
+                <include name="${name}" />
             </tarfileset>
             <tarfileset dir="${resource.dir}">
                 <include name="examples/**" />
             </tarfileset>
         </tar>
+        
         <zip destfile="${dist.dir}/${name} - binary release ${release.stamp}.zip">
             <zipfileset dir="${dist.dir}">
-                <include name="${dist.jar}" />
+                <include name="${dist.file}" />
                 <include name="${name}.cmd" />
             </zipfileset>
             <zipfileset dir="${dist.dir}" filemode="755">
@@ -218,36 +206,45 @@
             </zipfileset>
         </zip>
     </target>
+
     
-    <target name="dist" depends="jar,distOnly"
-                description="build distribution .tar and .zip file">
-    </target>
-    
-    <target name="compileAndJarOnly" depends="compileOnly,jarOnly"
-            description="compile the sources without starting sableCC, then package a .jar">        
-    </target>
-    
-    <target name="runOnly" depends="init"
-            description="run the program from the bin directory">
+    <target name="run" depends="compile" description="Run the program from the bin directory">
         <property name="echoclasspath" refid="run.classpath" />
-        <echo message="Running ${run.entrypoint} with classpath: ${echoclasspath}" />
-        <java classname="${run.entrypoint}" classpathref="run.classpath" fork="true"></java>
-    </target>
-    
-    <target name="run" depends="compile,runOnly"
-            description="compile, then run the program">        
+        <echo message="Running ${mainclass} with classpath: ${echoclasspath}" />
+        <java classname="${mainclass}" classpathref="run.classpath" fork="true">
+        </java>
     </target>
 
-    <target name="runAndRedirectOutput" depends="compile"
-            description="run the program and redirect output to 'output.txt'">        
-        <property name="echoclasspath" refid="run.classpath" />
-        <echo message="Redirecting output to 'output.txt'" />
-        <echo message="Running ${run.entrypoint} with classpath: ${echoclasspath}" />
-        <java classname="${run.entrypoint}" 
-              classpathref="run.classpath" 
-              fork="true" 
-              output="output.txt" 
-              logError="true"></java>
+    
+    <target name="test" depends="test.specification, test.implementation"
+        description="Generate report of the test suites (implementation and standard compliance)">
+        <junitreport todir="${test.report.dir}">
+            <fileset dir="${test.report.dir}">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report format="noframes" todir="${test.report.dir}" />
+        </junitreport>
     </target>
+    
+    
+    <target name="test.implementation" depends="compile">
+        <mkdir dir="${test.report.dir}" />
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml" />
+            <classpath refid="test.classpath" />
+            <test name="${mainclass.test.implementation}" todir="${test.report.dir}" />
+        </junit>
+    </target>
+
+    
+    <target name="test.specification" depends="compile">
+        <mkdir dir="${test.report.dir}" />
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml" />
+            <classpath refid="test.classpath" />
+            <test name="${mainclass.test.specification}" todir="${test.report.dir}" />
+        </junit>
+    </target>
+
 </project>
 
