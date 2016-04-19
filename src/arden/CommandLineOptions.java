@@ -29,9 +29,9 @@ package arden;
 
 import java.util.List;
 
-import uk.co.flamingpenguin.jewel.cli.CommandLineInterface;
-import uk.co.flamingpenguin.jewel.cli.Option;
-import uk.co.flamingpenguin.jewel.cli.Unparsed;
+import com.lexicalscope.jewel.cli.CommandLineInterface;
+import com.lexicalscope.jewel.cli.Option;
+import com.lexicalscope.jewel.cli.Unparsed;
 
 @CommandLineInterface(application="arden2bytecode")
 public interface CommandLineOptions {

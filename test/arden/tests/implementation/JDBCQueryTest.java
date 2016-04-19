@@ -17,6 +17,8 @@ import java.sql.Statement;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.lexicalscope.jewel.cli.CliFactory;
+
 import arden.CommandLineOptions;
 import arden.compiler.CompiledMlm;
 import arden.compiler.Compiler;
@@ -30,7 +32,6 @@ import arden.runtime.MedicalLogicModule;
 import arden.runtime.jdbc.DriverHelper;
 import arden.runtime.jdbc.JDBCExecutionContext;
 import arden.runtime.jdbc.JDBCQuery;
-import uk.co.flamingpenguin.jewel.cli.CliFactory;
 
 public class JDBCQueryTest extends ImplementationTest {
 	private static boolean SQLiteLoaded = false;
