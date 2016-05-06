@@ -23,16 +23,22 @@
 
                 {% assign dropdown_collection = null %}
                 {% for collection in site.collections %}
-                  {% if p.nav_collection == collection[1].label %}{% assign dropdown_collection = collection %}{% endif %}
+                  {% if p.nav_collection == collection.label %}
+                    {% assign dropdown_collection = collection %}
+                  {% endif %}
                 {% endfor %}
 
-                {% if p.url == page.url or dropdown_collection and page.collection == p.nav_collection %}{% assign active_class = "active" %}{% else %}{% assign active_class = "" %}{% endif %}
+                {% if p.url == page.url or dropdown_collection and page.collection == p.nav_collection %}
+                  {% assign active_class = "active" %}
+                {% else %}
+                  {% assign active_class = "" %}
+                {% endif %}
 
                 {% if dropdown_collection %}
               <li class="{{ active_class }} dropdown">
                 <a href="{{ p.url | prepend: baseurl }}" data-toggle="dropdown" data-hover="dropdown" data-delay="200" role="button" aria-haspopup="true" aria-expanded="false">{{ p.nav_title }}<span class="caret"></span></a>
                 <ul class="dropdown-menu">
-                  {% for doc_page in dropdown_collection[1].docs | sort:"title" %}
+                  {% for doc_page in dropdown_collection.docs | sort:"title" %}
                     <li><a href="{{ doc_page.url | prepend: baseurl }}">{{ doc_page.title }}</a></li>
                   {% endfor %}
                 </ul>
