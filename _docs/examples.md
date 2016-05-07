@@ -1,6 +1,8 @@
 ---
 # GENERATED - DO NOT EDIT
-title: Example MLMs
+title: Examples
+category: Arden Syntax
+nav_order: 13
 ---
 {% include get_url %}
 Overview and how to download

@@ -19,8 +19,6 @@ Arden2ByteCode, Arden4Eclipse and associated projects are hosted at [GitHub](htt
 ## Developer Documentation
 The documentation for developers is contained in the source code itself and in various README.md [Markdown](https://en.wikipedia.org/wiki/Markdown) files in the according GitHub repositories.
 
-A list of all documentation files is available [here]({{ baseurl }}/docs/developer-documentation).
-
 ## Contributing
 If you want to contribute, [sign up to GitHub](https://github.com/join) and [fork](https://help.github.com/articles/fork-a-repo/) a project, submit your issues, ideas or proposals via the [Arden2ByteCode issue tracker]({{ site.compiler.repo }}/issues/) and [Arden4Eclipse issue tracker]({{ site.plugin.repo }}/issues/), or [contact us]({{ baseurl }}/contact).
 
