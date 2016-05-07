@@ -7,7 +7,7 @@ custom_js:
   - {file: issues_query.js, foot: true}
 ---
 
-If you find a bug, or have an idea on how to improve Arden4Eclipse, please post it at the [Arden2ByteCode issue tracker]({{ site.compiler.repo }}/issues) or the [Arden4Eclipse issue tracker]({{ site.plugin.repo }}/issues) at GitHub.  
+If you find a bug, or have an idea for improvements, please post it at the [Arden2ByteCode issue tracker]({{ site.compiler.repo }}/issues) or the [Arden4Eclipse issue tracker]({{ site.plugin.repo }}/issues) at GitHub.  
 
 <br/>
 
