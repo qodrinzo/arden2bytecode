@@ -15,11 +15,13 @@ The most recent binary packages can be found at the GitHub project [downloads li
 
 Here is a mirror of that listing:
 
-<ul id="downloads"><li style="list-style-type: none;">Loading (requires JavaScript)...</li></ul>
+<ul class="list-group" id="downloads">
+  <li class="list-group-item disabled">Loading (requires JavaScript)&hellip;</li>
+</ul>
 
 <script type="text/javascript">
 $(function() {
-	queryDownloads('{{site.compiler.api}}/downloads', '#downloads');
+	queryDownloads('{{site.compiler.api}}/releases/latest', '#downloads');
 });
 </script>
 
