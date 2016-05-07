@@ -42,4 +42,6 @@ To build, follow the [instructions]({{ baseurl }}/docs/compiling-arden2bytecode-
 ***
 
 ## Arden4Eclipse
-To install Arden4Eclipse, please follow the instructions on [Getting started with Arden4Eclipse]({{ baseurl }}/arden4eclipse/#getting-started).
+To install Arden4Eclipse, drag and drop the following button onto a running Eclipse window: [![Install Button](https://marketplace.eclipse.org/sites/all/themes/solstice/public/images/components/drag-drop/installbutton.png)](https://marketplace.eclipse.org/marketplace-client-intro?mpc_install=209263 "Drag and drop into a running Eclipse workspace to install Arden Syntax Tools")
+
+Then follow the instructions on [Getting started with Arden4Eclipse]({{ baseurl }}/arden4eclipse/#getting-started).
