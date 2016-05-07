@@ -21,6 +21,7 @@
               {% for p in pages %}
                 {% if p.nav_title == null %}{% continue %}{% endif %}
 
+                {% comment %} Search the matching collection for the current pages nav_collection {% endcomment %}
                 {% assign dropdown_collection = null %}
                 {% for collection in site.collections %}
                   {% if p.nav_collection == collection.label %}
@@ -28,6 +29,7 @@
                   {% endif %}
                 {% endfor %}
 
+                {% comment %} Highlight nav item if it is the current page, or the items nav_collection contains the current page {% endcomment %}
                 {% if p.url == page.url or dropdown_collection and page.collection == p.nav_collection %}
                   {% assign active_class = "active" %}
                 {% else %}
@@ -35,16 +37,33 @@
                 {% endif %}
 
                 {% if dropdown_collection %}
-              <li class="{{ active_class }} dropdown">
-                <a href="{{ p.url | prepend: baseurl }}" data-toggle="dropdown" data-hover="dropdown" data-delay="200" role="button" aria-haspopup="true" aria-expanded="false">{{ p.nav_title }}<span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  {% for doc_page in dropdown_collection.docs | sort:"title" %}
-                    <li><a href="{{ doc_page.url | prepend: baseurl }}">{{ doc_page.title }}</a></li>
-                  {% endfor %}
-                </ul>
-              </li>
+                  {% comment %} Show a nav item with a dropdown {% endcomment %}
+                  <li class="{{ active_class }} dropdown">
+                    <a href="{{ p.url | prepend: baseurl }}" data-toggle="dropdown" data-hover="dropdown" data-delay="200" role="button" aria-haspopup="true" aria-expanded="false">{{ p.nav_title }}<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                      {% assign categories = dropdown_collection.docs | sort:"nav_order" | group_by: "category" %}
+                      {% if categories.empty or categories.size == 1 and categories[0].name == "" %}
+                        {% comment %} No categories, show all items {% endcomment %}
+                        {% for doc_page in dropdown_collection.docs %}
+                          <li><a href="{{ doc_page.url | prepend: baseurl }}">{{ doc_page.title }}</a></li>
+                        {% endfor %}
+                      {% else %}
+                        {% comment %} Show only items with categories {% endcomment %}
+                        {% for category in categories %}
+                          {% if category.name == "" %}
+                            {% continue %}
+                          {% endif %}
+                          <li class="dropdown-header">{{ category.name }}</li>
+                          {% for doc_page in category.items %}
+                            <li><a href="{{ doc_page.url | prepend: baseurl }}">{{ doc_page.title }}</a></li>
+                          {% endfor %}
+                        {% endfor %}
+                      {% endif %}
+                    </ul>
+                  </li>
                 {% else %}
-              <li class="{{ active_class }}"><a href="{{ p.url | prepend: baseurl }}">{{ p.nav_title }}</a></li>
+                  {% comment %} Show a normal nav item {% endcomment %}
+                  <li class="{{ active_class }}"><a href="{{ p.url | prepend: baseurl }}">{{ p.nav_title }}</a></li>
                 {% endif %}
 
               {% endfor %}

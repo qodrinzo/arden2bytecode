@@ -27,4 +27,4 @@ When starting a MLM, the output should be displayed in the console window. You m
 ## Support
 
 If you have further questions regarding the plugin, use the E-Mail contact on the following page:  
-<http://arden2bytecode.sf.net/contact>
+<https://plri.github.io/arden2bytecode/contact/>

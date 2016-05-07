@@ -1,6 +1,8 @@
 ---
 # GENERATED - DO NOT EDIT
-title: Arden2ByteCode Command Line Reference
+title: Command Line Options
+category: Getting Started
+nav_order: 5
 ---
 {% include get_url %}
 ### Synopsis
@@ -41,7 +43,7 @@ title: Arden2ByteCode Command Line Reference
 
 * **-p**, **--classpath**  
   An additional classpath from where the database driver may be loaded.  
-  For [SQLite-JDBC](http://www.xerial.org/trac/Xerial/wiki/SQLiteJDBC), this might be `<path>/sqlite-jdbc-3.7.2.jar`, depending on the version.  
+  For [SQLite-JDBC](https://bitbucket.org/xerial/sqlite-jdbc), this might be `<path>/sqlite-jdbc-3.7.2.jar`, depending on the version.  
   For [MySQL](http://dev.mysql.com/downloads/connector/j/), it is `<path>/mysql-connector-java-5.1.18-bin.jar`
 * **-d**, **--dbdriver**  
   The class name of the database driver.  
@@ -50,7 +52,7 @@ title: Arden2ByteCode Command Line Reference
 * **-e**, **--environment**  
   The environment string used in the Arden2ByteCode runtime environment.  JDBC connection strings imply that a JDBC environment is set up.  
   For SQLite, I set this to: `jdbc:sqlite:<dbfile>`. You can also use a blank `<dbfile>` to use a in-memory DB.  
-  For MySQL, things are more complicated. Read [Connector/J docs](http://dev.mysql.com/doc/refman/5.1/en/connector-j-reference-configuration-properties.html) for more information.
+  For MySQL, things are more complicated. Read [Connector/J docs](https://dev.mysql.com/doc/connector-j/5.1/en/) for more information.
 
 ### Input Files
 All further command line arguments will be regarded as input files.

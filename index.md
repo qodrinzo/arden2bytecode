@@ -30,7 +30,7 @@ A BibTeX file is available [here]({{ baseurl }}/download/arden2bytecode.bib).
 
 
 ## Getting Started
-If you want to get started quickly [download]({{ baseurl }}/download) the compiler as a binary package for your platform and read the wiki page: [Getting started with arden2bytecode]({{ baseurl }}/docs/getting-started-with-arden2bytecode).
+If you want to get started quickly [download]({{ baseurl }}/download) the compiler as a binary package for your platform and read the [Installation]({{ baseurl }}/docs/installation) wiki page.
 
 Do you have problems to get started or ideas on how to improve Arden2ByteCode? Then, [please contact us]({{ baseurl }}/contact)!   
 You might wish to submit your issues, ideas or proposals via the [Arden2ByteCode issue tracker]({{ site.compiler.repo }}/issues ).

@@ -1,6 +1,8 @@
 ---
 # GENERATED - DO NOT EDIT
-title: Using the evoke slot
+title: Scheduling
+category: Getting Started
+nav_order: 7
 ---
 {% include get_url %}
 As of September 2012, it is possible to declare events in the evoke slot of a MLM.

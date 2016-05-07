@@ -3,14 +3,16 @@
 title: Home
 ---
 {% include get_url %}
-## Welcome to the Arden2ByteCode wiki!
+![Arden2ByteCode](https://plri.github.io/arden2bytecode/images/logo.png)
 
-This is the common place for documentation regarding the Arden2ByteCode compiler.
+**Welcome to the Arden2ByteCode wiki!**
 
-To start out, you might want to look at the following wiki pages:
+Arden2ByteCode is a compiler for [Arden Syntax](https://en.wikipedia.org/wiki/Arden_syntax) with [Java Bytecode](https://en.wikipedia.org/wiki/Java_bytecode) output.
 
-* [Hello World! in Arden Syntax]({{ baseurl }}/docs/hello-world!-in-arden-syntax/)
-* If you want to get Arden2ByteCode running, you may look at the [Getting started with Arden2ByteCode]({{ baseurl }}/docs/getting-started-with-arden2bytecode/) wiki page.
-* If you want to compile Arden2ByteCode from source, have a look at the [Compiling Arden2ByteCode from source]({{ baseurl }}/docs/compiling-arden2bytecode-from-source/) wiki page.
+- To get started with Arden2ByteCode, have a look at the [Installation]({{ baseurl }}/docs/installation/) wiki page and then try the [Hello World!]({{ baseurl }}/docs/hello-world!/) example.
 
-For more pages, have a look at the GitHub [wiki pages index](https://github.com/PLRI/arden2bytecode/wiki/_pages) or the [list of wiki files](http://arden2bytecode.sourceforge.net/docs/) at our Sourceforge hosted website.
+- To learn a bit about Arden Syntax, have a look at the Arden Syntax [Basics]({{ baseurl }}/docs/basics/) wiki page.
+
+- If you want to compile Arden2ByteCode from source, have a look at the [Building]({{ baseurl }}/docs/building/) wiki page.
+
+For more topics have a look at the navbar.

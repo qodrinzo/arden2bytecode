@@ -7,31 +7,51 @@ set -e #exit on error
 # It also changes the links to point to the correct files.
 
 WIKI_REPO_URL=https://github.com/PLRI/arden2bytecode.wiki.git
-OUTDIR=_docs
+OUTDIR="_docs"
 FRONTMATTER_START="---\n# GENERATED - DO NOT EDIT"
 FRONTMATTER_END="---\n{% include get_url %}"
 BASEDIR="{{ baseurl }}/docs"
 
 # Download the files
 echo "Downloading..."
-git clone $WIKI_REPO_URL $OUTDIR --quiet
-rm -rf $OUTDIR/.git/ # discard .git repo
+git clone $WIKI_REPO_URL "$OUTDIR" --quiet
+rm -rf "$OUTDIR/.git/" # discard .git repo
+# TODO remove images?
 
 # Prepend frontmatter to every file
 echo "Adding frontmatter..."
-for file in $OUTDIR/*.md; do
+nav_counter=0
+for file in "$OUTDIR/"*.md; do
     # generate a title from the filename
     filename=$(basename "$file") # get filename from long path
     filename="${filename%.*}" # remove extension
     title=${filename//-/ } # replace dashes with spaces
-    FRONTMATTER="title: $title"
+    frontmatter="title: $title"
+
+    # if sidebar file exists and the page title is in the sidebar
+    if [ -f "$OUTDIR/_Sidebar.md" ] && grep -q "$title" "$OUTDIR/_Sidebar.md"; then
+      # find category from sidebar file
+      # first get everything from the file up to the title (sed)
+      # then search that for **<category name>** (grep)
+      # and take the last result (tail)
+      # and remove all '*' (tr)
+      category=$(sed "/$title/q" "$OUTDIR/_Sidebar.md" | grep "^\*\*.*\*\*$" | tail -1 | tr -d "*")
+      frontmatter+="\ncategory: $category"
+
+      # set nav_order to order of appearance in file
+      # first find lines with the title (grep)
+      # then get the last one (tail)
+      # and then remove everything after and including ':' (cut)
+      linenumber=$(grep -n "$title" "$OUTDIR/_Sidebar.md" | tail -1 | cut -d : -f 1)
+      frontmatter+="\nnav_order: $linenumber"
+    fi
 
     # prepend frontmatter
-    echo -e "$FRONTMATTER_START\n$FRONTMATTER\n$FRONTMATTER_END\n$(cat $file)" > $file
+    echo -e "$FRONTMATTER_START\n$frontmatter\n$FRONTMATTER_END\n$(cat "$file")" > "$file"
 done
 
 # Change all files to lowercase for consistent links
-rename 'y/A-Z/a-z/' $OUTDIR/*.md
+rename 'y/A-Z/a-z/' "$OUTDIR/"*.md
 
 # Replace links
 # [[Hello World! in Arden Syntax]]  -->  [Hello World! in Arden Syntax](Hello-World!-in-Arden-Syntax.md)

@@ -11,7 +11,7 @@ custom_js:
 
 #### Binaries
 
-The most recent binary packages can be found at the GitHub project [downloads listing]({{ site.compiler.repo }}/archives/master)
+The most recent binary packages can be found at the GitHub projects [releases]({{ site.compiler.repo }}/releases).
 
 Here is a mirror of that listing:
 
@@ -25,15 +25,16 @@ $(function() {
 });
 </script>
 
+
 #### Source Packages
 
 The most recent source package is in the master branch of the [Git repository]({{ site.compiler.repo }}).  
 Clone with:
 
-    $ git clone {{ site.compiler.git }}
+    $ git clone --recursive {{ site.compiler.git }}
 
-You can download it from GitHub as [.tar.gz]({{ site.compiler.repo }}/tarball/master) or [.zip]({{ site.compiler.repo }}/zipball/master).  
-To build, follow the [instructions]({{ baseurl }}/docs/compiling-arden2bytecode-from-source) in the documentation wiki. It's basically typing `ant` at the command prompt.
+You can also download it from GitHub as [.tar.gz]({{ site.compiler.repo }}/tarball/master) or [.zip]({{ site.compiler.repo }}/zipball/master).  
+To build, follow the [instructions]({{ baseurl }}/docs/building) in the documentation wiki. It's basically typing `ant` at the command prompt.
 
 {% comment %}
 #### Changelog

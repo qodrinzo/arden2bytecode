@@ -1,6 +1,8 @@
 ---
 # GENERATED - DO NOT EDIT
-title: Using JDBC and SQL in Arden Syntax read statements
+title: Using Databases
+category: Development
+nav_order: 22
 ---
 {% include get_url %}
 Arden2ByteCode supports usage of JDBC drivers in order to connect to external data sources. If properly set up, SQL statements can be issued in read statements.  
@@ -94,7 +96,7 @@ Arden2ByteCode features the following options to be used for setting up the MLM 
 * **-p**, **--classpath**  
   An additional classpath from where the database driver may be loaded.  
   For [SQLite](http://www.sqlite.org/) as used in the above example, I set this to `<path>/sqlite-jdbc-3.7.2.jar`.
-  I downloaded the JDBC driver binaries from [http://www.xerial.org/trac/Xerial/wiki/SQLiteJDBC](http://www.xerial.org/trac/Xerial/wiki/SQLiteJDBC).
+  I downloaded the JDBC driver binaries from https://github.com/xerial/sqlite-jdbc/releases.
 * **-d**, **--dbdriver**  
   The class name of the database driver.  
   Again, for SQLite, I used the JDBC driver class name `org.sqlite.JDBC`.

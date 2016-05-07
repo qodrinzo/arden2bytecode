@@ -1,6 +1,8 @@
 ---
 # GENERATED - DO NOT EDIT
-title: Hello World! in Arden Syntax
+title: Hello World!
+category: Getting Started
+nav_order: 4
 ---
 {% include get_url %}
 The following shows how to output a Hello World! message on standard output using Arden Syntax.  
@@ -62,4 +64,4 @@ The output should be:
 	"Hello world!"
 	There was no return value.
 
-Now that you have a starting point for working with Arden Syntax, you can experiment with the Arden Syntax ([Introduction to Arden Syntax]({{ baseurl }}/docs/introduction-to-arden-syntax/)) or try out different command line parameters ([Arden2ByteCode command line reference]({{ baseurl }}/docs/arden2bytecode-command-line-reference/)).
+Now that you have a starting point for working with Arden Syntax, you can learn the Arden Syntax [basics]({{ baseurl }}/docs/basics/) or try out different [command line options]({{ baseurl }}/docs/command-line-options/).
