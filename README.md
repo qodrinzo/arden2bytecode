@@ -1,9 +1,14 @@
 Arden2ByteCode - Compiler for Arden Syntax with Java Bytecode output
 ====================================================================
 
-Copyright 2009-2010, Daniel Grunwald , 2011-2012, Hannes Flicka
-Portions (arden.scc) Copyright 2004, University of British Columbia  
-See LICENSE.md for licensing information.
+Copyright
+---------
+- Copyright 2004: University of British Columbia  
+- Copyright 2009-2010: Daniel Grunwald
+- Copyright 2011-2012: Hannes Flicka
+Portions (arden.scc)
+
+See [LICENSE.md](LICENSE.md) for licensing information.
 
 
 Dependencies
@@ -21,25 +26,36 @@ Building
 --------
 To compile Arden2ByteCode, you first need to generate the parser using the SableCC parser generator.
 
-To build the parser with **Eclipse**, import the project and choose *Project* &rArr; *Build project* from the menu. On the first build you need to refresh the Project (F5), so Eclipse finds the downloaded dependencies.  
+To build the parser with **Eclipse**, import the project and choose *Project* &rArr; *Build project* from the menu. On the first build you need to refresh the Project (F5), so Eclipse finds the downloaded [dependencies](#dependencies).
+
 To build with **Ant**, `cd` into the project root and type `ant` at the command prompt.  
 
-Both will automatically call the "sableCC" target in the [build.xml](build.xml) and generate the .java files for the parser in the packages `analysis`, `lexer`, `node`, `parser`. This can take some time, but will only happen if the .java files do not exist or are out-of-date.
+Both will automatically call the "sableCC" target in the [build.xml](build.xml) and generate the .java files for the parser. This can take some time, but will only happen if the parser does not exist or is out-of-date.
 
-When the input grammar is changed, you will need to regenerate the parser. Before regenerating the parser, you should call the "clean" target (*Project* &rArr; *Clean&hellip;*) to ensure there aren't any old files left behind.
+Check out the wiki for [detailed instructions](https://github.com/PLRI/arden2bytecode/wiki/Building).
 
 
 Usage
 -----
 
-This is explained in detail in the wiki: [Getting started with Arden2ByteCode](https://github.com/PLRI/arden2bytecode/wiki/Getting-started-with-Arden2ByteCode)
+Check out the [wiki](https://github.com/PLRI/arden2bytecode/wiki) to see how to [install and start using](https://github.com/PLRI/arden2bytecode/wiki/Installation) Arden2ByteCode, learn more about [Arden Syntax](https://github.com/PLRI/arden2bytecode/wiki/Basics) or for a list of [command line options](https://github.com/PLRI/arden2bytecode/wiki/Command-Line-Options).
+
+Compile an MLM:
+```sh
+arden2bytecode -c hello_world.mlm
+```
+
+Compile and run an MLM:
+```sh
+arden2bytecode -r hello_world.mlm
+```
 
 
-Notes to the Present Implementation
+Standard Conformance
 -----------------------------------
 
 Daniel:  
-I believe this compiler fully implements Arden Syntax 2.5 with the following exceptions:
+I believe this compiler fully implements Arden Syntax V2.5 with the following exceptions:
 
 Languages features not implemented:
 
