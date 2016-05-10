@@ -59,17 +59,17 @@ import arden.runtime.jdbc.JDBCExecutionContext;
 
 public class MainClass {
 	public final static String MLM_FILE_EXTENSION = ".mlm";
-	
+
 	private final static String COMPILED_MLM_FILE_EXTENSION = ".class";
 
-	private final static Pattern JAVA_CLASS_NAME = 
+	private final static Pattern JAVA_CLASS_NAME =
 		Pattern.compile("[A-Za-z$_][A-Za-z0-9$_]*(?:\\.[A-Za-z$_][A-Za-z0-9$_]*)*");
-	
+
 	private CommandLineOptions options;
-	
+
 	private static List<File> handleInputFileNames(List<String> filenames) {
 		List<File> inputFiles = new LinkedList<File>();
-		if ((filenames == null) || filenames.isEmpty()) {			
+		if ((filenames == null) || filenames.isEmpty()) {
 			return null;
 		}
 		for (String filePath : filenames) {
@@ -81,18 +81,18 @@ public class MainClass {
 				// file does not exist => could be a classname rather than a filename
 				Matcher m = JAVA_CLASS_NAME.matcher(filePath);
 				if (m.matches()) {
-					String classFileName = 
-						filePath.replace('.', File.separatorChar) 
+					String classFileName =
+						filePath.replace('.', File.separatorChar)
 						+ COMPILED_MLM_FILE_EXTENSION;
 					File classFile  = new File(classFileName);
 					if (classFile.exists()) {
 						inputFiles.add(classFile);
 					} else {
-						System.err.println("File " + filePath + " and class file " + classFileName 
+						System.err.println("File " + filePath + " and class file " + classFileName
 								+ " do not exist.");
 					}
 				} else {
-					System.err.println("File \"" + filePath 
+					System.err.println("File \"" + filePath
 							+ "\" is neither an existing file "
 							+ "nor a valid class name.");
 				}
@@ -100,16 +100,16 @@ public class MainClass {
 		}
 		return inputFiles;
 	}
-	
+
 	private CompiledMlm compileMlm(File mlmfile) {
 		if (options.getVerbose()) {
 			System.out.println("Compiling " + mlmfile.getPath() + " ...");
 		}
-		
+
 		CompiledMlm mlm = null;
 		Compiler compiler = new Compiler();
-		try {			
-			compiler.enableDebugging(mlmfile.getPath());			
+		try {
+			compiler.enableDebugging(mlmfile.getPath());
 			mlm = compiler.compileMlm(new FileReader(mlmfile.getPath()));
 		} catch (CompilerException e) {
 			System.err.println("exception compiling " + mlmfile.getPath() + ":");
@@ -126,7 +126,7 @@ public class MainClass {
 		}
 		return mlm;
 	}
-	
+
 	private ExecutionContext createExecutionContext() {
 		if (options.isEnvironment()) {
 			if (options.getEnvironment().startsWith("jdbc")) {
@@ -140,7 +140,7 @@ public class MainClass {
 			return new StdIOExecutionContext(options);
 		}
 	}
-	
+
 	private ArdenValue[] getArguments() {
 		ArdenValue[] arguments = null;
 		if (options.isArguments()) {
@@ -162,10 +162,10 @@ public class MainClass {
 		}
 		return arguments;
 	}
-	
+
 	private ArdenValue[] runMlm(MedicalLogicModule mlm, ExecutionContext context) {
 		ArdenValue[] arguments = getArguments();
-		
+
 		ArdenValue[] result = null;
 		try {
 			result = mlm.run(context, arguments);
@@ -183,7 +183,7 @@ public class MainClass {
 		}
 		return result;
 	}
-	
+
 	public static String getFilenameBase(String filename) {
 		int sepindex = Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\'));
 		int fnindex = filename.lastIndexOf('.');
@@ -193,9 +193,9 @@ public class MainClass {
 		if (fnindex < 0) {
 			return filename.substring(sepindex + 1);
 		}
-		return filename.substring(sepindex + 1, fnindex);	
+		return filename.substring(sepindex + 1, fnindex);
 	}
-	
+
 	private MedicalLogicModule getMlmFromFile(File file) {
 		String filename = file.getName();
 		MedicalLogicModule mlm = null;
@@ -211,16 +211,16 @@ public class MainClass {
 			}
 		} else if (file.getName().endsWith(MLM_FILE_EXTENSION)) {
 			// compile .mlm file
-			mlm = compileMlm(file); 
+			mlm = compileMlm(file);
 		} else {
-			System.err.println("File \"" + file.getPath() 
+			System.err.println("File \"" + file.getPath()
 					+ "\" is neither .class nor .mlm file.");
 			System.err.println("Can't run such a file.");
 			return null;
 		}
 		return mlm;
 	}
-	
+
 	private int runInputFile(File fileToRun) {
 		ExecutionContext context = createExecutionContext();
 
@@ -228,18 +228,18 @@ public class MainClass {
 		if (mlm == null) {
 			return 1;
 		}
-		
+
 		if (options.getVerbose()) {
 			System.out.println("Running MLM...");
 			System.out.println("");
 		}
-		
+
 		// run the mlm
 		runMlm(mlm, context);
-		
+
 		return 0;
 	}
-	
+
 	private int compileInputFiles(List<File> inputFiles) {
 		boolean firstFile = true;
 		for (File fileToCompile : inputFiles) {
@@ -247,24 +247,24 @@ public class MainClass {
 			File outputFile = null;
 			if (options.isOutput() && firstFile) {
 				// output file name given. write to that file...
-				outputFile = new File(options.getOutput());				
+				outputFile = new File(options.getOutput());
 			} else {
 				// output file name unknown. assume mlm name + '.class' extension
 				String assumedName = mlm.getName() + COMPILED_MLM_FILE_EXTENSION;
 				File assumed = new File(fileToCompile.getParentFile(), assumedName);
 				if (firstFile) {
-					System.err.println("warning: File " + fileToCompile.getPath() 
+					System.err.println("warning: File " + fileToCompile.getPath()
 							+ " compiled, but no output filename given. Assuming "
 							+ assumed.getPath()
 							+ " as output file.");
 				} else {
-					System.err.println("warning: File " + fileToCompile.getPath() 
-							+ " compiled, but can't write to same output file again. " 
+					System.err.println("warning: File " + fileToCompile.getPath()
+							+ " compiled, but can't write to same output file again. "
 							+ "Assuming "
 							+ assumed.getPath()
 							+ " as output file.");
 				}
-				outputFile = assumed;				
+				outputFile = assumed;
 			}
 
 			// if output file is known, compile mlm and write compiled mlm to that file.
@@ -285,16 +285,16 @@ public class MainClass {
 		}
 		return 0;
 	}
-	
+
 	private static void printLogo() {
-		System.out.println("Arden2ByteCode Compiler and Runtime Environment");		
+		System.out.println("Arden2ByteCode Compiler and Runtime Environment");
 		System.out.println("Copyright 2010-2011 Daniel Grunwald, Hannes Flicka");
 		System.out.println("");
 		System.out.println("This program is free software; you can redistribute it and/or modify it");
 		System.out.println("under the terms of the GNU General Public License.");
 		System.out.println("");
 	}
-	
+
 	private void extendClasspath() {
 		String classpath = options.getClasspath();
 		String[] paths = classpath.split(File.pathSeparator);
@@ -302,7 +302,7 @@ public class MainClass {
 		for (String path : paths) {
 			File f = new File(path);
 			if (!f.exists()) {
-				System.err.println("error: Classpath File/Directory \"" 
+				System.err.println("error: Classpath File/Directory \""
 						+ path + "\" does not exist.");
 				System.exit(1);
 			}
@@ -318,19 +318,19 @@ public class MainClass {
 			}
 			urls.add(url);
 		}
-		
-		ClassLoader currentClassLoader = 
+
+		ClassLoader currentClassLoader =
 				Thread.currentThread().getContextClassLoader();
 		URLClassLoader ulc = new URLClassLoader(
-				urls.toArray(new URL[]{}), 
+				urls.toArray(new URL[]{}),
 				currentClassLoader);
 		Thread.currentThread().setContextClassLoader(ulc);
-		
+
 		if (options.getVerbose()) {
 			System.out.println();
 		}
 	}
-	
+
 	private int runMlmDaemon(List<File> inputFiles) {
 		if (inputFiles.size() < 1) {
 			System.err.println("No MLM file specified");
@@ -349,43 +349,43 @@ public class MainClass {
 		new MlmDaemon(mlms, context, arguments).run();
 		return 0;
 	}
-	
+
 	private int handleCommandLineArgs(String[] args) {
-		// parse command line using jewelCli:		
+		// parse command line using jewelCli:
 		try {
 			options = CliFactory.parseArguments(CommandLineOptions.class, args);
 		} catch (ArgumentValidationException e) {
 			printLogo();
 			String message = e.getMessage();
 			System.err.println(message);
-			
+
 			if (message.startsWith("Usage")) { // hack to display additional help.
 				System.err.println("All further command line arguments that "
 						+ "are non-options are regarded as input \n"
 						+ "files.");
 				System.err.println("For a command-line reference, see:\n"
 						+ "https://plri.github.io/arden2bytecode/docs/"
-						+ "arden2bytecode-command-line-reference/");
+						+ "command-line-options/");
 			}
-			
+
 			return 1;
-		}		
-		
+		}
+
 		// print logo
 		if (!options.getNologo()) {
 			printLogo();
 		}
-		
+
 		if (options.isClasspath()) {
 			extendClasspath();
 		}
-		
+
 		// suggest using help if no options given:
 		if (args.length < 1) {
 			System.out.println("Supply argument -h or -? to display help.");
 			System.out.println("");
-		}		
-		
+		}
+
 		// check input files to this main method:
 		List<String> files = options.getFiles();
 		List<File> inputFiles = handleInputFileNames(files);
@@ -393,7 +393,7 @@ public class MainClass {
 			System.err.println("No input files given.");
 			return 1;
 		}
-		
+
 		// if verbose output is requested, list input files:
 		if (options.getVerbose()) {
 			for (File f : inputFiles) {
@@ -401,7 +401,7 @@ public class MainClass {
 			}
 			System.out.println("");
 		}
-		
+
 		// check if option -r (run) or -c (compile) was given:
 		if (options.getRun()) {
 			if (inputFiles.size() < 1) {
@@ -410,7 +410,7 @@ public class MainClass {
 						"trying to run an MLM.");
 				return 1;
 			}
-			for (File fileToRun : inputFiles) {				
+			for (File fileToRun : inputFiles) {
 				int result = runInputFile(fileToRun);
 				if (result != 0) {
 					return result;
@@ -423,18 +423,18 @@ public class MainClass {
 		} else {
 			System.err.println("You should specify -r to run the files or "
 					+ "-c to compile the files.");
-			System.err.println("Specifying files without telling what to " 
+			System.err.println("Specifying files without telling what to "
 					+ "do with them is not implemented.");
 			return 1;
 		}
-		
+
 		return 0;
 	}
-	
-	public static void main(String[] args) {		
-		int returnValue = 
+
+	public static void main(String[] args) {
+		int returnValue =
 				new MainClass().handleCommandLineArgs(args);
-		
+
 		System.exit(returnValue);
 	}
 }
