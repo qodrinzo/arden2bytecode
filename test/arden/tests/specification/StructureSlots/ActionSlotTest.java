@@ -26,8 +26,8 @@ public class ActionSlotTest extends SpecificationTest {
 	public void testWriteStatement() throws Exception {
 		String data = new ArdenCodeBuilder()
 				.addData("text := \"test message\";")
-				.addData("msg := MESSAGE {"+getCompiler().getTestMessageMapping()+"};")
-				.addData("dest := DESTINATION {"+getCompiler().getTestDestinationMapping()+"};")
+				.addData("msg := MESSAGE {"+getMappings().getMessageMapping()+"};")
+				.addData("dest := DESTINATION {"+getMappings().getDestinationMapping()+"};")
 				.toString();
 		
 		String textDefaultDestination = new ArdenCodeBuilder(data).addAction("WRITE text;").toString();

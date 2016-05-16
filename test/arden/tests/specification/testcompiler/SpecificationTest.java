@@ -2,16 +2,26 @@ package arden.tests.specification.testcompiler;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
+import static org.junit.Assume.assumeNotNull;
 
-
+/**
+ * Base test class which all tests extend. Adds useful asserts and shared access
+ * to the compiler.
+ */
 public abstract class SpecificationTest {
+	
 	// Initialise your compiler here. It will be used by all tests.
 	private TestCompiler compiler = new arden.tests.specification.testcompiler.impl.TestCompilerImpl();
 
-	public TestCompiler getCompiler() {
+	protected TestCompiler getCompiler() {
 		return compiler;
 	}
-
+	
+	protected TestCompilerMappings getMappings() {
+		return compiler.getMappings();
+	}
+	
 	/**
 	 * Tests if the result of the evaluated expressions is equal to the expected
 	 * string (case insensitive).
@@ -85,6 +95,5 @@ public abstract class SpecificationTest {
 			// test passed
 		}
 	}
-	
 	
 }

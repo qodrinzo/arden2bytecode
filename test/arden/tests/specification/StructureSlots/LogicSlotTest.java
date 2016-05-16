@@ -90,7 +90,7 @@ public class LogicSlotTest extends SpecificationTest {
 		String chooseMlmOrInterface = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
 				.addMlm(otherMlm)
 				.addData("IF FALSE THEN x := MLM 'other_mlm';")
-				.addData("ELSE x := INTERFACE {"+getCompiler().getTestInterfaceMapping()+"};")
+				.addData("ELSE x := INTERFACE {"+getMappings().getInterfaceMapping()+"};")
 				.addData("ENDIF;")
 				.addLogic("result := CALL x WITH 3, 4;")
 				.addLogic("CONCLUDE TRUE;")
@@ -239,7 +239,7 @@ public class LogicSlotTest extends SpecificationTest {
 	
 	@Test
 	public void testEventCallStatement() throws Exception {
-		String eventAssignment = "test_event := EVENT {" + getCompiler().getTestEventMapping() + "};";
+		String eventAssignment = "test_event := EVENT {" + getMappings().getEventMapping() + "};";
 		
 		String mlm1 = new ArdenCodeBuilder()
 				.replaceSlotContent("mlmname:", "mlm1")
@@ -282,7 +282,7 @@ public class LogicSlotTest extends SpecificationTest {
 	@Test
 	public void testInterfaceCallStatement() throws Exception {
 		String interfaceCall = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
-				.addData("test_interface := INTERFACE {" + getCompiler().getTestInterfaceMapping() + "};")
+				.addData("test_interface := INTERFACE {" + getMappings().getInterfaceMapping() + "};")
 				.addLogic("(x, y, z) := CALL test_interface WITH 3, 4;")
 				.addLogic("CONCLUDE TRUE;")
 				.addAction("RETURN (x,y,z);")

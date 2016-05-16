@@ -7,7 +7,7 @@ import arden.tests.specification.testcompiler.SpecificationTest;
 
 public class EvokeSlotTest extends SpecificationTest {
 	private final String event_data = new ArdenCodeBuilder()
-			.addData("test_event := EVENT {" + getCompiler().getTestEventMapping() + "};")
+			.addData("test_event := EVENT {" + getMappings().getEventMapping() + "};")
 			.toString();
 
 	@Test
@@ -31,9 +31,9 @@ public class EvokeSlotTest extends SpecificationTest {
 	@Test
 	public void testSimpleTriggerStatement() throws Exception {
 		String any = new ArdenCodeBuilder()
-				.addData("test_event1 := EVENT {" + getCompiler().getTestEventMapping() + "};")
-				.addData("test_event2 := EVENT {" + getCompiler().getTestEventMapping() + "};")
-				.addData("test_event3 := EVENT {" + getCompiler().getTestEventMapping() + "};")
+				.addData("test_event1 := EVENT {" + getMappings().getEventMapping() + "};")
+				.addData("test_event2 := EVENT {" + getMappings().getEventMapping() + "};")
+				.addData("test_event3 := EVENT {" + getMappings().getEventMapping() + "};")
 				.addEvoke("test_event1 OR ANY OF(test_event2, test_event3);")
 				.toString();
 		assertValid(any);

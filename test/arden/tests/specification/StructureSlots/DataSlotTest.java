@@ -10,8 +10,8 @@ public class DataSlotTest extends SpecificationTest {
 	
 	@Test
 	public void testReadStatement() throws Exception {
-		String readMapping = getCompiler().getTestReadMapping();
-		String readMultiMapping = getCompiler().getTestReadMultipleMapping();
+		String readMapping = getMappings().getReadMapping();
+		String readMultiMapping = getMappings().getReadMultipleMapping();
 		
 		String sortedByTime1 = new ArdenCodeBuilder()
 				.addData("first_ := READ FIRST {"+readMapping+"};")
@@ -60,7 +60,7 @@ public class DataSlotTest extends SpecificationTest {
 		// usable as boolean
 		String other_mlm = new ArdenCodeBuilder()
 				.replaceSlotContent("mlmname:", "other_mlm")
-				.addData("test_event := EVENT {"+getCompiler().getTestEventMapping()+"};")
+				.addData("test_event := EVENT {"+getMappings().getEventMapping()+"};")
 				.addEvoke("test_event;")
 				.addAction("IF test_event THEN RETURN 1;")
 				.addAction("ENDIF;")
@@ -69,7 +69,7 @@ public class DataSlotTest extends SpecificationTest {
 		
 		String eventAsBoolean = new ArdenCodeBuilder()
 			.addMlm(other_mlm)
-			.addData("test_event := EVENT {"+getCompiler().getTestEventMapping()+"};")
+			.addData("test_event := EVENT {"+getMappings().getEventMapping()+"};")
 			.clearSlotContent("logic:")
 			.addLogic("x := CALL test_event;")
 			.addLogic("CONCLUDE TRUE;")
@@ -159,14 +159,14 @@ public class DataSlotTest extends SpecificationTest {
 	@Test
 	public void testMessageStatement() throws Exception {
 		String message = new ArdenCodeBuilder()
-				.addData("m := MESSAGE {"+getCompiler().getTestMessageMapping()+"};")
+				.addData("m := MESSAGE {"+getMappings().getMessageMapping()+"};")
 				.toString();
 		assertValid(message);
 		
 		// TODO too implementation specific? 		
 		//		String messageAs = new ArdenCodeBuilder()
 		//				.addData("Email := OBJECT [subject, text];")
-		//				.addData("mail := MESSAGE AS Email {"+getCompiler().getTestMessageMapping()+"};")
+		//				.addData("mail := MESSAGE AS Email {"+getMappings().getMessageMapping()+"};")
 		//				.toString();
 		//		assertValid(messageAs);
 		//		
@@ -180,14 +180,14 @@ public class DataSlotTest extends SpecificationTest {
 	@Test
 	public void testDestinationStatement() throws Exception {
 		String destination = new ArdenCodeBuilder()
-				.addData("d := DESTINATION {"+getCompiler().getTestDestinationMapping()+"};")
+				.addData("d := DESTINATION {"+getMappings().getDestinationMapping()+"};")
 				.toString();
 		assertValid(destination);
 		
 		// TODO too implementation specific?		
 		//		String destinationAs = new ArdenCodeBuilder()
 		//				.addData("File := OBJECT [name];")
-		//				.addData("d := DESTINATION AS File {"+getCompiler().getTestDestinationMapping()+"};")
+		//				.addData("d := DESTINATION AS File {"+getMappings().getDestinationMapping()+"};")
 		//				.toString();
 		//		assertValid(destinationAs);
 		//		
