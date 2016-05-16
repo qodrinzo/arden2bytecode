@@ -13,13 +13,42 @@ public abstract class SpecificationTest {
 	
 	// Initialise your compiler here. It will be used by all tests.
 	private TestCompiler compiler = new arden.tests.specification.testcompiler.impl.TestCompilerImpl();
-
+	
+	// Decorator which intercepts calls to the compiler to skip unsupported tests
+	private TestCompiler runtimeCheckedCompiler = new TestCompiler() {
+		public TestCompilerResult compileAndRun(String code) throws TestCompilerException {
+			// only run tests if runtime is supported
+			assumeTrue(isRuntimeSupported());
+			return compiler.compileAndRun(code);
+		}
+		@Override
+		public boolean isRuntimeSupported() {
+			return compiler.isRuntimeSupported();
+		}
+		@Override
+		public boolean isVersionSupported(int major, int minor) {
+			return compiler.isVersionSupported(major, minor);
+		}
+		@Override
+		public void compile(String code) throws TestCompilerCompiletimeException {
+			compiler.compile(code);
+		}
+		@Override
+		public TestCompilerMappings getMappings() {
+			TestCompilerMappings mappings = compiler.getMappings();
+			// only run test if mappings are provided
+			assumeNotNull(mappings);
+			return compiler.getMappings();
+		};
+	};
+	
+	
 	protected TestCompiler getCompiler() {
-		return compiler;
+		return runtimeCheckedCompiler;
 	}
 	
 	protected TestCompilerMappings getMappings() {
-		return compiler.getMappings();
+		return runtimeCheckedCompiler.getMappings();
 	}
 	
 	/**
