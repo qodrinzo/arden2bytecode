@@ -1,8 +1,8 @@
 package arden.tests.specification.testcompiler;
 
 /**
- * Implements this interface and add create an instance in
- * {@link SpecificationTest} so all tests can access the compiler.
+ * Implements this interface and create an instance in {@link SpecificationTest}
+ * so all tests can access the compiler.
  */
 public interface TestCompiler {
 
@@ -17,16 +17,15 @@ public interface TestCompiler {
 	public boolean isRuntimeSupported();
 
 	/**
-	 * Used to only run tests for Arden Syntax versions which are supported.
+	 * Used to only run backward compatibility tests for Arden Syntax versions
+	 * which are supported.
 	 * 
-	 * @param major
-	 *            Major version number, e.g. 2 for version 2.9
-	 * @param minor
-	 *            Minor version number, e.g. 9 for version 2.9
-	 * @return <code>true</code> if tests for this version should run,
-	 *         <code>false</code> otherwise.
+	 * @param version
+	 *            The version to check against
+	 * @return <code>true</code> if backward compatibility tests for this
+	 *         version should run, <code>false</code> otherwise.
 	 */
-	public boolean isVersionSupported(int major, int minor);
+	public boolean isVersionSupported(ArdenVersion version);
 	
 	/**
 	 * Compile the given code

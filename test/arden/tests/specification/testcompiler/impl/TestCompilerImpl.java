@@ -7,6 +7,7 @@ import java.util.List;
 import arden.compiler.CompiledMlm;
 import arden.compiler.CompilerException;
 import arden.runtime.ArdenValue;
+import arden.tests.specification.testcompiler.ArdenVersion;
 import arden.tests.specification.testcompiler.TestCompiler;
 import arden.tests.specification.testcompiler.TestCompilerCompiletimeException;
 import arden.tests.specification.testcompiler.TestCompilerException;
@@ -28,8 +29,9 @@ public class TestCompilerImpl implements TestCompiler {
 	}
 
 	@Override
-	public boolean isVersionSupported(int major, int minor) {
-		return major == 2 && minor <= 5;
+	public boolean isVersionSupported(ArdenVersion version) {
+		// backwards compatible to all versions up to v2.5
+		return version.ordinal() <= ArdenVersion.V2_5.ordinal();
 	}
 	
 	@Override
