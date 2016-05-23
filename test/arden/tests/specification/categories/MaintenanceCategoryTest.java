@@ -1,4 +1,4 @@
-package arden.tests.specification.Categories;
+package arden.tests.specification.categories;
 
 import org.junit.Test;
 

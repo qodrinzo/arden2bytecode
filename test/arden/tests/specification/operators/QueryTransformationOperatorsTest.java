@@ -1,4 +1,4 @@
-package arden.tests.specification.Operators;
+package arden.tests.specification.operators;
 
 import org.junit.Test;
 

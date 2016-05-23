@@ -1,4 +1,4 @@
-package arden.tests.specification.StructureSlots;
+package arden.tests.specification.structureslots;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;

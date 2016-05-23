@@ -1,4 +1,4 @@
-package arden.tests.specification.StructureSlots;
+package arden.tests.specification.structureslots;
 
 import org.junit.Test;
 
