@@ -81,7 +81,7 @@ public class TransformationOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("% INCREASE 3","()");
 		assertEvaluatesTo("% INCREASE ()","NULL");
 		assertEvaluatesTo("PERCENT INCREASE (1 day, 2 days)","(,100)");
-		assertEvaluatesTo("PERCENT DECREASE (11,15,13) IS WITHIN (-36.36, 13.34) TO (-36.37, 13.33)","(TRUE,TRUE)");
+		assertEvaluatesTo("PERCENT DECREASE (11,15,13) IS WITHIN (-36.37, 13.33) TO (-36.36, 13.34)","(TRUE,TRUE)");
 		assertEvaluatesTo("% DECREASE 3","()");
 		assertEvaluatesTo("% DECREASE ()","NULL");
 		assertEvaluatesTo("PERCENT DECREASE (1 day, 2 days)","(,-100)");
