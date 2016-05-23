@@ -7,9 +7,11 @@ import java.util.List;
 import arden.compiler.CompiledMlm;
 import arden.compiler.CompilerException;
 import arden.runtime.ArdenValue;
+import arden.tests.specification.testcompiler.ArdenVersion;
 import arden.tests.specification.testcompiler.TestCompiler;
 import arden.tests.specification.testcompiler.TestCompilerCompiletimeException;
 import arden.tests.specification.testcompiler.TestCompilerException;
+import arden.tests.specification.testcompiler.TestCompilerMappings;
 import arden.tests.specification.testcompiler.TestCompilerResult;
 import arden.tests.specification.testcompiler.TestCompilerRuntimeException;
 
@@ -17,39 +19,28 @@ public class TestCompilerImpl implements TestCompiler {
 	
 	private arden.compiler.Compiler compiler = new arden.compiler.Compiler();
 	
+	private TestCompilerMappings mappings = new TestCompilerMappings(TestContext.INTERFACE_MAPPING,
+			TestContext.EVENT_MAPPING, TestContext.MESSAGE_MAPPING, TestContext.DESTINATION_MAPPING,
+			TestContext.READ_MAPPING, TestContext.READ_MULTIPLE_MAPPING);
+	
 	@Override
-	public String getTestInterfaceMapping() {
-		return TestContext.INTERFACE_MAPPING;
+	public boolean isRuntimeSupported() {
+		return true;
 	}
 
 	@Override
-	public String getTestEventMapping() {
-		return TestContext.EVENT_MAPPING;
+	public boolean isVersionSupported(ArdenVersion version) {
+		// backwards compatible to all versions up to v2.5
+		return version.ordinal() <= ArdenVersion.V2_5.ordinal();
 	}
 	
 	@Override
-	public String getTestMessageMapping() {
-		return TestContext.MESSAGE_MAPPING;
+	public TestCompilerMappings getMappings() {
+		return mappings;
 	}
 
 	@Override
-	public String getTestReadMapping() {
-		return TestContext.READ_MAPPING;
-	}
-
-	@Override
-	public String getTestReadMultipleMapping() {
-		return TestContext.READ_MULTIPLE_MAPPING;
-	}
-	
-	@Override
-	public String getTestDestinationMapping() {
-		return TestContext.DESTINATION_MAPPING;
-	}
-
-	@Override
-	public TestCompilerResult compileAndRun(String code, String... args) throws TestCompilerException {
-
+	public TestCompilerResult compileAndRun(String code) throws TestCompilerException {
 		// compile
 		List<CompiledMlm> compiledMlms;
 		try {

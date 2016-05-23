@@ -9,7 +9,7 @@ import arden.runtime.ArdenValue;
 import arden.tests.specification.testcompiler.TestCompilerResult;
 
 /**
- * Wrapper to correctly print the normalized internal representation of a ArdenValue. <br>
+ * Wrapper to correctly print the normalized internal representation of an ArdenValue. <br>
  * e.g. "1 day" -> "86400 seconds"
  * @see TestCompilerResult
  */
