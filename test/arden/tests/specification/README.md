@@ -32,6 +32,12 @@ String include = new ArdenCodeBuilder()
 assertReturns(include, "5");
 ```
 
+Tests, which require backward compatibility, can be flagged via an annotation:
+```java
+@Test
+@Compatibility(ArdenVersion.V1)
+public void test() {…}
+```
 
 ## Testing your compiler
 To test a different Arden Syntax compiler, the [TestCompiler](testcompiler/TestCompiler.java) interface has to be implemented and put as the compiler for the base test class ([SpecificationTest](testcompiler/SpecificationTest.java)) which all tests extend.  
