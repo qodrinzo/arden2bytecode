@@ -3,6 +3,8 @@ package arden.tests.specification.Categories;
 import org.junit.Test;
 
 import arden.tests.specification.testcompiler.ArdenCodeBuilder;
+import arden.tests.specification.testcompiler.ArdenVersion;
+import arden.tests.specification.testcompiler.CompatibilityRule.Compatibility;
 import arden.tests.specification.testcompiler.SpecificationTest;
 
 public class MaintenanceCategoryTest extends SpecificationTest {
@@ -40,14 +42,18 @@ public class MaintenanceCategoryTest extends SpecificationTest {
 		
 		String empty = new ArdenCodeBuilder().replaceSlotContent("mlmname:", "").toString();
 		assertInvalid(empty);
-		
-		// backwards compatibility!
+	}
+	
+	@Test
+	@Compatibility(ArdenVersion.V1)
+	public void testFileName() throws Exception {
 		String alternative = new ArdenCodeBuilder()
-				.removeSlot("arden:") // no arden version slot in v1
+				.removeSlot("arden:") // v1
 				.renameSlot("mlmname:", "filename:")
 				.replaceSlotContent("filename:", "my_mlm.mlm")
 				.toString();
 		assertValid(alternative);
+		
 	}
 
 	@Test
@@ -55,20 +61,30 @@ public class MaintenanceCategoryTest extends SpecificationTest {
 		String v25 = new ArdenCodeBuilder().replaceSlotContent("arden:", "Version 2.5").toString();
 		assertValid(v25);
 		
-		// backwards compatibility!
-		String v21 = new ArdenCodeBuilder().replaceSlotContent("arden:", "Version 2.1").toString();
-		assertValid(v21);
-		
-		// backwards compatibility!
-		String v2 = new ArdenCodeBuilder().replaceSlotContent("arden:", "Version 2").toString();
-		assertValid(v2);
-		
-		// backwards compatibility!
-		String v1 = new ArdenCodeBuilder().removeSlot("arden:").toString();
-		assertValid(v1);
-		
 		String invalid = new ArdenCodeBuilder().replaceSlotContent("arden:", "x 2.5").toString();
 		assertInvalid(invalid);
+	}
+	
+	@Test
+	@Compatibility(ArdenVersion.V1)
+	public void testArdenSyntaxVersionV1() throws Exception {
+		// no arden version slot in v1
+		String v1 = new ArdenCodeBuilder().removeSlot("arden:").toString();
+		assertValid(v1);
+	}
+	
+	@Test
+	@Compatibility(ArdenVersion.V2)
+	public void testArdenSyntaxVersionV2() throws Exception {
+		String v2 = new ArdenCodeBuilder().replaceSlotContent("arden:", "Version 2").toString();
+		assertValid(v2);
+	}
+	
+	@Test
+	@Compatibility(ArdenVersion.V2_1)
+	public void testArdenSyntaxVersionV21() throws Exception {
+		String v21 = new ArdenCodeBuilder().replaceSlotContent("arden:", "Version 2.1").toString();
+		assertValid(v21);
 	}
 
 	@Test

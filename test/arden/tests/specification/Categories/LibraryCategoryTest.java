@@ -3,10 +3,12 @@ package arden.tests.specification.Categories;
 import org.junit.Test;
 
 import arden.tests.specification.testcompiler.ArdenCodeBuilder;
+import arden.tests.specification.testcompiler.ArdenVersion;
+import arden.tests.specification.testcompiler.CompatibilityRule.Compatibility;
 import arden.tests.specification.testcompiler.SpecificationTest;
 
 public class LibraryCategoryTest extends SpecificationTest {
-
+	
 	@Test
 	public void testPurpose() throws Exception {
 		String missingSlot = new ArdenCodeBuilder().removeSlot("purpose:").toString();
@@ -56,16 +58,6 @@ public class LibraryCategoryTest extends SpecificationTest {
 		String missingSlot = new ArdenCodeBuilder().removeSlot("citations:").toString();
 		assertValid(missingSlot);
 
-		// backwards compatibility!
-		String arbitraryText = new ArdenCodeBuilder()
-				.replaceSlotContent("arden:", "Version 2")
-				.replaceSlotContent("citations:", "Lorem ipsum, dolor sit amet; "
-						+ "consectetur adipiscing elit; "
-						+ "Quisque libero felis, bibendum at ullamcorper ac; "
-						+ "dictum eget eros")
-				.toString();
-		assertValid(arbitraryText);
-		
 		String structuredFormat = new ArdenCodeBuilder()
 				.replaceSlotContent("citations:", "1. SUPPORT lorem ipsum.\n "
 						+ "2. REFUTE dolor sit amet. "
@@ -73,22 +65,34 @@ public class LibraryCategoryTest extends SpecificationTest {
 				.toString();
 		assertValid(structuredFormat);
 	}
+	
+	@Test
+	@Compatibility(ArdenVersion.V1)
+	public void testArbitrarySlotText() throws Exception {
+		String arbitraryCitationsText = new ArdenCodeBuilder()
+				.removeSlot("arden:") // v1
+				.replaceSlotContent("citations:", "Lorem ipsum, dolor sit amet; "
+						+ "consectetur adipiscing elit; "
+						+ "Quisque libero felis, bibendum at ullamcorper ac; "
+						+ "dictum eget eros")
+				.toString();
+		assertValid(arbitraryCitationsText);
+		
+		String arbitraryLinksText = new ArdenCodeBuilder()
+				.removeSlot("arden:") // v1
+				.replaceSlotContent("links:", "Lorem ipsum, dolor sit amet; "
+						+ "consectetur adipiscing elit; "
+						+ "Quisque libero felis, bibendum at ullamcorper ac; "
+						+ "dictum eget eros")
+				.toString();
+		assertValid(arbitraryLinksText);
+	}
 
 	@Test
 	public void testLinks() throws Exception {
 		String missingSlot = new ArdenCodeBuilder().removeSlot("links:").toString();
 		assertValid(missingSlot);
 		
-		// backwards compatibility!
-		String arbitraryText = new ArdenCodeBuilder()
-				.replaceSlotContent("arden:", "Version 2")
-				.replaceSlotContent("links:", "Lorem ipsum, dolor sit amet; "
-						+ "consectetur adipiscing elit; "
-						+ "Quisque libero felis, bibendum at ullamcorper ac; "
-						+ "dictum eget eros")
-				.toString();
-		assertValid(arbitraryText);
-
 		String structuredFormat = new ArdenCodeBuilder()
 				.replaceSlotContent("links:", "'http://www.nlm.nih.gov/'; "
 						+ "OTHER_LINK 'lorem.ipsum'; "

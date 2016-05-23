@@ -1,5 +1,6 @@
 package arden.tests.specification;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import arden.tests.specification.testcompiler.ArdenCodeBuilder;
@@ -18,6 +19,7 @@ public class MlmFormatTest extends SpecificationTest {
 	}
 
 	@Test
+	@Ignore
 	public void testCategories() throws Exception {
 		// TODO error on wrong order
 	}
@@ -49,7 +51,7 @@ public class MlmFormatTest extends SpecificationTest {
 	@Test
 	public void testSlotBodyTypes() throws Exception {
 		String arbitrayTextInTextualSlot = new ArdenCodeBuilder().replaceSlotContent("title:", "the mlm at time of now & = + - * ; abs if else >= mlmname mlmname:").toString();
-		getCompiler().compile(arbitrayTextInTextualSlot);
+		assertValid(arbitrayTextInTextualSlot);
 		
 		String emptyTextualSlots = new ArdenCodeBuilder()
 				.replaceSlotContent("title:", "")

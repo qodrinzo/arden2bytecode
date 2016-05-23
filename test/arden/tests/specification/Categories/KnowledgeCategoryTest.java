@@ -3,10 +3,12 @@ package arden.tests.specification.Categories;
 import org.junit.Test;
 
 import arden.tests.specification.testcompiler.ArdenCodeBuilder;
+import arden.tests.specification.testcompiler.ArdenVersion;
+import arden.tests.specification.testcompiler.CompatibilityRule.Compatibility;
 import arden.tests.specification.testcompiler.SpecificationTest;
 
 public class KnowledgeCategoryTest extends SpecificationTest {
-
+	
 	@Test
 	public void testType() throws Exception {
 		String missingSlot = new ArdenCodeBuilder().removeSlot("type:").toString();
@@ -15,14 +17,19 @@ public class KnowledgeCategoryTest extends SpecificationTest {
 		String type = new ArdenCodeBuilder().replaceSlotContent("type:", "data_driven").toString();
 		assertValid(type);
 		
-		// backwards compatibility!
-		String typeDash = new ArdenCodeBuilder().replaceSlotContent("type:", "data-driven").toString();
-		assertValid(typeDash);
-		
 		String invalid = new ArdenCodeBuilder().replaceSlotContent("type:", "experience").toString();
 		assertInvalid(invalid);
 	}
-
+	
+	@Test
+	@Compatibility(ArdenVersion.V1)
+	public void testTypeDash() throws Exception {
+		String typeDash = new ArdenCodeBuilder()
+				.removeSlot("arden:") // v1
+				.replaceSlotContent("type:", "data-driven").toString();
+		assertValid(typeDash);
+	}
+	
 	@Test
 	public void testData() throws Exception {
 		String missingSlot = new ArdenCodeBuilder().removeSlot("data:").toString();
