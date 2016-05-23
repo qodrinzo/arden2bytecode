@@ -25,12 +25,16 @@ public class GeneralPropertiesTest extends SpecificationTest {
 		assertEvaluatesTo("LENGTH (TRIM \" x  \")", "1");
 		assertInvalidExpression("LENGTH TRIM \" x  \"");
 		
+		// TODO is this really invalid?
+		// the specifications grammar and precedence table seem to be incompatible
+		//assertInvalidExpression("TIME UPPERCASE \" x  \"");
 		assertEvaluatesTo("TIME (UPPERCASE \" x  \")", "NULL");
-		assertInvalidExpression("TIME UPPERCASE \" x  \"");
 		
-		// (((COUNT (SQRT 5)) DAYS) BEFORE) 2015-01-05T00:00:00
+		
+		assertEvaluatesTo("(COUNT (SQRT 5)) DAYS BEFORE 2015-01-05T00:00:00", "2015-01-04T00:00:00");
 		assertEvaluatesTo("COUNT SQRT 5 DAYS BEFORE 2015-01-05T00:00:00", "2015-01-04T00:00:00");
-		// SUBSTRING (FLOOR (SQRT 5)) CHARACTERS STARTING AT (LENGTH OF "123") FROM "abcdefg"
+		
+		assertEvaluatesTo("SUBSTRING (FLOOR (SQRT 5)) CHARACTERS STARTING AT (LENGTH OF \"123\") FROM \"abcdefg\"", "\"cd\"");
 		assertEvaluatesTo("SUBSTRING FLOOR SQRT 5 CHARACTERS STARTING AT LENGTH OF \"123\" FROM \"abcdefg\"", "\"cd\"");
 	}
 
