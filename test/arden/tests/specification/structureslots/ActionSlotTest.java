@@ -1,26 +1,13 @@
 package arden.tests.specification.structureslots;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-
-import java.util.List;
-
 import org.junit.Test;
 
 import arden.tests.specification.testcompiler.ArdenCodeBuilder;
 import arden.tests.specification.testcompiler.SpecificationTest;
 import arden.tests.specification.testcompiler.TestCompilerException;
-import arden.tests.specification.testcompiler.TestCompilerResult;
-import arden.tests.specification.testcompiler.TestCompilerResult.TestCompilerOutputText;
 
 public class ActionSlotTest extends SpecificationTest {
 	// TODO error on illegal statements
-	
-	private void assertWrites(String code, String expected) throws TestCompilerException {
-		TestCompilerResult result = getCompiler().compileAndRun(code);
-		TestCompilerOutputText outputText = result.outputTexts.get(0);
-		assertEquals(expected, outputText.text);
-	}
 	
 	@Test
 	public void testWriteStatement() throws Exception {
@@ -57,8 +44,7 @@ public class ActionSlotTest extends SpecificationTest {
 		assertStatementReturns("RETURN 1; RETURN 2;", "1");
 		
 		String multiReturn = new ArdenCodeBuilder().addAction("RETURN 5, (\"a\", \"b\");").toString();
-		List<String> returnValues = getCompiler().compileAndRun(multiReturn).returnValues;
-		assertArrayEquals(new String[]{"5", "(\"a\",\"b\")"}, returnValues.toArray());
+		assertReturns(multiReturn, "5", "(\"a\",\"b\")");
 		
 		String empty = new ArdenCodeBuilder().toString();
 		assertNoReturn(empty);

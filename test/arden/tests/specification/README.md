@@ -7,7 +7,7 @@ Most of the statements made in the Arden Syntax language specification (v2.5) ar
 ## Running
 - **Using [Eclipse](https://eclipse.org/)**  
 Right-click on [SpecificationTestSuite.java](SpecificationTestSuite.java) and select *Run As* &rArr; *JUnit Test*. A new view should open and show a list of all successful, failed or skipped tests.
-- **Using [Apache Ant](http://ant.apache.org/)**
+- **Using [Apache Ant](http://ant.apache.org/)**  
 Using the command line go, to the project root and type `ant test`. A report, which can be opened in a browser, will be generated into the [report](../../../../report) directory.
 
 

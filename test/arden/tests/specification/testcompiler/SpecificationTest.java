@@ -1,11 +1,21 @@
 package arden.tests.specification.testcompiler;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeNotNull;
 import static org.junit.Assume.assumeTrue;
 
 import org.junit.Rule;
+
+import arden.tests.specification.testcompiler.ArdenCodeBuilder;
+import arden.tests.specification.testcompiler.CompatibilityRule;
+import arden.tests.specification.testcompiler.TestCompiler;
+import arden.tests.specification.testcompiler.TestCompilerCompiletimeException;
+import arden.tests.specification.testcompiler.TestCompilerException;
+import arden.tests.specification.testcompiler.TestCompilerMappings;
+import arden.tests.specification.testcompiler.TestCompilerResult;
+import arden.tests.specification.testcompiler.TestCompilerResult.TestCompilerOutputText;
 
 /**
  * Base test class which all tests extend. Adds useful asserts, annotations and shared access
@@ -76,22 +86,53 @@ public abstract class SpecificationTest {
 		assertReturns(code, expected);
 	}
 	
-	protected void assertReturns(String code, String expected) throws TestCompilerException {
+	protected void assertReturns(String code, String... expected) throws TestCompilerException {
+		if(!getCompiler().isRuntimeSupported()) {
+			assertValid(code);
+			return;
+		}
+		
 		TestCompilerResult result = getCompiler().compileAndRun(code);
-		assertEquals("Too many return values.", 1, result.returnValues.size());
-		String returnValue = result.returnValues.get(0);
-		assertEquals(expected.toLowerCase(), returnValue.toLowerCase());
+		if(expected.length == 0) {
+			// no return values
+			if(result.returnValues.isEmpty()) {
+				// test passed
+			} else {
+				// a single "NULL" is also okay
+				assertEquals("Too many return values.", 1, result.returnValues.size());
+				assertEquals("null", result.returnValues.get(0).toLowerCase());
+			}
+		} else if (expected.length == 1) {
+			// single return value
+			assertEquals("Wrong number of return values.", 1, result.returnValues.size());
+			String returnValue = result.returnValues.get(0);
+			assertEquals(expected[0].toLowerCase(), returnValue.toLowerCase());
+		} else {
+			// multiple return values
+			assertEquals("Too many or few return values.", expected.length, result.returnValues.size());
+			String[] expected_lowercase = new String[expected.length];
+			String[] returnValues_lowercase = new String[result.returnValues.size()];
+			for (int i = 0; i < expected.length; i++) {
+				expected_lowercase[i] = expected[i].toLowerCase();
+				returnValues_lowercase[i] = result.returnValues.get(i).toLowerCase();
+			}
+			assertArrayEquals(expected_lowercase, returnValues_lowercase);
+		}
 	}
 	
 	protected void assertNoReturn(String code) throws TestCompilerException {
-		TestCompilerResult result = getCompiler().compileAndRun(code);
-		if(result.returnValues.isEmpty()) {
-			// test passed
-		} else {
-			// a single "NULL" is also okay
-			assertEquals("Too many return values.", 1, result.returnValues.size());
-			assertEquals("null", result.returnValues.get(0).toLowerCase());
+		assertReturns(code); // no expected values
+	}
+	
+	protected void assertWrites(String code, String expected) throws TestCompilerException {
+		if(!getCompiler().isRuntimeSupported()) {
+			assertValid(code);
+			return;
 		}
+		
+		TestCompilerResult result = getCompiler().compileAndRun(code);
+		TestCompilerOutputText outputText = result.outputTexts.get(0);
+		assertEquals(expected, outputText.text);
 	}
 	
 	protected void assertValidStatement(String statement) throws TestCompilerException {
@@ -118,15 +159,6 @@ public abstract class SpecificationTest {
 			getCompiler().compile(code);
 			fail("Expected a " + TestCompilerCompiletimeException.class.getSimpleName() + " to be thrown.");
 		} catch(TestCompilerCompiletimeException e) {
-			// test passed
-		}
-	}
-	
-	protected void assertException(String code) {
-		try {
-			getCompiler().compileAndRun(code);
-			fail("Expected a " + TestCompilerException.class.getSimpleName() + " to be thrown.");
-		} catch(TestCompilerException e) {
 			// test passed
 		}
 	}

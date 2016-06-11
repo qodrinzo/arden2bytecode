@@ -7,12 +7,12 @@ package arden.tests.specification.testcompiler;
 public interface TestCompiler {
 
 	/**
-	 * Used to check whether only compiletime tests (e.g. grammar tests, compile
-	 * time errors) should be run, or both compiletime and runtime tests (e.g.
-	 * operator tests) should also be run.
+	 * Used to check if runtime tests (e.g. operator tests, which check return
+	 * values) should be run by calling {@link #compileAndRun(String)}, or only
+	 * compiled to check for syntax errors by calling {@link #compile(String)}.
 	 * 
 	 * @return <code>true</code> if runtime tests should run, <code>false</code>
-	 *         otherwise.
+	 *         if they should only be compiled.
 	 */
 	public boolean isRuntimeSupported();
 
@@ -21,7 +21,7 @@ public interface TestCompiler {
 	 * which are supported.
 	 * 
 	 * @param version
-	 *            The version to check against
+	 *            The {@link ArdenVersion} to check against
 	 * @return <code>true</code> if backward compatibility tests for this
 	 *         version should run, <code>false</code> otherwise.
 	 */
