@@ -27,6 +27,7 @@
     <property name="build.dir" value="bin" />
     <property name="dist.dir" value="dist" />
     <property name="dist.file" value="${name}-${version}.jar" />
+    <property name="dist.source" value="on" />
     <property name="mainclass" value="arden.MainClass" />
     <property name="mainclass.test.implementation" value="arden.tests.implementation.ImplementationTestSuite" />
     <property name="mainclass.test.specification" value="arden.tests.specification.SpecificationTestSuite" />
@@ -177,7 +178,12 @@
             </manifest>
             <!-- include build without tests -->
             <fileset dir="${build.dir}" excludes="arden/tests/**" />
+            <!-- include source -->
+            <fileset dir="${src.dir}">
+                <include name="**/*.java" if="${dist.source}"/>
+            </fileset>
             <fileset file="${resource.dir}/arden2bytecode.config" />
+            <!-- include libraries -->
             <zipgroupfileset refid="dist.libs" />
         </jar>
         <basename property="jar.filename" file="${dist.file}" />
