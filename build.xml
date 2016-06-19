@@ -175,8 +175,8 @@
                 <attribute name="Implementation-Title" value="${name}" />
                 <attribute name="Implementation-Version" value="${version}" />
             </manifest>
-            <!-- exclude tests -->
-            <fileset dir="${build.dir}" excludes="${build.dir}/arden/tests" />
+            <!-- include build without tests -->
+            <fileset dir="${build.dir}" excludes="arden/tests/**" />
             <fileset file="${resource.dir}/arden2bytecode.config" />
             <zipgroupfileset refid="dist.libs" />
         </jar>
