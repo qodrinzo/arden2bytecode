@@ -13,7 +13,7 @@ public class TokensTest extends SpecificationTest {
 	
 	public void assertInvalidIdentifier(String reservedWord) {
 		try {
-			String invalidIdentifier = new ArdenCodeBuilder().addAction(reservedWord+ " := 5;").toString();
+			String invalidIdentifier = new ArdenCodeBuilder().addAction("let" + reservedWord + " be 5;").toString();
 			getCompiler().compile(invalidIdentifier);
 			fail("Expected an " + TestCompilerException.class.getSimpleName() + " to be thrown for reserved word: \"" + reservedWord+ "\"");
 		} catch(TestCompilerCompiletimeException e) {
