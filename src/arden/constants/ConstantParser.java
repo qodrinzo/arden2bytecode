@@ -3,12 +3,17 @@ package arden.constants;
 import java.io.IOException;
 import java.io.PushbackReader;
 import java.io.StringReader;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.Deque;
 import java.util.LinkedList;
 
 import arden.constants.analysis.DepthFirstAdapter;
 import arden.constants.lexer.Lexer;
 import arden.constants.lexer.LexerException;
+import arden.constants.node.ADateAtom;
+import arden.constants.node.ADtimeAtom;
 import arden.constants.node.AFalseArdenBoolean;
 import arden.constants.node.AListExpr;
 import arden.constants.node.AListatomExpr;
@@ -18,6 +23,8 @@ import arden.constants.node.AParAtom;
 import arden.constants.node.AStringAtom;
 import arden.constants.node.ATrueArdenBoolean;
 import arden.constants.node.Start;
+import arden.constants.node.TArdenDate;
+import arden.constants.node.TArdenDateTime;
 import arden.constants.node.TArdenString;
 import arden.constants.node.Token;
 import arden.constants.parser.Parser;
@@ -27,6 +34,7 @@ import arden.runtime.ArdenList;
 import arden.runtime.ArdenNull;
 import arden.runtime.ArdenNumber;
 import arden.runtime.ArdenString;
+import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
 import arden.runtime.ExpressionHelpers;
 
@@ -121,6 +129,78 @@ public class ConstantParser {
 			return output.toString();
 		}
 		
+		public long parseIsoDateTime(TArdenDateTime dateTime) throws ConstantParserException {
+			/*
+			 * SimpleDateFormat is very bad at parsing ISO 8601. Therefore we
+			 * change the text to a parsable format by extracting the fractional
+			 * seconds and changing the timezone part.
+			 */
+			String text = dateTime.getText().toUpperCase(); // allow lowercase 't' and 'z'
+			StringBuilder parsableText = new StringBuilder(text);
+			DateFormat format;
+			long millis = 0;
+			
+			// parse fractional seconds if present
+			int millisPos = ArdenTime.isoDateTimeLength;
+			if(millisPos < text.length() && text.charAt(millisPos) == '.') {
+				int multiplier = 100;
+				millisPos++;
+				while (millisPos < text.length()) {
+					char c = text.charAt(millisPos);
+					boolean isDigit = c >= '0' && c <= '9';
+					if (isDigit) {
+						millis += (c - '0') * multiplier;
+						multiplier /= 10;
+						millisPos++;
+					} else {
+						// timezone follows
+						break;
+					}
+				}
+				// remove fractional seconds part
+				parsableText.delete(ArdenTime.isoDateTimeLength, millisPos);
+			}
+			
+			// parse timezone if present
+			int timezonePos = ArdenTime.isoDateTimeLength;
+			if(timezonePos < parsableText.length()) {
+				// has timezone
+				format = ArdenTime.isoDateTimeFormatWithGmtTimeZone;
+				switch (parsableText.charAt(timezonePos)) {
+				case 'Z':
+					// 2000-01-01T00:00:00Z -> 2000-01-01T00:00:00GMT-00:00
+					parsableText.replace(timezonePos, timezonePos+1, "GMT-00:00");
+					break;
+				case '+': // fall through
+				case '-':
+					// 2000-01-01T00:00:00+01:00 -> 2000-01-01T00:00:00GMT+01:00 
+					parsableText.insert(timezonePos, "GMT");
+					break;
+				default:
+					throw new ConstantParserException(dateTime, "Invalid DateTime literal");
+				}
+			} else {
+				// no timezone
+				format = ArdenTime.isoDateTimeFormat;
+			}
+			
+			Date date;
+			try {
+				date = format.parse(parsableText.toString());
+			} catch (ParseException e) {
+				throw new ConstantParserException(dateTime, "Invalid DateTime literal");
+			}
+			return date.getTime() + millis;
+		}
+
+		public long parseIsoDate(TArdenDate isoDate) throws ConstantParserException {
+			try {
+				return ArdenTime.isoDateFormat.parse(isoDate.getText()).getTime();
+			} catch (ParseException e) {
+				throw new ConstantParserException(e.getMessage());
+			}
+		}
+		
 		public AstVisitor() {
 			stack = new LinkedList<ArdenValue>();
 			primaryTime = System.currentTimeMillis();
@@ -179,6 +259,26 @@ public class ConstantParser {
 			node.getAtom().apply(this);
 			ArdenValue atomValue = stack.pop();
 			stack.push(ExpressionHelpers.binaryComma(stack.pop(), atomValue));
+		}
+		
+		@Override
+		public void caseADateAtom(ADateAtom node) {
+			TArdenDate date = node.getArdenDate();
+			try {
+				stack.push(new ArdenTime(parseIsoDate(date), primaryTime));
+			} catch (ConstantParserException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		
+		@Override
+		public void caseADtimeAtom(ADtimeAtom node) {
+			TArdenDateTime dateTime = node.getArdenDateTime();
+			try {
+				stack.push(new ArdenTime(parseIsoDateTime(dateTime), primaryTime));
+			} catch (ConstantParserException e) {
+				throw new RuntimeException(e);
+			}
 		}
 		
 		@Override

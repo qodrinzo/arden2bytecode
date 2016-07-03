@@ -16,6 +16,17 @@ Helpers
     exp = ('e' | 'E') ('+' | '-')? digit+;
     
     string_char = [input - '"'];
+    
+    fractional_seconds =
+          /* empty */
+        | '.' digit+;
+        
+    time_zone =
+          /* empty */
+        | 'Z'
+        | 'z'
+        | '+' digit digit ':' digit digit
+        | '-' digit digit ':' digit digit; 
 	
 	n = 'n' | 'N';
 	u = 'u' | 'U';
@@ -41,10 +52,14 @@ Tokens
         | ('.' digit+ exp?);
 
     arden_string = 
-        '"' (
+        '"' ( 
             string_char* ('"' '"' string_char*)* 
         ) '"';
+        
+    arden_date = digit digit digit digit '-' digit digit '-' digit digit;
     
+    arden_date_time = digit digit digit digit '-' digit digit '-' digit digit t digit digit ':' digit digit ':' digit digit fractional_seconds time_zone;        
+        
     ws = wschar+;
     
 
@@ -68,6 +83,8 @@ Productions
           {number} arden_number 
         | {string} arden_string 
         | {boolean} arden_boolean
+        | {date} arden_date
+        | {dtime} arden_date_time
         | {null} null
         | {expr} l_par expr r_par
         | {par} l_par r_par;
