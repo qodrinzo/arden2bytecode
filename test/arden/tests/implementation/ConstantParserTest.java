@@ -3,12 +3,17 @@ package arden.tests.implementation;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.TimeZone;
+
 import org.junit.Test;
 
 import arden.constants.ConstantParser;
 import arden.runtime.ArdenList;
 import arden.runtime.ArdenNumber;
 import arden.runtime.ArdenString;
+import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
 
 public class ConstantParserTest extends ImplementationTest {
@@ -56,6 +61,34 @@ public class ConstantParserTest extends ImplementationTest {
 	@Test
 	public void testString() throws Exception {
 		assertEquals(new ArdenString("vfs\"dkj"), ConstantParser.parse("\"vfs\"\"dkj\""));
+	}
+	
+	@Test
+	public void testDate() throws Exception {
+		Calendar calendar = Calendar.getInstance(); // local timezone
+		calendar.set(1989, Calendar.AUGUST, 8, 0, 0, 0);
+		calendar.clear(Calendar.MILLISECOND);
+		
+		ArdenTime ardenTime = new ArdenTime(calendar.getTimeInMillis());
+		String isoString = ArdenTime.isoDateFormat.format(calendar.getTime());
+		
+		assertEquals(ardenTime, ConstantParser.parse(isoString));
+	}
+	
+	@Test
+	public void testDatetime() throws Exception {
+		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("GMT+5"));
+		calendar.set(1989, Calendar.AUGUST, 8, 1, 2, 3);
+		calendar.set(Calendar.MILLISECOND, 45);
+		
+		ArdenTime ardenTime = new ArdenTime(calendar.getTimeInMillis());
+
+		DateFormat format = (DateFormat) ArdenTime.isoDateTimeFormatWithMillis.clone();
+		format.setTimeZone(TimeZone.getTimeZone("GMT+5"));
+		String isoString = format.format(calendar.getTimeInMillis());
+		isoString += "+05:00";
+		
+		assertEquals(ardenTime, ConstantParser.parse(isoString));
 	}
 	
 }
