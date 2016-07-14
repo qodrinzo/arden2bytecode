@@ -5,22 +5,22 @@ import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
 
 public class NeverEvokeEvent extends EvokeEvent {
-	
+
 	public NeverEvokeEvent(long primaryTime) {
 		super(primaryTime);
 	}
-	
+
 	public NeverEvokeEvent() {
 		this(NOPRIMARYTIME);
 	}
-	
+
 	@Override
 	public ArdenTime getNextRunTime(ExecutionContext context) {
 		return null;
 	}
 
 	@Override
-	public boolean runOnEvent(String event, ExecutionContext context) {
+	public boolean runOnEvent(String event, ArdenTime eventTime) {
 		return false;
 	}
 
@@ -28,4 +28,5 @@ public class NeverEvokeEvent extends EvokeEvent {
 	public ArdenValue setTime(long newPrimaryTime) {
 		return new NeverEvokeEvent(newPrimaryTime);
 	}
+
 }

@@ -7,23 +7,29 @@ import arden.runtime.ExecutionContext;
 public class FixedDateEvokeEvent extends EvokeEvent {
 
 	private ArdenTime date;
-	
+	protected boolean triggered = false;
+
 	public FixedDateEvokeEvent(ArdenTime date, long primaryTime) {
 		super(primaryTime);
 		this.date = date;
 	}
-	
+
 	public FixedDateEvokeEvent(ArdenTime date) {
 		this(date, NOPRIMARYTIME);
 	}
-	
+
 	@Override
 	public ArdenTime getNextRunTime(ExecutionContext context) {
+		if (triggered) {
+			// Don't run again
+			return null;
+		}
+		triggered = true;
 		return date;
 	}
 
 	@Override
-	public boolean runOnEvent(String event, ExecutionContext context) {
+	public boolean runOnEvent(String event, ArdenTime eventTime) {
 		return false;
 	}
 

@@ -6,7 +6,7 @@ import arden.runtime.ExecutionContext;
 
 public class MappedEvokeEvent extends EvokeEvent {
 	private String mapping;
-	
+
 	public MappedEvokeEvent(String mapping, long primaryTime) {
 		super(primaryTime);
 		if (mapping == null) {
@@ -14,18 +14,18 @@ public class MappedEvokeEvent extends EvokeEvent {
 		}
 		this.mapping = mapping;
 	}
-	
+
 	public MappedEvokeEvent(String mapping) {
 		this(mapping, NOPRIMARYTIME);
 	}
-	
+
 	@Override
 	public ArdenTime getNextRunTime(ExecutionContext context) {
 		return null;
 	}
 
 	@Override
-	public boolean runOnEvent(String event, ExecutionContext context) {
+	public boolean runOnEvent(String event, ArdenTime eventTime) {
 		if (mapping.equalsIgnoreCase(event)) {
 			return true;
 		}

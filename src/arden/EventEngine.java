@@ -59,8 +59,12 @@ public class EventEngine implements Runnable {
 	}
 
 	public void callEvent(String mapping, ArdenTime eventTime) {
-		// TODO use eventTime
-		messages.add(new EventCall(mapping));
+		/*
+		 * Checking the evoke statements may require running the data slot,
+		 * which should not run concurrent to other (possibly data changing)
+		 * MLMs. Therefore add an EventCall to messages.
+		 */
+		messages.add(new EventCall(mapping, eventTime));
 	}
 
 	public void callWithDelay(ArdenRunnable mlm, ArdenValue[] arguments, int urgency, long delay) {
@@ -97,7 +101,7 @@ public class EventEngine implements Runnable {
 
 			// execute MlmCall or EventCall on this thread
 			message.run();
-
+			
 			// check for MLMs which may now be triggered
 			scheduleTriggers();
 		}
@@ -186,9 +190,11 @@ public class EventEngine implements Runnable {
 
 	private class EventCall implements Message {
 		String mapping;
+		ArdenTime eventTime;
 
-		public EventCall(String mapping) {
+		public EventCall(String mapping, ArdenTime eventTime) {
 			this.mapping = mapping;
+			this.eventTime = eventTime;
 		}
 
 		@Override
@@ -210,7 +216,7 @@ public class EventEngine implements Runnable {
 					continue;
 				}
 
-				if (evokeEvent.runOnEvent(mapping, context)) {
+				if (evokeEvent.runOnEvent(mapping, eventTime)) {
 					messages.add(new MlmCall(mlm, null));
 				}
 			}

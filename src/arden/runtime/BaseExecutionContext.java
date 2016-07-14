@@ -168,7 +168,7 @@ public class BaseExecutionContext extends ExecutionContext {
 
 					try {
 						EvokeEvent evokeEvent = mlm.getEvoke(this, null);
-						if (evokeEvent.runOnEvent(mapping, this)) {
+						if (evokeEvent.runOnEvent(mapping, getCurrentTime())) {
 							super.eventTime = eventTime;
 							mlm.run(this, null);
 						}

@@ -14,9 +14,10 @@ public abstract class EvokeEvent extends ArdenValue {
 		//super(primaryTime);
 	}
 
-	/** next run time for a scheduled event */
+	/** When should the evoke event run next. */
 	public abstract ArdenTime getNextRunTime(ExecutionContext context);
 	
-	/** an event such as 'penicillin_storage' occurred */
-	public abstract boolean runOnEvent(String event, ExecutionContext context);
+	/** Whether to run for an external event such as 'penicillin_storage' */
+	public abstract boolean runOnEvent(String mapping, ArdenTime eventTime);
+	
 }

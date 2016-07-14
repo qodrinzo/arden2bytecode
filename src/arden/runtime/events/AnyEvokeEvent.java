@@ -8,16 +8,16 @@ import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
 
 public class AnyEvokeEvent extends EvokeEvent {
-	List<EvokeEvent> events;
-	
+	private List<EvokeEvent> events;
+
 	public AnyEvokeEvent(EvokeEvent[] events, long primaryTime) {
 		this.events = Arrays.asList(events);
 	}
-	
+
 	public AnyEvokeEvent(EvokeEvent[] events) {
 		this(events, NOPRIMARYTIME);
 	}
-	
+
 	public AnyEvokeEvent(List<EvokeEvent> events, long primaryTime) {
 		super(primaryTime);
 		this.events = events;
@@ -25,26 +25,26 @@ public class AnyEvokeEvent extends EvokeEvent {
 
 	@Override
 	public ArdenTime getNextRunTime(ExecutionContext context) {
-		ArdenTime min = null;
+		// Find oldest event
+		ArdenTime oldest = null;
 		for (EvokeEvent e : events) {
-			ArdenTime nextRunTime = e.getNextRunTime(context); 
-			if (min == null || min.compareTo(nextRunTime) > 0) {
-				min = nextRunTime;
+			ArdenTime nextRunTime = e.getNextRunTime(context);
+			if (nextRunTime != null && (oldest == null || oldest.compareTo(nextRunTime) > 0)) {
+				oldest = nextRunTime;
 			}
 		}
-		if (context.getCurrentTime().compareTo(min) > 0) {
-			return null; // event is in the past
-		}
-		return min;
+
+		return oldest;
 	}
 
 	@Override
-	public boolean runOnEvent(String event, ExecutionContext context) {
-		boolean any = false;
+	public boolean runOnEvent(String event, ArdenTime eventTime) {
 		for (EvokeEvent e : events) {
-			any = any || e.runOnEvent(event, context);
+			if (e.runOnEvent(event, eventTime)) {
+				return true;
+			}
 		}
-		return any;
+		return false;
 	}
 
 	@Override
