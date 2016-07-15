@@ -328,8 +328,15 @@ public class MainClass {
 				}
 			}
 		});
+		
+		BaseExecutionContext context = createExecutionContext();
+		
+		// start event server
+		if (options.isPort()) {
+			new EventServer(context, options.getVerbose(), options.getPort()).startServer();
+		}
 
-		EventEngine engine = new EventEngine(createExecutionContext(), mlms);
+		EventEngine engine = new EventEngine(context, mlms);
 		// launch engine loop on main thread -> only exits on interrupt
 		engine.run();
 
@@ -344,10 +351,6 @@ public class MainClass {
 			context = new StdIOExecutionContext(options);
 		} else {
 			context = new StdIOExecutionContext(options);
-		}
-
-		if (options.isPort()) {
-			new EventServer(context, options, options.getPort()).startServer();
 		}
 
 		return context;
