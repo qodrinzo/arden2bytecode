@@ -71,13 +71,12 @@ public interface CommandLineOptions {
 	List<String> getArguments();
 	boolean isArguments();
 	
-	@Option(shortName = "e",
+	@Option(longName = {"environment", "env"},
 			description = "Set arguments to execution environment if \n\t  running a MLM. \n" + 
 					"\t  In case of using JDBC, this may be a connection URL e.g. \n" +
 					"\t   \"jdbc:mysql://host:port/database?options\".", 
 			defaultValue = "stdio")
 	String getEnvironment();
-	boolean isEnvironment();
 	
 	@Option(shortName = "d", 
 			description = "Class name of database driver to load \n" +
@@ -85,12 +84,20 @@ public interface CommandLineOptions {
 	String getDbdriver();
 	boolean isDbdriver();
 	
-	@Option(shortName = "p",
+	@Option(longName = {"classpath", "cp"},
 			description = "Additional classpath. \n"
 			+ "\t  E.g. a database driver like \"mysql-connector-java-[version]-bin.jar\".")
 	String getClasspath();
 	boolean isClasspath();
 	
-	@Option(description = "Run daemon that invokes MLMs when they are scheduled")
-	boolean getDaemon();
+	@Option(shortName = "e",
+			description = "Run event engine that waits for events or evoke triggers and \n"
+					+ "\t  executes MLMs when they are scheduled.")
+	boolean getEngine();
+	
+	@Option(shortName = "p",
+			description = "Port on which to listen for events. \n" +
+				"\t  Will start a server if specified.")
+	int getPort();
+	boolean isPort();
 }

@@ -51,6 +51,7 @@ import arden.compiler.CompilerException;
 import arden.constants.ConstantParser;
 import arden.constants.ConstantParser.ConstantParserException;
 import arden.runtime.ArdenValue;
+import arden.runtime.BaseExecutionContext;
 import arden.runtime.ExecutionContext;
 import arden.runtime.ExpressionHelpers;
 import arden.runtime.MedicalLogicModule;
@@ -127,18 +128,21 @@ public class MainClass {
 		return mlm;
 	}
 
-	private ExecutionContext createExecutionContext() {
-		if (options.isEnvironment()) {
-			if (options.getEnvironment().startsWith("jdbc")) {
-				return new JDBCExecutionContext(options);
-			} else if ("stdio".equalsIgnoreCase(options.getEnvironment())) {
-				return new StdIOExecutionContext(options);
-			} else {
-				return new StdIOExecutionContext(options);
-			}
+	private BaseExecutionContext createExecutionContext() {
+		BaseExecutionContext context;
+		if (options.getEnvironment().startsWith("jdbc")) {
+			context = new JDBCExecutionContext(options);
+		} else if ("stdio".equalsIgnoreCase(options.getEnvironment())) {
+			context = new StdIOExecutionContext(options);
 		} else {
-			return new StdIOExecutionContext(options);
+			context = new StdIOExecutionContext(options);
 		}
+		
+		if(options.isPort()) {
+			new EventServer(context, options, options.getPort()).startServer();
+		}
+		
+		return context;
 	}
 
 	private ArdenValue[] getArguments() {
@@ -222,8 +226,6 @@ public class MainClass {
 	}
 
 	private int runInputFile(File fileToRun) {
-		ExecutionContext context = createExecutionContext();
-
 		MedicalLogicModule mlm = getMlmFromFile(fileToRun);
 		if (mlm == null) {
 			return 1;
@@ -235,6 +237,7 @@ public class MainClass {
 		}
 
 		// run the mlm
+		ExecutionContext context = createExecutionContext();
 		runMlm(mlm, context);
 
 		return 0;
@@ -331,11 +334,12 @@ public class MainClass {
 		}
 	}
 
-	private int runMlmDaemon(List<File> inputFiles) {
+	private int runEngine(List<File> inputFiles) {
 		if (inputFiles.size() < 1) {
 			System.err.println("No MLM file specified");
 			return 1;
 		}
+		
 		List<MedicalLogicModule> mlms = new LinkedList<MedicalLogicModule>();
 		for (File file : inputFiles) {
 			MedicalLogicModule mlm = getMlmFromFile(file);
@@ -344,9 +348,26 @@ public class MainClass {
 			}
 			mlms.add(mlm);
 		}
-		ExecutionContext context = createExecutionContext();
-		ArdenValue[] arguments = getArguments();
-		new MlmDaemon(mlms, context, arguments).run();
+		
+		// Shut down gracefully on SIGINT
+		final Thread engineThread = Thread.currentThread();
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				System.out.println("Shutting down event engine.");
+				engineThread.interrupt();
+				try {
+					engineThread.join(200);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		EventEngine engine = new EventEngine(createExecutionContext(), mlms);
+		// launch engine loop on main thread -> only exits on interrupt
+		engine.run();
+		
 		return 0;
 	}
 
@@ -418,8 +439,8 @@ public class MainClass {
 			}
 		} else if (options.getCompile()) {
 			return compileInputFiles(inputFiles);
-		} else if (options.getDaemon()) {
-			return runMlmDaemon(inputFiles);
+		} else if (options.getEngine()) {
+			return runEngine(inputFiles);
 		} else {
 			System.err.println("You should specify -r to run the files or "
 					+ "-c to compile the files.");

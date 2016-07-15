@@ -70,7 +70,7 @@ public class JDBCExecutionContext extends StdIOExecutionContext {
 		}
 		
 		// handle environment option
-		if (options.isEnvironment() && options.getEnvironment() != null) {
+		if (options.getEnvironment() != null) {
 			String environment = options.getEnvironment();			
 			try {
 				connection = DriverManager.getConnection(environment);
