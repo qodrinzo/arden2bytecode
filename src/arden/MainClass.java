@@ -37,13 +37,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.lexicalscope.jewel.cli.ArgumentValidationException;
+import com.lexicalscope.jewel.cli.Cli;
 import com.lexicalscope.jewel.cli.CliFactory;
+import com.lexicalscope.jewel.cli.HelpRequestedException;
 
 import arden.compiler.CompiledMlm;
 import arden.compiler.Compiler;
@@ -60,72 +63,277 @@ import arden.runtime.jdbc.JDBCExecutionContext;
 
 public class MainClass {
 	public final static String MLM_FILE_EXTENSION = ".mlm";
-
 	private final static String COMPILED_MLM_FILE_EXTENSION = ".class";
-
-	private final static Pattern JAVA_CLASS_NAME =
-		Pattern.compile("[A-Za-z$_][A-Za-z0-9$_]*(?:\\.[A-Za-z$_][A-Za-z0-9$_]*)*");
+	private final static Pattern JAVA_CLASS_NAME = Pattern
+			.compile("[A-Za-z$_][A-Za-z0-9$_]*(?:\\.[A-Za-z$_][A-Za-z0-9$_]*)*");
 
 	private CommandLineOptions options;
 
-	private static List<File> handleInputFileNames(List<String> filenames) {
-		List<File> inputFiles = new LinkedList<File>();
-		if ((filenames == null) || filenames.isEmpty()) {
-			return null;
+	public static void main(String[] args) {
+		boolean success = new MainClass().handleCommandLineArgs(args);
+		if (!success) {
+			System.exit(1);
 		}
-		for (String filePath : filenames) {
-			File file = new File(filePath);
+		System.exit(0);
+	}
+
+	private boolean handleCommandLineArgs(String[] args) {
+		// suggest using help if no options given
+		if (args.length < 1) {
+			printLogo();
+			Cli<CommandLineOptions> cli = CliFactory.createCli(CommandLineOptions.class);
+			System.err.println(cli.getHelpMessage());
+			printAdditionalHelp();
+			return false;
+		}
+
+		// parse command line using JewelCli
+		try {
+			options = CliFactory.parseArguments(CommandLineOptions.class, args);
+		} catch (HelpRequestedException e) {
+			printLogo();
+			String message = e.getMessage();
+			System.err.println(message);
+			printAdditionalHelp();
+			return false;
+		} catch (ArgumentValidationException e) {
+			printLogo();
+			String message = e.getMessage();
+			System.err.println(message);
+			return false;
+		}
+
+		if (!options.getNologo()) {
+			printLogo();
+		}
+
+		if (options.isClasspath()) {
+			extendClasspath();
+		}
+
+		// input files may be regular files or classnames
+		List<File> inputFiles;
+		try {
+			inputFiles = getFileForInputNames(options.getFiles());
+		} catch (MainException e) {
+			e.print();
+			return false;
+		}
+
+		// if verbose output is requested, list input files
+		if (options.getVerbose()) {
+			for (File file : inputFiles) {
+				System.out.println("Input file: " + file.getPath());
+			}
+			System.out.println();
+		}
+
+		// check which mode (run, compile, engine) is selected
+		if (options.getRun()) {
+			return runFiles(inputFiles);
+		} else if (options.getCompile()) {
+			return compileFiles(inputFiles);
+		} else if (options.getEngine()) {
+			return runEngine(inputFiles);
+		} else {
+			System.err.println("You should specify -r to run the files directly, "
+					+ "-c to compile the files or -e to start the event engine for the files.");
+			System.err.println("Specifying files without telling what to do with them is not implemented.");
+			return false;
+		}
+
+	}
+
+	private void printAdditionalHelp() {
+		System.err.println("All further command line arguments that are non-options are regarded as input files.");
+		System.err.println("For a command-line reference, see:");
+		System.err.println("https://plri.github.io/arden2bytecode/docs/command-line-options/");
+	}
+
+	private static void printLogo() {
+		System.out.println("Arden2ByteCode Compiler and Runtime Environment");
+		System.out.println("Copyright 2010-2016 Daniel Grunwald, Hannes Flicka, Mike Klimek");
+		System.out.println();
+		System.out.println("This program is free software; you can redistribute it and/or modify it "
+				+ "under the terms of the GNU General Public License.");
+		System.out.println();
+	}
+
+	private void extendClasspath() {
+		String classpath = options.getClasspath();
+		String[] paths = classpath.split(File.pathSeparator);
+		List<URL> urls = new LinkedList<URL>();
+		for (String path : paths) {
+			File f = new File(path);
+			if (!f.exists()) {
+				System.err.println("Warning: Classpath file/directory \"" + path + "\" does not exist.");
+				// skip file
+				continue;
+			}
+			URL url;
+			try {
+				url = f.toURI().toURL();
+			} catch (MalformedURLException e) {
+				System.err.println("Warning: Classpath file/directory \"" + path + "\" could not be loaded:");
+				e.printStackTrace();
+				// skip file
+				continue;
+			}
+			if (options.getVerbose()) {
+				System.out.println("Adding to classpath: " + url);
+			}
+			urls.add(url);
+		}
+
+		// change classloader to contain new classpath entries
+		ClassLoader currentClassLoader = Thread.currentThread().getContextClassLoader();
+		URLClassLoader ulc = new URLClassLoader(urls.toArray(new URL[] {}), currentClassLoader);
+		Thread.currentThread().setContextClassLoader(ulc);
+
+		if (options.getVerbose()) {
+			System.out.println();
+		}
+	}
+
+	private static List<File> getFileForInputNames(List<String> names) throws MainException {
+		if (names == null || names.isEmpty()) {
+			throw new MainException("No input files given.");
+		}
+
+		List<String> errors = new ArrayList<>();
+		List<File> inputFiles = new ArrayList<File>();
+		for (String name : names) {
+			File file = new File(name);
 			if (file.exists()) {
-				// file exists => add to input files
+				// regular file
 				inputFiles.add(file);
 			} else {
-				// file does not exist => could be a classname rather than a filename
-				Matcher m = JAVA_CLASS_NAME.matcher(filePath);
+				// may be a classname
+				Matcher m = JAVA_CLASS_NAME.matcher(name);
 				if (m.matches()) {
-					String classFileName =
-						filePath.replace('.', File.separatorChar)
-						+ COMPILED_MLM_FILE_EXTENSION;
-					File classFile  = new File(classFileName);
+					String classFileName = name.replace('.', File.separatorChar) + COMPILED_MLM_FILE_EXTENSION;
+					File classFile = new File(classFileName);
 					if (classFile.exists()) {
 						inputFiles.add(classFile);
 					} else {
-						System.err.println("File " + filePath + " and class file " + classFileName
-								+ " do not exist.");
+						errors.add("File " + name + " or class file " + classFileName + " does not exist.");
 					}
 				} else {
-					System.err.println("File \"" + filePath
-							+ "\" is neither an existing file "
-							+ "nor a valid class name.");
+					errors.add("File \"" + name + "\" is neither an existing file nor a valid class name.");
 				}
 			}
 		}
+
+		if (!errors.isEmpty()) {
+			throw new MainException(errors);
+		}
+
 		return inputFiles;
 	}
 
-	private CompiledMlm compileMlm(File mlmfile) {
-		if (options.getVerbose()) {
-			System.out.println("Compiling " + mlmfile.getPath() + " ...");
+	public boolean runFiles(List<File> files) {
+		List<MedicalLogicModule> mlms;
+		try {
+			mlms = getMlmsFromFiles(files);
+		} catch (MainException e) {
+			e.print();
+			return false;
 		}
 
-		CompiledMlm mlm = null;
-		Compiler compiler = new Compiler();
-		try {
-			compiler.enableDebugging(mlmfile.getPath());
-			mlm = compiler.compileMlm(new FileReader(mlmfile.getPath()));
-		} catch (CompilerException e) {
-			System.err.println("exception compiling " + mlmfile.getPath() + ":");
-			e.printStackTrace();
-			System.exit(1);
-		} catch (FileNotFoundException e) {
-			System.err.println("file not found: " + mlmfile.getPath());
-			e.printStackTrace();
-			System.exit(1);
-		} catch (IOException e) {
-			System.err.println("IO error reading: " + mlmfile.getPath());
-			e.printStackTrace();
-			System.exit(1);
+		ExecutionContext context = createExecutionContext();
+		for (MedicalLogicModule mlm : mlms) {
+			if (options.getVerbose()) {
+				System.out.println("Running MLM...");
+				System.out.println();
+			}
+
+			// run the mlm
+			runMlm(mlm, context);
 		}
-		return mlm;
+		return true;
+	}
+
+	public boolean compileFiles(List<File> files) {
+		boolean success = true;
+		boolean outputFileUsed = false;
+		for (File file : files) {
+			CompiledMlm mlm;
+			try {
+				mlm = compileMlm(file);
+			} catch (MainException e) {
+				e.print();
+				success = false;
+				// skip MLM
+				continue;
+			}
+			File outputFile;
+			if (options.isOutput() && !outputFileUsed) {
+				// output file name given
+				outputFile = new File(options.getOutput());
+				outputFileUsed = true;
+			} else {
+				// output file name unknown or already used
+				// assume MLM name + '.class' extension
+				String assumedName = mlm.getName() + COMPILED_MLM_FILE_EXTENSION;
+				File assumed = new File(file.getParentFile(), assumedName);
+				if (!outputFileUsed) {
+					System.err.println(
+							"Warning: File " + file.getPath() + " compiled, but no output filename given. Assuming "
+									+ assumed.getPath() + " as output file.");
+				} else {
+					System.err.println("Warning: File " + file.getPath()
+							+ " compiled, but can't write to same output file again. Assuming " + assumed.getPath()
+							+ " as output file.");
+				}
+				outputFile = assumed;
+			}
+
+			// write compiled MLM to file.
+			try {
+				BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(outputFile));
+				mlm.saveClassFile(bos);
+				bos.close();
+			} catch (IOException e) {
+				System.err.println("Could not write output file " + outputFile.getPath() + " :");
+				e.printStackTrace();
+				success = false;
+			}
+		}
+
+		return success;
+	}
+
+	public boolean runEngine(List<File> files) {
+		List<MedicalLogicModule> mlms;
+		try {
+			mlms = getMlmsFromFiles(files);
+		} catch (MainException e) {
+			e.print();
+			return false;
+		}
+
+		// Shut down gracefully on SIGINT
+		final Thread engineThread = Thread.currentThread();
+		Runtime.getRuntime().addShutdownHook(new Thread() {
+			@Override
+			public void run() {
+				if (options.getVerbose()) {
+					System.out.println("Shutting down event engine.");
+				}
+				engineThread.interrupt();
+				try {
+					engineThread.join(200);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+		EventEngine engine = new EventEngine(createExecutionContext(), mlms);
+		// launch engine loop on main thread -> only exits on interrupt
+		engine.run();
+
+		return true;
 	}
 
 	private BaseExecutionContext createExecutionContext() {
@@ -137,34 +345,57 @@ public class MainClass {
 		} else {
 			context = new StdIOExecutionContext(options);
 		}
-		
-		if(options.isPort()) {
+
+		if (options.isPort()) {
 			new EventServer(context, options, options.getPort()).startServer();
 		}
-		
+
 		return context;
 	}
 
-	private ArdenValue[] getArguments() {
-		ArdenValue[] arguments = null;
-		if (options.isArguments()) {
-			ArdenValue ardenArg = null;
-			for (String arg : options.getArguments()) {
-				ArdenValue parsedArg = null;
+	private List<MedicalLogicModule> getMlmsFromFiles(List<File> files) throws MainException {
+		List<MedicalLogicModule> mlms = new ArrayList<>();
+		List<String> errors = new ArrayList<String>();
+		for (File file : files) {
+			String filename = file.getName();
+			if (filename.endsWith(COMPILED_MLM_FILE_EXTENSION)) {
+				// load compiled mlm (.class file)
 				try {
-					parsedArg = ConstantParser.parse(arg);
-				} catch (ConstantParserException e) {
-					e.printStackTrace();
+					mlms.add(new CompiledMlm(file, getFilenameBase(filename)));
+				} catch (IOException e) {
+					throw new MainException("Error loading " + file.getPath(), e);
 				}
-				if (ardenArg == null) {
-					ardenArg = parsedArg;
-				} else {
-					ardenArg = ExpressionHelpers.binaryComma(ardenArg, parsedArg);
-				}
+			} else if (file.getName().endsWith(MLM_FILE_EXTENSION)) {
+				// compile .mlm file
+				mlms.add(compileMlm(file));
+			} else {
+				errors.add("File \"" + file.getPath() + "\" is neither .class nor .mlm file. Can't run such a file.");
 			}
-			arguments = new ArdenValue[]{ardenArg};
 		}
-		return arguments;
+		if (!errors.isEmpty()) {
+			throw new MainException(errors);
+		}
+		return mlms;
+	}
+
+	private CompiledMlm compileMlm(File file) throws MainException {
+		if (options.getVerbose()) {
+			System.out.println("Compiling " + file.getPath() + " ...");
+		}
+
+		CompiledMlm mlm;
+		Compiler compiler = new Compiler();
+		compiler.enableDebugging(file.getPath());
+		try {
+			mlm = compiler.compileMlm(new FileReader(file.getPath()));
+		} catch (CompilerException e) {
+			throw new MainException("Could not compile " + file.getPath(), e);
+		} catch (FileNotFoundException e) {
+			throw new MainException("File not found: " + file.getPath());
+		} catch (IOException e) {
+			throw new MainException("Could not read " + file.getPath(), e);
+		}
+		return mlm;
 	}
 
 	private ArdenValue[] runMlm(MedicalLogicModule mlm, ExecutionContext context) {
@@ -188,6 +419,28 @@ public class MainClass {
 		return result;
 	}
 
+	private ArdenValue[] getArguments() {
+		ArdenValue[] arguments = null;
+		if (options.isArguments()) {
+			ArdenValue ardenArg = null;
+			for (String arg : options.getArguments()) {
+				ArdenValue parsedArg = null;
+				try {
+					parsedArg = ConstantParser.parse(arg);
+				} catch (ConstantParserException e) {
+					e.printStackTrace();
+				}
+				if (ardenArg == null) {
+					ardenArg = parsedArg;
+				} else {
+					ardenArg = ExpressionHelpers.binaryComma(ardenArg, parsedArg);
+				}
+			}
+			arguments = new ArdenValue[] { ardenArg };
+		}
+		return arguments;
+	}
+
 	public static String getFilenameBase(String filename) {
 		int sepindex = Math.max(filename.lastIndexOf('/'), filename.lastIndexOf('\\'));
 		int fnindex = filename.lastIndexOf('.');
@@ -200,262 +453,36 @@ public class MainClass {
 		return filename.substring(sepindex + 1, fnindex);
 	}
 
-	private MedicalLogicModule getMlmFromFile(File file) {
-		String filename = file.getName();
-		MedicalLogicModule mlm = null;
-		if (filename.endsWith(COMPILED_MLM_FILE_EXTENSION)) {
-			// load compiled mlm (.class file)
-			try {
-				mlm = new CompiledMlm(file, getFilenameBase(filename));
-			} catch (IOException e) {
-				System.err.println("Error loading " +
-						file.getPath());
-				e.printStackTrace();
-				return null;
-			}
-		} else if (file.getName().endsWith(MLM_FILE_EXTENSION)) {
-			// compile .mlm file
-			mlm = compileMlm(file);
-		} else {
-			System.err.println("File \"" + file.getPath()
-					+ "\" is neither .class nor .mlm file.");
-			System.err.println("Can't run such a file.");
-			return null;
-		}
-		return mlm;
-	}
+	@SuppressWarnings("serial")
+	private static class MainException extends Exception {
 
-	private int runInputFile(File fileToRun) {
-		MedicalLogicModule mlm = getMlmFromFile(fileToRun);
-		if (mlm == null) {
-			return 1;
+		public MainException(String message) {
+			super(message);
 		}
 
-		if (options.getVerbose()) {
-			System.out.println("Running MLM...");
-			System.out.println("");
+		public MainException(String message, Throwable cause) {
+			super(message, cause);
 		}
 
-		// run the mlm
-		ExecutionContext context = createExecutionContext();
-		runMlm(mlm, context);
-
-		return 0;
-	}
-
-	private int compileInputFiles(List<File> inputFiles) {
-		boolean firstFile = true;
-		for (File fileToCompile : inputFiles) {
-			CompiledMlm mlm = compileMlm(fileToCompile);
-			File outputFile = null;
-			if (options.isOutput() && firstFile) {
-				// output file name given. write to that file...
-				outputFile = new File(options.getOutput());
-			} else {
-				// output file name unknown. assume mlm name + '.class' extension
-				String assumedName = mlm.getName() + COMPILED_MLM_FILE_EXTENSION;
-				File assumed = new File(fileToCompile.getParentFile(), assumedName);
-				if (firstFile) {
-					System.err.println("warning: File " + fileToCompile.getPath()
-							+ " compiled, but no output filename given. Assuming "
-							+ assumed.getPath()
-							+ " as output file.");
-				} else {
-					System.err.println("warning: File " + fileToCompile.getPath()
-							+ " compiled, but can't write to same output file again. "
-							+ "Assuming "
-							+ assumed.getPath()
-							+ " as output file.");
-				}
-				outputFile = assumed;
-			}
-
-			// if output file is known, compile mlm and write compiled mlm to that file.
-			if (outputFile != null) {
-				try {
-					FileOutputStream fos = new FileOutputStream(outputFile);
-					BufferedOutputStream bos = new BufferedOutputStream(fos);
-					mlm.saveClassFile(bos);
-					bos.close();
-					fos.close();
-				} catch (IOException e) {
-					System.err.println("Exception writing output file "
-							+ outputFile.getPath() + ":");
-					e.printStackTrace();
-					return 1;
-				}
-			}
-		}
-		return 0;
-	}
-
-	private static void printLogo() {
-		System.out.println("Arden2ByteCode Compiler and Runtime Environment");
-		System.out.println("Copyright 2010-2011 Daniel Grunwald, Hannes Flicka");
-		System.out.println("");
-		System.out.println("This program is free software; you can redistribute it and/or modify it");
-		System.out.println("under the terms of the GNU General Public License.");
-		System.out.println("");
-	}
-
-	private void extendClasspath() {
-		String classpath = options.getClasspath();
-		String[] paths = classpath.split(File.pathSeparator);
-		List<URL> urls = new LinkedList<URL>();
-		for (String path : paths) {
-			File f = new File(path);
-			if (!f.exists()) {
-				System.err.println("error: Classpath File/Directory \""
-						+ path + "\" does not exist.");
-				System.exit(1);
-			}
-			URL url = null;
-			try {
-				url = f.toURI().toURL();
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-				System.exit(1);
-			}
-			if (options.getVerbose()) {
-				System.out.println("Adding to classpath: " + url);
-			}
-			urls.add(url);
+		public MainException(List<String> errors) {
+			super(join(errors));
 		}
 
-		ClassLoader currentClassLoader =
-				Thread.currentThread().getContextClassLoader();
-		URLClassLoader ulc = new URLClassLoader(
-				urls.toArray(new URL[]{}),
-				currentClassLoader);
-		Thread.currentThread().setContextClassLoader(ulc);
+		public static String join(List<String> strings) {
+			StringBuilder builder = new StringBuilder();
+			for (String string : strings) {
+				builder.append(string);
+				builder.append(System.lineSeparator());
+			}
+			return builder.toString();
+		}
 
-		if (options.getVerbose()) {
-			System.out.println();
+		public void print() {
+			System.err.println(getMessage());
+			if (getCause() != null) {
+				printStackTrace();
+			}
 		}
 	}
 
-	private int runEngine(List<File> inputFiles) {
-		if (inputFiles.size() < 1) {
-			System.err.println("No MLM file specified");
-			return 1;
-		}
-		
-		List<MedicalLogicModule> mlms = new LinkedList<MedicalLogicModule>();
-		for (File file : inputFiles) {
-			MedicalLogicModule mlm = getMlmFromFile(file);
-			if (mlm == null) {
-				return 1;
-			}
-			mlms.add(mlm);
-		}
-		
-		// Shut down gracefully on SIGINT
-		final Thread engineThread = Thread.currentThread();
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			@Override
-			public void run() {
-				System.out.println("Shutting down event engine.");
-				engineThread.interrupt();
-				try {
-					engineThread.join(200);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		});
-		
-		EventEngine engine = new EventEngine(createExecutionContext(), mlms);
-		// launch engine loop on main thread -> only exits on interrupt
-		engine.run();
-		
-		return 0;
-	}
-
-	private int handleCommandLineArgs(String[] args) {
-		// parse command line using jewelCli:
-		try {
-			options = CliFactory.parseArguments(CommandLineOptions.class, args);
-		} catch (ArgumentValidationException e) {
-			printLogo();
-			String message = e.getMessage();
-			System.err.println(message);
-
-			if (message.startsWith("Usage")) { // hack to display additional help.
-				System.err.println("All further command line arguments that "
-						+ "are non-options are regarded as input \n"
-						+ "files.");
-				System.err.println("For a command-line reference, see:\n"
-						+ "https://plri.github.io/arden2bytecode/docs/"
-						+ "command-line-options/");
-			}
-
-			return 1;
-		}
-
-		// print logo
-		if (!options.getNologo()) {
-			printLogo();
-		}
-
-		if (options.isClasspath()) {
-			extendClasspath();
-		}
-
-		// suggest using help if no options given:
-		if (args.length < 1) {
-			System.out.println("Supply argument -h or -? to display help.");
-			System.out.println("");
-		}
-
-		// check input files to this main method:
-		List<String> files = options.getFiles();
-		List<File> inputFiles = handleInputFileNames(files);
-		if (inputFiles == null) {
-			System.err.println("No input files given.");
-			return 1;
-		}
-
-		// if verbose output is requested, list input files:
-		if (options.getVerbose()) {
-			for (File f : inputFiles) {
-				System.out.println("Input file: " + f.getPath());
-			}
-			System.out.println("");
-		}
-
-		// check if option -r (run) or -c (compile) was given:
-		if (options.getRun()) {
-			if (inputFiles.size() < 1) {
-				System.err.println("You should specify at least one " +
-						"MLM or compiled MLM .class file when " +
-						"trying to run an MLM.");
-				return 1;
-			}
-			for (File fileToRun : inputFiles) {
-				int result = runInputFile(fileToRun);
-				if (result != 0) {
-					return result;
-				}
-			}
-		} else if (options.getCompile()) {
-			return compileInputFiles(inputFiles);
-		} else if (options.getEngine()) {
-			return runEngine(inputFiles);
-		} else {
-			System.err.println("You should specify -r to run the files or "
-					+ "-c to compile the files.");
-			System.err.println("Specifying files without telling what to "
-					+ "do with them is not implemented.");
-			return 1;
-		}
-
-		return 0;
-	}
-
-	public static void main(String[] args) {
-		int returnValue =
-				new MainClass().handleCommandLineArgs(args);
-
-		System.exit(returnValue);
-	}
 }
