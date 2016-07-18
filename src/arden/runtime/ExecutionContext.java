@@ -117,17 +117,30 @@ public abstract class ExecutionContext {
 	public void callWithDelay(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay) {
 		throw new RuntimeException("callWithDelay not implemented");
 	}
+	
+	/**
+	 * Calls an event.
+	 * 
+	 * @param mapping
+	 *            The mapping used for the event
+	 * @param eventTime
+	 *            The time that the event occurred
+	 */
+	public void callEvent(String mapping, ArdenTime eventTime) {
+		throw new RuntimeException("callEvent not implemented");
+	}
 
-	private ArdenTime eventtime = new ArdenTime(new Date());
+	protected ArdenTime eventTime = new ArdenTime(new Date());
+	protected ArdenTime triggerTime = new ArdenTime(new Date());
 
 	/** Gets the eventtime. */
 	public ArdenTime getEventTime() {
-		return eventtime;
+		return eventTime;
 	}
 
 	/** Gets the triggertime. */
 	public ArdenTime getTriggerTime() {
-		return eventtime;
+		return triggerTime;
 	}
 
 	/** Gets the current time. */
