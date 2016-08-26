@@ -11,6 +11,7 @@ title: _Sidebar
 - [Arguments]({{ baseurl }}/docs/arguments/)
 - [Scheduling]({{ baseurl }}/docs/scheduling/)
 - [Eclipse Plugin]({{ baseurl }}/docs/eclipse-plugin/)
+- [Using Databases]({{ baseurl }}/docs/using-databases/)
 
 **Arden Syntax**
 - [Basics]({{ baseurl }}/docs/basics/)
@@ -19,5 +20,4 @@ title: _Sidebar
 
 **Development**
 - [Building]({{ baseurl }}/docs/building/)
-- [Using Databases]({{ baseurl }}/docs/using-databases/)
 - [Custom Execution Context]({{ baseurl }}/docs/custom-execution-context/)
