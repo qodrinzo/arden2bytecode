@@ -20,7 +20,6 @@ rm -rf "$OUTDIR/.git/" # discard .git repo
 
 # Prepend frontmatter to every file
 echo "Adding frontmatter..."
-nav_counter=0
 for file in "$OUTDIR/"*.md; do
     # generate a title from the filename
     filename=$(basename "$file") # get filename from long path
