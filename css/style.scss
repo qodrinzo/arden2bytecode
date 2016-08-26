@@ -9,9 +9,7 @@ $navbar-height: 50px;
 // Other css:
 $body-color: #e8e8e8;
 $card-color: #fff;
-$footer-color: #f5f5f5;
 $navbar-logo-breakpoint: 1100px; // min width at which the logo is shown
 $navbar-padding: 35px;
 $card-padding: 30px;
-$footer-height: 50px;
-@import 'mixins', 'base', 'sticky-footer-navbar', 'card', 'navbar_logo';
+@import 'mixins', 'base', 'card', 'navbar_logo';
