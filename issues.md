@@ -3,8 +3,8 @@ title: Bug reports
 nav_title: Bug reports
 nav_order: 6
 custom_js:
-  - {file: showdown.min.js, foot: true}
-  - {file: issues_query.js, foot: true}
+  - {file: showdown.min.js}
+  - {file: issues_query.js}
 ---
 
 If you find a bug, or have an idea for improvements, please post it at the [Arden2ByteCode issue tracker]({{ site.compiler.repo }}/issues) or the [Arden4Eclipse issue tracker]({{ site.plugin.repo }}/issues) at GitHub.  

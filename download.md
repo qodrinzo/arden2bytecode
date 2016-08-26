@@ -3,7 +3,7 @@ title: Downloads
 nav_title: Downloads
 nav_order: 3
 custom_js:
-  - {file: downloads_query.js, foot: true}
+  - {file: downloads_query.js}
 ---
 {% include get_url %}
 

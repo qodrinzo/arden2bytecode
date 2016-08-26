@@ -20,9 +20,9 @@
 {% endfor %}
 
 {% for js in page.custom_js %}
-  {% unless js.foot %}
+  {% if js.head %}
   <script type="text/javascript" src="{{ baseurl }}/js/{{ js.file }}"></script>
-  {% endunless %}
+  {% endif %}
 {% endfor %}
 
 </head>

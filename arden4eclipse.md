@@ -3,10 +3,10 @@ title: About Arden4Eclipse
 nav_title: Arden4Eclipse
 nav_order: 2
 custom_js:
-  - {file: lightbox.min.js, foot: true}
-  - {file: lightbox_options.js, foot: true}
-  - {file: clipboard.min.js, foot: true}
-  - {file: clipboard_button.js, foot: true}
+  - {file: lightbox.min.js}
+  - {file: lightbox_options.js}
+  - {file: clipboard.min.js}
+  - {file: clipboard_button.js}
 custom_css:
   - {file: lightbox.css}
 ---
