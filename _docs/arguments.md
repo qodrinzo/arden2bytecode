@@ -4,7 +4,7 @@ title: Arguments
 category: Getting Started
 nav_order: 6
 ---
-{% include get_url %}
+{% include get_url.liquid %}
 In Arden2ByteCode, you can pass arguments to Medical Logic Modules (MLMs) and access them in the MLM via the `ARGUMENT` identifier.
 
 To pass arguments, use the **-a** flag of Arden2ByteCode. The string following the **-a** flag must be a valid constant Arden Syntax expression. Otherwise a parsing error will occur.  

@@ -5,7 +5,7 @@ nav_order: 3
 custom_js:
   - {file: downloads_query.js}
 ---
-{% include get_url %}
+{% include get_url.liquid %}
 
 ## Arden2ByteCode
 

@@ -9,7 +9,7 @@ set -e #exit on error
 WIKI_REPO_URL=https://github.com/PLRI/arden2bytecode.wiki.git
 OUTDIR="_docs"
 FRONTMATTER_START="---\n# GENERATED - DO NOT EDIT"
-FRONTMATTER_END="---\n{% include get_url %}"
+FRONTMATTER_END="---\n{% include get_url.liquid %}"
 BASEDIR="{{ baseurl }}/docs"
 
 # Download the files

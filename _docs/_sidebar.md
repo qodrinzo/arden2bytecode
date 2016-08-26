@@ -2,7 +2,7 @@
 # GENERATED - DO NOT EDIT
 title: _Sidebar
 ---
-{% include get_url %}
+{% include get_url.liquid %}
 
 **Getting Started**
 - [Installation]({{ baseurl }}/docs/installation/)

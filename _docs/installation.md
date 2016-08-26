@@ -4,7 +4,7 @@ title: Installation
 category: Getting Started
 nav_order: 3
 ---
-{% include get_url %}
+{% include get_url.liquid %}
 Arden2ByteCode is a Java program, thus it requires a Java Runtime Environment (JRE) on your machine. If you already have such a JRE, you can proceed with [step 2](#step-2-download-the-arden2bytecode-compiler).
 
 

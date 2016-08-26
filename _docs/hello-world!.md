@@ -4,7 +4,7 @@ title: Hello World!
 category: Getting Started
 nav_order: 4
 ---
-{% include get_url %}
+{% include get_url.liquid %}
 The following shows how to output a Hello World! message on standard output using Arden Syntax.  
 File `hello_world.mlm`:
 

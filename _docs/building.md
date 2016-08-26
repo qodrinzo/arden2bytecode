@@ -4,7 +4,7 @@ title: Building
 category: Development
 nav_order: 16
 ---
-{% include get_url %}
+{% include get_url.liquid %}
 ## Getting the source
 To use [Arden2ByteCode](https://github.com/PLRI/arden2bytecode), first download or clone the source.
 

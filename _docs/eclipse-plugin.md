@@ -4,7 +4,7 @@ title: Eclipse Plugin
 category: Getting Started
 nav_order: 8
 ---
-{% include get_url %}
+{% include get_url.liquid %}
 There is an Eclipse plugin including Arden2ByteCode available that simplifies editing and starting MLM files.
 
 If you don't have Eclipse yet, you may download the Eclipse IDE for Java Developers at <https://www.eclipse.org/downloads/>. 

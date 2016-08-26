@@ -2,7 +2,7 @@
 # GENERATED - DO NOT EDIT
 title: Home
 ---
-{% include get_url %}
+{% include get_url.liquid %}
 ![Arden2ByteCode](https://plri.github.io/arden2bytecode/images/logo.png)
 
 **Welcome to the Arden2ByteCode wiki!**

@@ -4,7 +4,7 @@ title: Examples
 category: Arden Syntax
 nav_order: 13
 ---
-{% include get_url %}
+{% include get_url.liquid %}
 Overview and how to download
 ----------------------------
 
