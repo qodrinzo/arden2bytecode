@@ -2,18 +2,14 @@
 ---
 
 // Bootstrap:
-// collapse navbar sooner -> prevent creating a new row
-$grid-float-breakpoint: 1105px;
+$grid-float-breakpoint: 920px; // min width at which the normal navbar is shown
 $navbar-height: 50px;
-//$line-height-base: 1.78571428571429; // 25px / $font-size-base
-@import 'bootstrap';
+@import 'bootstrap'; // imported from _sass folder
 
 // Other css:
 $body-color: #e8e8e8;
 $card-color: #fff;
-$footer-color: #f5f5f5;
+$navbar-logo-breakpoint: 1100px; // min width at which the logo is shown
 $navbar-padding: 35px;
 $card-padding: 30px;
-$footer-height: 50px;
-// imported from _sass folder
-@import 'mixins', 'base', 'sticky-footer-navbar', 'card', 'navbar_logo';
+@import 'mixins', 'base', 'card', 'navbar_logo';
