@@ -24,7 +24,7 @@ public class StdIOExecutionContext extends BaseExecutionContext {
 		}
 		ArdenValue[] val = null;
 		try {
-			val = new ArdenValue[] { ConstantParser.parse(line) };
+			val = ConstantParser.parseMultiple(line);
 		} catch (ConstantParserException e) {
 			System.out.println("Error parsing at char: " + e.getPos());
 			System.out.println("Message: " + e.getMessage());
