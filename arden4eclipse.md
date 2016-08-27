@@ -3,14 +3,14 @@ title: About Arden4Eclipse
 nav_title: Arden4Eclipse
 nav_order: 2
 custom_js:
-  - {file: lightbox.min.js, foot: true}
-  - {file: lightbox_options.js, foot: true}
-  - {file: clipboard.min.js, foot: true}
-  - {file: clipboard_button.js, foot: true}
+  - {file: lightbox.min.js}
+  - {file: lightbox_options.js}
+  - {file: clipboard.min.js}
+  - {file: clipboard_button.js}
 custom_css:
   - {file: lightbox.css}
 ---
-{% include get_url %}
+{% include get_url.liquid %}
 
 If you want to express your medical knowledge with [Arden Syntax](https://en.wikipedia.org/wiki/Arden_syntax) you can use Arden4Eclipse, an Arden Syntax Editor for the [Eclipse IDE](https://eclipse.org/). It integrates Arden2ByteCode so Arden Syntax code can be easily written as well as executed.
 

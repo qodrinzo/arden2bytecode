@@ -5,7 +5,7 @@ nav_order: 1
 redirect_from: /about/
 permalink: /
 ---
-{% include get_url %}
+{% include get_url.liquid %}
 
 The [Arden Syntax](https://en.wikipedia.org/wiki/Arden_syntax) is a standardized language that can be used to express medical knowledge.
 Arden2ByteCode is a newly developed open source compiler for the Arden Syntax. Arden2ByteCode runs on Java Virtual Machines (JVM) and translates Arden Syntax directly to Java bytecode (JBC) executable on JVMs. It also serves as runtime environment for execution of the compiled bytecode.

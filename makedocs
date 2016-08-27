@@ -9,7 +9,7 @@ set -e #exit on error
 WIKI_REPO_URL=https://github.com/PLRI/arden2bytecode.wiki.git
 OUTDIR="_docs"
 FRONTMATTER_START="---\n# GENERATED - DO NOT EDIT"
-FRONTMATTER_END="---\n{% include get_url %}"
+FRONTMATTER_END="---\n{% include get_url.liquid %}"
 BASEDIR="{{ baseurl }}/docs"
 
 # Download the files
@@ -20,7 +20,6 @@ rm -rf "$OUTDIR/.git/" # discard .git repo
 
 # Prepend frontmatter to every file
 echo "Adding frontmatter..."
-nav_counter=0
 for file in "$OUTDIR/"*.md; do
     # generate a title from the filename
     filename=$(basename "$file") # get filename from long path

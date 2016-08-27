@@ -1,4 +1,4 @@
-{% include get_url %}
+{% include get_url.liquid %}
 
 <head>
   <meta charset="utf-8">
@@ -10,7 +10,7 @@
   <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
   <link rel="canonical" href="{{ page.url | replace:'index.html','' | prepend: fullurl }}">
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
   <script src="{{ baseurl }}/js/bootstrap.min.js"></script>
   <script src="{{ baseurl }}/js/bootstrap-hover-dropdown.min.js"></script>
   <link rel="stylesheet" type="text/css" href="{{ baseurl }}/css/style.css">
@@ -20,9 +20,9 @@
 {% endfor %}
 
 {% for js in page.custom_js %}
-  {% unless js.foot %}
+  {% if js.head %}
   <script type="text/javascript" src="{{ baseurl }}/js/{{ js.file }}"></script>
-  {% endunless %}
+  {% endif %}
 {% endfor %}
 
 </head>

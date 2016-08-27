@@ -4,7 +4,7 @@ title: Command Line Options
 category: Getting Started
 nav_order: 5
 ---
-{% include get_url %}
+{% include get_url.liquid %}
 ### Synopsis
 `arden2bytecode [OPTIONS] [FILE] [FILE...]`
 

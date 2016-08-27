@@ -1,14 +1,14 @@
 body {
   background: $body-color;
-  padding-top: $navbar-height
-}
+  padding-top: $navbar-height;
 
-body > .container {
-  padding-top: 15px;
-  padding-bottom: 15px;
+  > .container {
+    padding-bottom: 15px;
+    padding-top: 15px;
+  }
 }
 
 .footer > .container {
-  text-align: right;
   @include vertical-align();
+  text-align: right;
 }

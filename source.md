@@ -3,7 +3,7 @@ title: Source Code
 nav_title: Source Code
 nav_order: 5
 ---
-{% include get_url %}
+{% include get_url.liquid %}
 
 The source code of Arden2ByteCode is made freely available under the terms of the GNU [General Public License](http://www.gnu.org/copyleft/gpl.html).  
 

@@ -4,7 +4,7 @@ nav_title: Documentation
 nav_order: 4
 nav_collection: docs
 ---
-{% include get_url %}
+{% include get_url.liquid %}
 
 {% comment %} Show wiki home {% endcomment %}
 {% for doc_page in site.docs %}

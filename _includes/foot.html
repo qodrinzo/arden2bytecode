@@ -1,5 +1,5 @@
 {% for js in page.custom_js %}
-  {% if js.foot %}
+  {% unless js.head %}
   <script type="text/javascript" src="{{ baseurl }}/js/{{ js.file }}"></script>
-  {% endif %}
+  {% endunless %}
 {% endfor %}

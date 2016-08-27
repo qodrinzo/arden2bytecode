@@ -4,7 +4,7 @@ title: Basics
 category: Arden Syntax
 nav_order: 11
 ---
-{% include get_url %}
+{% include get_url.liquid %}
 This wiki page covers some of the features of Arden Syntax. If you want to know more, you might be interested in a [paper](http://www.sciencedirect.com/science/article/pii/0010482594900027) introducing [Arden Syntax](http://en.wikipedia.org/wiki/Arden_syntax) written by George Hripcsak.
 
 ## Sample Medical Logic Module (MLM)

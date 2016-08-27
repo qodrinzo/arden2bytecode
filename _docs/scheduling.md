@@ -4,7 +4,7 @@ title: Scheduling
 category: Getting Started
 nav_order: 7
 ---
-{% include get_url %}
+{% include get_url.liquid %}
 As of September 2012, it is possible to declare events in the evoke slot of a MLM.
 
 An example would be:
