@@ -29,6 +29,13 @@ public class ConstantParserTest extends ImplementationTest {
 		assertEquals(ArdenNumber.create(5.0, ArdenValue.NOPRIMARYTIME), ConstantParser.parse("5.0"));
 		assertFalse(ConstantParser.parse("5.0").equals(ArdenNumber.create(4.0, ArdenValue.NOPRIMARYTIME)));
 	}
+	
+	@Test
+	public void testSign() throws Exception {
+		assertEquals(ArdenNumber.create(-5.0, ArdenValue.NOPRIMARYTIME), ConstantParser.parse("-5.0"));
+		assertEquals(ArdenNumber.create(+5.0, ArdenValue.NOPRIMARYTIME), ConstantParser.parse("+5.0"));
+		assertFalse(ConstantParser.parse("-5.0").equals(ArdenNumber.create(+5.0, ArdenValue.NOPRIMARYTIME)));
+	}
 
 	@Test
 	public void testSingleElementList() throws Exception {
