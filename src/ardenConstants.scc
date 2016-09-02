@@ -1,35 +1,17 @@
-
 Package arden.constants;
 
 Helpers
-    ascii = [0..0x007f];
-
     space = ' ';
     tab = 0x0009;
     lf = 0x000a;
     cr = 0x000d;
     wschar = space | tab | lf | cr;
     
-    input = [ascii - [cr + lf]]; 
-    
-    digit = ['0'..'9'];
-    sign = ('+' | '-');
-    exp = ('e' | 'E') sign? digit+;
-    
+    ascii = [0..0x007f];
+    input = [ascii - [cr + lf]];
     string_char = [input - '"'];
     
-    fractional_seconds =
-          /* empty */
-        | '.' digit+;
-        
-    time_zone =
-          /* empty */
-        | 'Z'
-        | 'z'
-        | '+' digit digit ':' digit digit
-        | '-' digit digit ':' digit digit; 
-	
-	a = ['a' + 'A'];
+    a = ['a' + 'A'];
     b = ['b' + 'B'];
     c = ['c' + 'C'];
     d = ['d' + 'D'];
@@ -56,27 +38,36 @@ Helpers
     y = ['y' + 'Y'];
     z = ['z' + 'Z'];
     
+    digit = ['0'..'9'];
+    sign = ['+' + '-'];
+    exp = e sign? digit+;
+    
+    iso_date = digit digit digit digit '-' digit digit '-' digit digit;
+    iso_time = digit digit ':' digit digit ':' digit digit;
+    fractional_seconds = '.' digit+;
+    time_zone = z | sign digit digit ':' digit digit;
+
 Tokens
     comma = ',';
     l_par = '(';
     r_par = ')';
     null = n u l l;
-	true = t r u e;
-	false = f a l s e;
+    true = t r u e;
+    false = f a l s e;
     
-    arden_number =  
-          sign? (digit+ ('.' digit*)? exp?) 
+    arden_number =
+          sign? (digit+ ('.' digit*)? exp?)
         | sign? ('.' digit+ exp?);
-
-    arden_string = 
+    
+    arden_string =
         '"' ( 
             string_char* ('"' '"' string_char*)* 
         ) '"';
-        
-    arden_date = digit digit digit digit '-' digit digit '-' digit digit;
     
-    arden_date_time = digit digit digit digit '-' digit digit '-' digit digit t digit digit ':' digit digit ':' digit digit fractional_seconds time_zone;        
-        
+    arden_date = iso_date;
+    
+    arden_date_time = iso_date t iso_time fractional_seconds? time_zone?;
+    
     ws = wschar+;
     
     year  = y e a r s?;
@@ -86,7 +77,6 @@ Tokens
     hour = h o u r s?;
     minute = m i n u t e s?;
     second = s e c o n d s?;
-    
 
 Ignored Tokens
     ws;
@@ -94,23 +84,10 @@ Ignored Tokens
 Productions
     arden_constant = expr;
     
-    duration_op =
-          {year} year
-        | {month} month
-        | {week} week
-        | {day} day
-        | {hour} hour
-        | {min} minute
-        | {sec} second;
-    
-    arden_boolean = 
-		  {true} true 
-		| {false} false;
-	
     expr = 
-          {atom} atom
-        | {listatom} comma atom
-        | {list} expr comma atom;
+      {atom} atom
+    | {listatom} comma atom
+    | {list} expr comma atom;
     
     atom = 
           {number} arden_number 
@@ -122,3 +99,16 @@ Productions
         | {null} null
         | {expr} l_par expr r_par
         | {par} l_par r_par;
+    
+    duration_op =
+          {year} year
+        | {month} month
+        | {week} week
+        | {day} day
+        | {hour} hour
+        | {min} minute
+        | {sec} second;
+    
+    arden_boolean =
+          {true} true
+        | {false} false;
