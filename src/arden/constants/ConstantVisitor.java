@@ -5,9 +5,11 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Stack;
 
+import arden.constants.analysis.AnalysisAdapter;
 import arden.constants.analysis.DepthFirstAdapter;
 import arden.constants.node.ADateAtom;
 import arden.constants.node.ADtimeAtom;
+import arden.constants.node.ADurationAtom;
 import arden.constants.node.AFalseArdenBoolean;
 import arden.constants.node.AListExpr;
 import arden.constants.node.AListatomExpr;
@@ -21,6 +23,7 @@ import arden.constants.node.TArdenDateTime;
 import arden.constants.node.TArdenNumber;
 import arden.constants.node.TArdenString;
 import arden.runtime.ArdenBoolean;
+import arden.runtime.ArdenDuration;
 import arden.runtime.ArdenList;
 import arden.runtime.ArdenNull;
 import arden.runtime.ArdenNumber;
@@ -36,7 +39,7 @@ class ConstantVisitor extends DepthFirstAdapter {
 	private static boolean isWhitespace(char c) {
 		return c == ' ' || c == '\t' || c == '\n' || c == '\r';
 	}
-	
+
 	private static String parseString(TArdenString literal) throws ConstantParserException {
 		String input = literal.getText();
 		if (input.length() < 2 || input.charAt(0) != '"' || input.charAt(input.length() - 1) != '"')
@@ -71,9 +74,9 @@ class ConstantVisitor extends DepthFirstAdapter {
 
 	private static long parseIsoDateTime(TArdenDateTime dateTime) throws ConstantParserException {
 		/*
-		 * SimpleDateFormat is very bad at parsing ISO 8601. Therefore we
-		 * change the text to a parsable format by extracting the fractional
-		 * seconds and changing the timezone part.
+		 * SimpleDateFormat is very bad at parsing ISO 8601. Therefore we change
+		 * the text to a parsable format by extracting the fractional seconds
+		 * and changing the timezone part.
 		 */
 
 		// allow lowercase 't' and 'z'
@@ -143,7 +146,7 @@ class ConstantVisitor extends DepthFirstAdapter {
 			throw new ConstantParserException(isoDate, e.getMessage());
 		}
 	}
-	
+
 	private static double parseNumber(TArdenNumber ardenNumber) throws ConstantParserException {
 		double d = Double.NaN;
 		try {
@@ -225,7 +228,23 @@ class ConstantVisitor extends DepthFirstAdapter {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
+	@Override
+	public void caseADurationAtom(ADurationAtom node) {
+		double value;
+		try {
+			value = parseNumber(node.getArdenNumber());
+		} catch (ConstantParserException e) {
+			throw new RuntimeException(e);
+		}
+		DurationVisitor durationVisitor = new DurationVisitor();
+		node.getDurationOp().apply(durationVisitor);
+		boolean isMonths = durationVisitor.isMonths();
+		double multiplier = durationVisitor.getMultiplier();
+
+		stack.push(ArdenDuration.create(value * multiplier, isMonths, primaryTime));
+	}
+
 	@Override
 	public void caseAParAtom(AParAtom node) {
 		stack.push(ArdenList.EMPTY);
@@ -237,4 +256,59 @@ class ConstantVisitor extends DepthFirstAdapter {
 		}
 		return stack.peek();
 	}
+
+	private static class DurationVisitor extends AnalysisAdapter {
+		boolean isMonths;
+		double multiplier;
+
+		@Override
+		public void caseADayDurationOp(arden.constants.node.ADayDurationOp node) {
+			isMonths = false;
+			multiplier = 86400;
+		}
+
+		@Override
+		public void caseAHourDurationOp(arden.constants.node.AHourDurationOp node) {
+			isMonths = false;
+			multiplier = 3600;
+		}
+
+		@Override
+		public void caseAMinDurationOp(arden.constants.node.AMinDurationOp node) {
+			isMonths = false;
+			multiplier = 60;
+		}
+
+		@Override
+		public void caseAMonthDurationOp(arden.constants.node.AMonthDurationOp node) {
+			isMonths = true;
+			multiplier = 1;
+		}
+
+		@Override
+		public void caseASecDurationOp(arden.constants.node.ASecDurationOp node) {
+			isMonths = false;
+			multiplier = 1;
+		}
+
+		@Override
+		public void caseAWeekDurationOp(arden.constants.node.AWeekDurationOp node) {
+			isMonths = false;
+			multiplier = 604800;
+		}
+
+		@Override
+		public void caseAYearDurationOp(arden.constants.node.AYearDurationOp node) {
+			isMonths = true;
+			multiplier = 12;
+		}
+
+		public double getMultiplier() {
+			return multiplier;
+		}
+
+		public boolean isMonths() {
+			return isMonths;
+		}
+	};
 }
