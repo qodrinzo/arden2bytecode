@@ -52,7 +52,7 @@ import arden.compiler.CompiledMlm;
 import arden.compiler.Compiler;
 import arden.compiler.CompilerException;
 import arden.constants.ConstantParser;
-import arden.constants.ConstantParser.ConstantParserException;
+import arden.constants.ConstantParserException;
 import arden.runtime.ArdenValue;
 import arden.runtime.BaseExecutionContext;
 import arden.runtime.ExecutionContext;

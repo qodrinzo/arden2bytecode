@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 import arden.CommandLineOptions;
 import arden.constants.ConstantParser;
-import arden.constants.ConstantParser.ConstantParserException;
+import arden.constants.ConstantParserException;
 
 /** Reads and prints queries from/to StdIO. */
 public class StdIOExecutionContext extends BaseExecutionContext {
