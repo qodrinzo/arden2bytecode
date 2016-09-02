@@ -13,7 +13,8 @@ Helpers
     input = [ascii - [cr + lf]]; 
     
     digit = ['0'..'9'];
-    exp = ('e' | 'E') ('+' | '-')? digit+;
+    sign = ('+' | '-');
+    exp = ('e' | 'E') sign? digit+;
     
     string_char = [input - '"'];
     
@@ -48,8 +49,8 @@ Tokens
 	false = f a l s e;
     
     arden_number =  
-          (digit+ ('.' digit*)? exp?) 
-        | ('.' digit+ exp?);
+          sign? (digit+ ('.' digit*)? exp?) 
+        | sign? ('.' digit+ exp?);
 
     arden_string = 
         '"' ( 
