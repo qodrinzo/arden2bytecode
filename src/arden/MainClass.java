@@ -66,6 +66,11 @@ public class MainClass {
 	private final static Pattern JAVA_CLASS_NAME = Pattern
 			.compile("[A-Za-z$_][A-Za-z0-9$_]*(?:\\.[A-Za-z$_][A-Za-z0-9$_]*)*");
 
+	// wrap and indent help message
+	public static final int MAX_LINE_LENGTH = 80;
+	private static final String ARGUMENTS_INDENT = "    ";
+	private static final String DESCRIPTION_INDENT = "    ";
+
 	private CommandLineOptions options;
 
 	public static void main(String[] args) {
@@ -81,7 +86,7 @@ public class MainClass {
 		if (args.length < 1) {
 			printLogo();
 			Cli<CommandLineOptions> cli = CliFactory.createCli(CommandLineOptions.class);
-			System.err.println(cli.getHelpMessage());
+			System.out.println(formatHelpMessage(cli.getHelpMessage()));
 			printAdditionalHelp();
 			return false;
 		}
@@ -92,7 +97,7 @@ public class MainClass {
 		} catch (HelpRequestedException e) {
 			printLogo();
 			String message = e.getMessage();
-			System.err.println(message);
+			System.out.println(formatHelpMessage(message));
 			printAdditionalHelp();
 			return false;
 		} catch (ArgumentValidationException e) {
@@ -144,9 +149,9 @@ public class MainClass {
 	}
 
 	private void printAdditionalHelp() {
-		System.err.println("All further command line arguments that are non-options are regarded as input files.");
-		System.err.println("For a command-line reference, see:");
-		System.err.println("https://plri.github.io/arden2bytecode/docs/command-line-options/");
+		System.out.println("All further command line arguments that are non-options are regarded as input files.");
+		System.out.println("For a command-line reference, see:");
+		System.out.println("https://plri.github.io/arden2bytecode/docs/command-line-options/");
 	}
 
 	private static void printLogo() {
@@ -340,9 +345,9 @@ public class MainClass {
 				}
 			}
 		});
-		
+
 		BaseExecutionContext context = createExecutionContext();
-		
+
 		// start event server
 		if (options.isPort()) {
 			new EventServer(context, options.getVerbose(), options.getPort()).startServer();
@@ -457,6 +462,26 @@ public class MainClass {
 			return filename.substring(sepindex + 1);
 		}
 		return filename.substring(sepindex + 1, fnindex);
+	}
+
+	public static String formatHelpMessage(String message) {
+		String newline = System.getProperty("line.separator");
+		String indentline = newline + ARGUMENTS_INDENT + DESCRIPTION_INDENT;
+
+		StringBuilder messageBuilder = new StringBuilder(message.length() * 2);
+		for (String line : message.split(newline)) {
+			line = line.replaceAll("\t", ARGUMENTS_INDENT);
+			StringBuilder lineBuilder = new StringBuilder(line);
+			// wrap message
+			int spacePos = 0;
+			while (spacePos + MAX_LINE_LENGTH < lineBuilder.length()) {
+				spacePos = lineBuilder.lastIndexOf(" ", spacePos + MAX_LINE_LENGTH);
+				lineBuilder.replace(spacePos, spacePos + 1, indentline);
+			}
+			messageBuilder.append(lineBuilder.toString() + newline);
+		}
+
+		return messageBuilder.toString();
 	}
 
 	@SuppressWarnings("serial")

@@ -40,13 +40,10 @@
             <include name="*.jar" />
         </fileset>
     </path>
-    <path id="run.classpath">
+    <path id="test.classpath">
         <path refid="build.classpath" />
         <path location="${build.dir}" />
         <path location="." />
-    </path>
-    <path id="test.classpath">
-        <path refid="run.classpath" />
     </path>
     <path id="dist.classpath">
         <path location="." />
@@ -120,7 +117,7 @@
     </target>
 
     
-    <target name="init.sableCC">
+    <target name="sableCC.init">
         <!-- create SableCC directories -->
         <mkdir dir="${src.dir}/arden/compiler/analysis" />
         <mkdir dir="${src.dir}/arden/compiler/lexer" />
@@ -152,12 +149,12 @@
     </target>
 
     
-    <target name="sableCC.compiler" depends="init.sableCC" if="sableCC.compiler.update.necessary">
+    <target name="sableCC.compiler" depends="sableCC.init" if="sableCC.compiler.update.necessary">
         <sablecc src="${src.dir}" includes="arden.scc" outputdirectory="${src.dir}"/>
     </target>
 
     
-    <target name="sableCC.constants" depends="init.sableCC" if="sableCC.constants.update.necessary">
+    <target name="sableCC.constants" depends="sableCC.init" if="sableCC.constants.update.necessary">
         <sablecc src="${src.dir}" includes="ardenConstants.scc" outputdirectory="${src.dir}"/>
     </target>
 
@@ -228,15 +225,7 @@
         </zip>
     </target>
 
-    
-    <target name="run" depends="compile" description="Run the program from the bin directory">
-        <property name="echoclasspath" refid="run.classpath" />
-        <echo message="Running ${mainclass} with classpath: ${echoclasspath}" />
-        <java classname="${mainclass}" classpathref="run.classpath" fork="true">
-        </java>
-    </target>
-
-    
+      
     <target name="test" depends="test.specification, test.implementation"
         description="Generate report of the test suites (implementation and standard compliance)">
         <junitreport todir="${test.report.dir}">
