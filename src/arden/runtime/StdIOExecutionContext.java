@@ -4,11 +4,12 @@ import java.util.Scanner;
 
 import arden.CommandLineOptions;
 import arden.constants.ConstantParser;
-import arden.constants.ConstantParser.ConstantParserException;
+import arden.constants.ConstantParserException;
 
 /** Reads and prints queries from/to StdIO. */
 public class StdIOExecutionContext extends BaseExecutionContext {
-	Scanner sc = new Scanner(System.in);
+	private Scanner sc = new Scanner(System.in);
+	private static final String PROMPT_SIGN = "> ";
 
 	public StdIOExecutionContext(CommandLineOptions options) {
 		super(options);
@@ -16,19 +17,32 @@ public class StdIOExecutionContext extends BaseExecutionContext {
 
 	public DatabaseQuery createQuery(String mapping) {
 		System.out.println("Query mapping: \"" + mapping + "\". Enter result as "
-				+ "constant Arden Syntax expression (Strings in quotes)");
-		System.out.print(" >");
-		String line = null;
-		if (sc.hasNext()) {
-			line = sc.nextLine();
-		}
+				+ "Arden Syntax constant (Strings in quotes)");
+		System.out.print(PROMPT_SIGN);
+		
 		ArdenValue[] val = null;
-		try {
-			val = new ArdenValue[] { ConstantParser.parse(line) };
-		} catch (ConstantParserException e) {
-			System.out.println("Error parsing at char: " + e.getPos());
-			System.out.println("Message: " + e.getMessage());
+		while (val == null) {
+			if (sc.hasNextLine()) {
+				String line = sc.nextLine();
+				if (line.isEmpty()) {
+					System.out.print(PROMPT_SIGN);
+					continue; // retry
+				}
+				
+				try {
+					val = ConstantParser.parseMultiple(line);
+				} catch (ConstantParserException e) {
+					System.out.println("Syntax error: ");
+					System.out.println(e.getMessage());
+					System.out.println("Please enter again:");
+					System.out.print(PROMPT_SIGN);
+					continue; // retry
+				}
+			} else {
+				val = new ArdenValue[] { ArdenNull.create(System.currentTimeMillis()) };
+			}
 		}
+		
 		return new MemoryQuery(val);
 	}
 

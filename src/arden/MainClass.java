@@ -52,11 +52,10 @@ import arden.compiler.CompiledMlm;
 import arden.compiler.Compiler;
 import arden.compiler.CompilerException;
 import arden.constants.ConstantParser;
-import arden.constants.ConstantParser.ConstantParserException;
+import arden.constants.ConstantParserException;
 import arden.runtime.ArdenValue;
 import arden.runtime.BaseExecutionContext;
 import arden.runtime.ExecutionContext;
-import arden.runtime.ExpressionHelpers;
 import arden.runtime.MedicalLogicModule;
 import arden.runtime.StdIOExecutionContext;
 import arden.runtime.jdbc.JDBCExecutionContext;
@@ -232,6 +231,14 @@ public class MainClass {
 	}
 
 	public boolean runFiles(List<File> files) {
+		ArdenValue[] arguments;
+		try {
+			arguments = getArguments();
+		} catch (MainException e) {
+			e.print();
+			return false;
+		}
+
 		List<MedicalLogicModule> mlms;
 		try {
 			mlms = getMlmsFromFiles(files);
@@ -248,7 +255,12 @@ public class MainClass {
 			}
 
 			// run the mlm
-			runMlm(mlm, context);
+			try {
+				runMlm(mlm, context, arguments);
+			} catch (MainException e) {
+				e.print();
+				return false;
+			}
 		}
 		return true;
 	}
@@ -343,6 +355,22 @@ public class MainClass {
 		return true;
 	}
 
+	private ArdenValue[] getArguments() throws MainException {
+		List<ArdenValue> args = new ArrayList<>();
+
+		if (options.isArguments()) {
+			try {
+				for (String arg : options.getArguments()) {
+					args.add(ConstantParser.parse(arg));
+				}
+			} catch (ConstantParserException e) {
+				throw new MainException("Error parsing arguments", e);
+			}
+		}
+
+		return args.toArray(new ArdenValue[args.size()]);
+	}
+
 	private BaseExecutionContext createExecutionContext() {
 		BaseExecutionContext context;
 		if (options.getEnvironment().startsWith("jdbc")) {
@@ -370,6 +398,9 @@ public class MainClass {
 				}
 			} else if (file.getName().endsWith(MLM_FILE_EXTENSION)) {
 				// compile .mlm file
+				if (options.getVerbose()) {
+					System.out.println("Compiling " + file.getPath() + " ...");
+				}
 				mlms.add(compileMlm(file));
 			} else {
 				errors.add("File \"" + file.getPath() + "\" is neither .class nor .mlm file. Can't run such a file.");
@@ -381,11 +412,7 @@ public class MainClass {
 		return mlms;
 	}
 
-	private CompiledMlm compileMlm(File file) throws MainException {
-		if (options.getVerbose()) {
-			System.out.println("Compiling " + file.getPath() + " ...");
-		}
-
+	public static CompiledMlm compileMlm(File file) throws MainException {
 		CompiledMlm mlm;
 		Compiler compiler = new Compiler();
 		compiler.enableDebugging(file.getPath());
@@ -401,9 +428,7 @@ public class MainClass {
 		return mlm;
 	}
 
-	private ArdenValue[] runMlm(MedicalLogicModule mlm, ExecutionContext context) {
-		ArdenValue[] arguments = getArguments();
-
+	public static ArdenValue[] runMlm(MedicalLogicModule mlm, ExecutionContext context, ArdenValue[] arguments) throws MainException {
 		ArdenValue[] result = null;
 		try {
 			result = mlm.run(context, arguments);
@@ -417,31 +442,9 @@ public class MainClass {
 				System.out.println("There was no return value.");
 			}
 		} catch (InvocationTargetException e) {
-			e.printStackTrace();
+			throw new MainException("Could not run MLM", e);
 		}
 		return result;
-	}
-
-	private ArdenValue[] getArguments() {
-		ArdenValue[] arguments = null;
-		if (options.isArguments()) {
-			ArdenValue ardenArg = null;
-			for (String arg : options.getArguments()) {
-				ArdenValue parsedArg = null;
-				try {
-					parsedArg = ConstantParser.parse(arg);
-				} catch (ConstantParserException e) {
-					e.printStackTrace();
-				}
-				if (ardenArg == null) {
-					ardenArg = parsedArg;
-				} else {
-					ardenArg = ExpressionHelpers.binaryComma(ardenArg, parsedArg);
-				}
-			}
-			arguments = new ArdenValue[] { ardenArg };
-		}
-		return arguments;
 	}
 
 	public static String getFilenameBase(String filename) {
