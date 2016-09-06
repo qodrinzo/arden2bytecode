@@ -35,8 +35,8 @@ import com.lexicalscope.jewel.cli.Unparsed;
 
 @CommandLineInterface(application = "arden2bytecode")
 public interface CommandLineOptions {
-	
-	//*** Mode (run, compile, engine) ***
+
+	// *** Mode (run, compile, engine) ***
 	@Option(shortName = "r",
 			description = "Run MLM file or already compiled MLM class file.")
 	boolean getRun();
@@ -46,12 +46,12 @@ public interface CommandLineOptions {
 	boolean getCompile();
 
 	@Option(shortName = "e",
-	        description = "Run event engine that waits for events or evoke triggers and \n"
-	                + "\t  executes MLMs when they are scheduled.")
+			description = "Run event engine that waits for events or evoke triggers and "
+					+ "executes MLMs when they are scheduled.")
 	boolean getEngine();
 
 	
-	//*** Output options ***
+	// *** Output options ***
 	@Option(shortName = "v",
 			description = "Verbose mode.")
 	boolean getVerbose();
@@ -66,44 +66,50 @@ public interface CommandLineOptions {
 	boolean getHelp();
 
 	
-	//*** Arguments for Compiler/Runtime ***
-	@Option(longName = {"classpath", "cp"},
-			description = "Additional classpath. \n"
-					+ "\t  E.g. a database driver like \"mysql-connector-java-[version]-bin.jar\".")
+	// *** Arguments for Compiler/Runtime ***
+	@Option(longName = { "classpath", "cp" },
+			description = "Additional classpath. "
+					+ "E.g. a database driver like \"mysql-connector-java-[version]-bin.jar\".")
 	String getClasspath();
+
 	boolean isClasspath();
-	
+
 	@Option(shortName = "o",
-			description = "Output file name to compile .MLM file to. \n"
-					+ "\t  You can also specify a directory in order to compile multiple MLMs.")
+			description = "Output file name to compile .MLM file to. "
+					+ "You can also specify a directory in order to compile multiple MLMs.")
 	String getOutput();
+
 	boolean isOutput();
 
 	@Option(shortName = "a",
-			description = "Arguments to MLM if running an MLM.")
+			description = "Arguments to MLM if running an MLM. "
+					+ "Arguments must be Arden Syntax constants (strings in quotes). "
+					+ "Multiple arguments are separated by spaces.")
 	List<String> getArguments();
+
 	boolean isArguments();
 
-	@Option(longName = {"environment", "env"},
-			description = "Set arguments to execution environment if \n\t  running an MLM. \n"
-					+ "\t  In case of using JDBC, this may be a connection URL e.g. \n"
-					+ "\t   \"jdbc:mysql://host:port/database?options\".",
+	@Option(longName = { "environment",	"env" },
+			description = "Set arguments to execution environment if running an MLM. "
+					+ "In case of using JDBC, this may be a connection URL "
+					+ "e.g. \"jdbc:mysql://host:port/database?options\".",
 			defaultValue = "stdio")
 	String getEnvironment();
 
 	@Option(shortName = "d",
-			description = "Class name of database driver to load \n"
-					+ "\t  (e.g. \"com.mysql.jdbc.Driver\").")
+			description = "Class name of database driver to load (e.g. \"com.mysql.jdbc.Driver\").")
 	String getDbdriver();
+
 	boolean isDbdriver();
 
 	@Option(shortName = "p",
-	        description = "Port on which to listen for events. \n" +
-	            "\t  Will start a server if specified.")
+			description = "Port on which to listen for events. Will start a server if specified.")
 	int getPort();
+
 	boolean isPort();
-	
+
 	@Unparsed
 	List<String> getFiles();
+
 	boolean isFiles();
 }
