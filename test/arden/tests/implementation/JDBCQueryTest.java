@@ -132,7 +132,7 @@ public class JDBCQueryTest extends ImplementationTest {
 		if (loadSQLite() == null) {
 			return;
 		}
-		String[] args = new String[]{"-e", "jdbc:sqlite:"};
+		String[] args = new String[]{"--env", "jdbc:sqlite:"};
 		CommandLineOptions options = 
 				CliFactory.parseArguments(CommandLineOptions.class, args);
 		

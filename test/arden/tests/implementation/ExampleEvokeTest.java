@@ -55,7 +55,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 		EvokeEvent e = mlm.getEvoke(context, null);
 
 		Assert.assertTrue(e instanceof MappedEvokeEvent);
-		Assert.assertTrue(e.runOnEvent("storage of urine electrolytes", context));
+		Assert.assertTrue(e.runOnEvent("storage of urine electrolytes", context.getCurrentTime()));
 	}
 
 	@Test
@@ -66,7 +66,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 		EvokeEvent e = mlm.getEvoke(context, null);
 
 		Assert.assertTrue(e instanceof MappedEvokeEvent);
-		Assert.assertTrue(e.runOnEvent("'06210519','06210669'", context));
+		Assert.assertTrue(e.runOnEvent("'06210519','06210669'", context.getCurrentTime()));
 	}
 
 	@Test
@@ -76,7 +76,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 		EvokeEvent e = mlm.getEvoke(context, null);
 		
 		Assert.assertTrue(e instanceof MappedEvokeEvent);
-		Assert.assertTrue(e.runOnEvent("medication_order where class = penicillin", context));
+		Assert.assertTrue(e.runOnEvent("medication_order where class = penicillin", context.getCurrentTime()));
 	}
 
 	@Test
@@ -93,7 +93,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 		EvokeEvent e = mlm.getEvoke(context, null);
 		
 		Assert.assertTrue(e instanceof MappedEvokeEvent);
-		Assert.assertTrue(e.runOnEvent("medication_order where class = penicillin", context));
+		Assert.assertTrue(e.runOnEvent("medication_order where class = penicillin", context.getCurrentTime()));
 	}
 
 	@Test
@@ -110,7 +110,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 		EvokeEvent e = mlm.getEvoke(context, null);
 		
 		Assert.assertTrue(e instanceof MappedEvokeEvent);
-		Assert.assertTrue(e.runOnEvent("medication_order where class = penicillin", context));
+		Assert.assertTrue(e.runOnEvent("medication_order where class = penicillin", context.getCurrentTime()));
 	}
 
 	@Test
@@ -121,7 +121,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 		EvokeEvent e = mlm.getEvoke(context, null);
 
 		Assert.assertTrue(e instanceof MappedEvokeEvent);
-		Assert.assertTrue(e.runOnEvent("medication_order where class = gentamicin", context));
+		Assert.assertTrue(e.runOnEvent("medication_order where class = gentamicin", context.getCurrentTime()));
 	}
 
 	@Test
@@ -165,7 +165,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 		EvokeEvent e = mlm.getEvoke(context, null);
 
 		Assert.assertTrue(e instanceof MappedEvokeEvent);
-		Assert.assertTrue(e.runOnEvent("STORAGE OF ABSOLUTE_NEUTROPHILE_COUNT", context));
+		Assert.assertTrue(e.runOnEvent("STORAGE OF ABSOLUTE_NEUTROPHILE_COUNT", context.getCurrentTime()));
 	}
 
 	@Test

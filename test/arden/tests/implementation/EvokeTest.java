@@ -199,7 +199,7 @@ public class EvokeTest extends ImplementationTest {
 		Assert.assertTrue(e instanceof AfterEvokeEvent);
 		Assert.assertEquals(null, e.getNextRunTime(context));
 		Assert.assertEquals(createDate(1990, 0, 1), context.getCurrentTime());
-		e.runOnEvent("test", context);
+		e.runOnEvent("test", context.getCurrentTime());
 		Assert.assertEquals(createDate(1990, 0, 4), e.getNextRunTime(context));
 	}
 	

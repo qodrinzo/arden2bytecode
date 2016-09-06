@@ -9,14 +9,9 @@ public class UndefinedEvokeEvent extends EvokeEvent {
 	public UndefinedEvokeEvent(long primaryTime) {
 		super(primaryTime);
 	}
-	
+
 	public UndefinedEvokeEvent() {
 		this(NOPRIMARYTIME);
-	}
-	
-	@Override
-	public boolean runOnEvent(String event, ExecutionContext context) {
-		return false;
 	}
 
 	@Override
@@ -25,7 +20,13 @@ public class UndefinedEvokeEvent extends EvokeEvent {
 	}
 
 	@Override
+	public boolean runOnEvent(String event, ArdenTime eventTime) {
+		return false;
+	}
+
+	@Override
 	public ArdenValue setTime(long newPrimaryTime) {
 		return new UndefinedEvokeEvent(newPrimaryTime);
 	}
+
 }

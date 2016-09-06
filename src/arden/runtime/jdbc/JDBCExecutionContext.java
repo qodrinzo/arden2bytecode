@@ -31,11 +31,9 @@ import java.sql.Connection;
 import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.Date;
 
 import arden.CommandLineOptions;
 import arden.runtime.ArdenString;
-import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
 import arden.runtime.DatabaseQuery;
 import arden.runtime.StdIOExecutionContext;
@@ -72,7 +70,7 @@ public class JDBCExecutionContext extends StdIOExecutionContext {
 		}
 		
 		// handle environment option
-		if (options.isEnvironment() && options.getEnvironment() != null) {
+		if (options.getEnvironment() != null) {
 			String environment = options.getEnvironment();			
 			try {
 				connection = DriverManager.getConnection(environment);
@@ -101,17 +99,4 @@ public class JDBCExecutionContext extends StdIOExecutionContext {
 		return new JDBCQuery(mapping, connection);
 	}	
 	
-	private ArdenTime eventtime = new ArdenTime(new Date());
-	
-	public ArdenTime getEventTime() {
-		return eventtime;
-	}
-
-	public ArdenTime getTriggerTime() {
-		return eventtime;
-	}
-
-	public ArdenTime getCurrentTime() {
-		return new ArdenTime(new Date());
-	}
 }

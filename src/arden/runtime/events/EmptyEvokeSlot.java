@@ -9,18 +9,18 @@ public class EmptyEvokeSlot extends EvokeEvent {
 	public EmptyEvokeSlot(long primaryTime) {
 		super(primaryTime);
 	}
-	
+
 	public EmptyEvokeSlot() {
 		this(NOPRIMARYTIME);
 	}
-	
+
 	@Override
 	public ArdenTime getNextRunTime(ExecutionContext context) {
 		return null;
 	}
 
 	@Override
-	public boolean runOnEvent(String event, ExecutionContext context) {
+	public boolean runOnEvent(String event, ArdenTime eventTime) {
 		return false;
 	}
 

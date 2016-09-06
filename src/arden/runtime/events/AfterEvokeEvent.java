@@ -27,34 +27,28 @@ public class AfterEvokeEvent extends EvokeEvent {
 	
 	@Override
 	public ArdenTime getNextRunTime(ExecutionContext context) {
-		ArdenTime currentTime = context.getCurrentTime();
 		ArdenTime nextRunTime = target.getNextRunTime(context);
 		if (nextRunTime != null) {
 			nextRunTime = new ArdenTime(nextRunTime.add(duration));
 		}
 		
-		// delete past events from additionalSchedules:
-		while (!additionalSchedules.isEmpty() && additionalSchedules.comparator().compare(currentTime, additionalSchedules.first()) > 0) {
-			additionalSchedules.remove(additionalSchedules.first());
-		}
-		
-		// decide whether to use additionalSchedule time or nextRunTime:
+		// Select oldest schedule if it is older than nextRunTime
 		if (!additionalSchedules.isEmpty()) {
-			if (additionalSchedules.comparator().compare(additionalSchedules.first(), nextRunTime) > 0) {
-				return nextRunTime;
-			} else {
-				return additionalSchedules.first();
+			if (additionalSchedules.comparator().compare(additionalSchedules.first(), nextRunTime) < 0) {
+				ArdenTime oldestSchedule = additionalSchedules.first();
+				nextRunTime = oldestSchedule;
+				additionalSchedules.remove(oldestSchedule);
 			}
 		}
+		
 		return nextRunTime;
 	}
 
 	@Override
-	public boolean runOnEvent(String event, ExecutionContext context) {
-		boolean run = target.runOnEvent(event, context);
-		if (run) {
-			// trigger in 'duration' after current time:
-			additionalSchedules.add(new ArdenTime(context.getCurrentTime().add(duration)));
+	public boolean runOnEvent(String event, ArdenTime eventTime) {
+		if (target.runOnEvent(event, eventTime)) {
+			// trigger in 'duration' after current time
+			additionalSchedules.add(new ArdenTime(eventTime.add(duration)));
 		}
 		return false;
 	}
@@ -63,5 +57,5 @@ public class AfterEvokeEvent extends EvokeEvent {
 	public ArdenValue setTime(long newPrimaryTime) {
 		return new AfterEvokeEvent(duration, target, newPrimaryTime);
 	}
-
+	
 }
