@@ -27,6 +27,7 @@
 
 package arden;
 
+import java.io.File;
 import java.util.List;
 
 import com.lexicalscope.jewel.cli.CommandLineInterface;
@@ -71,22 +72,18 @@ public interface CommandLineOptions {
 			description = "Additional classpath. "
 					+ "E.g. a database driver like \"mysql-connector-java-[version]-bin.jar\".")
 	String getClasspath();
-
 	boolean isClasspath();
 
-	@Option(shortName = "o",
-			description = "Output file name to compile .MLM file to. "
-					+ "You can also specify a directory in order to compile multiple MLMs.")
-	String getOutput();
-
-	boolean isOutput();
+	@Option(shortName = "d",
+			description = "Output directory into which compiled MLM class files are placed.")
+	File getDirectory();
+	boolean isDirectory();
 
 	@Option(shortName = "a",
 			description = "Arguments to MLM if running an MLM. "
 					+ "Arguments must be Arden Syntax constants (strings in quotes). "
 					+ "Multiple arguments are separated by spaces.")
 	List<String> getArguments();
-
 	boolean isArguments();
 
 	@Option(longName = { "environment",	"env" },
@@ -96,20 +93,17 @@ public interface CommandLineOptions {
 			defaultValue = "stdio")
 	String getEnvironment();
 
-	@Option(shortName = "d",
+	@Option(longName = { "db", "dbdriver" },
 			description = "Class name of database driver to load (e.g. \"com.mysql.jdbc.Driver\").")
 	String getDbdriver();
-
 	boolean isDbdriver();
 
 	@Option(shortName = "p",
 			description = "Port on which to listen for events. Will start a server if specified.")
 	int getPort();
-
 	boolean isPort();
 
 	@Unparsed
 	List<String> getFiles();
-
 	boolean isFiles();
 }
