@@ -37,22 +37,26 @@ import com.lexicalscope.jewel.cli.Unparsed;
 @CommandLineInterface(application = "arden2bytecode")
 public interface CommandLineOptions {
 
-	// *** Mode (run, compile, engine) ***
+	// *** Mode (run, compile, engine, help) ***
+	@Option(shortName = { "h", "?" },
+			description = "Display help.",
+			helpRequest = true)
+	boolean getHelp();
+	
 	@Option(shortName = "r",
-			description = "Run MLM file or already compiled MLM class file.")
+			description = "Run MLM files or already compiled MLM class files.")
 	boolean getRun();
 
 	@Option(shortName = "c",
-			description = "Compile input file.")
+			description = "Compile input files.")
 	boolean getCompile();
 
 	@Option(shortName = "e",
-			description = "Run event engine that waits for events or evoke triggers and "
-					+ "executes MLMs when they are scheduled.")
+			description = "Run event engine that executes MLMs when they are evoked.")
 	boolean getEngine();
-
+		
 	
-	// *** Output options ***
+	// *** Control options ***
 	@Option(shortName = "v",
 			description = "Verbose mode.")
 	boolean getVerbose();
@@ -60,50 +64,43 @@ public interface CommandLineOptions {
 	@Option(shortName = "n",
 			description = "Don't print logo.")
 	boolean getNologo();
-
-	@Option(shortName = { "h", "?" },
-			description = "Display help.",
-			helpRequest = true)
-	boolean getHelp();
-
 	
-	// *** Arguments for Compiler/Runtime ***
-	@Option(longName = { "classpath", "cp" },
-			description = "Additional classpath. "
-					+ "E.g. a database driver like \"mysql-connector-java-[version]-bin.jar\".")
-	String getClasspath();
-	boolean isClasspath();
-
 	@Option(shortName = "d",
-			description = "Output directory into which compiled MLM class files are placed.")
+			description = "Output directory for compiled MLM class files.")
 	File getDirectory();
 	boolean isDirectory();
-
+	
 	@Option(shortName = "a",
-			description = "Arguments to MLM if running an MLM. "
-					+ "Arguments must be Arden Syntax constants (strings in quotes). "
-					+ "Multiple arguments are separated by spaces.")
+			description = "Arguments for MLM as Arden Syntax constants.")
 	List<String> getArguments();
 	boolean isArguments();
-
-	@Option(longName = { "environment",	"env" },
-			description = "Set arguments to execution environment if running an MLM. "
-					+ "In case of using JDBC, this may be a connection URL "
-					+ "e.g. \"jdbc:mysql://host:port/database?options\".",
-			defaultValue = "stdio")
-	String getEnvironment();
-
-	@Option(longName = { "db", "dbdriver" },
-			description = "Class name of database driver to load (e.g. \"com.mysql.jdbc.Driver\").")
-	String getDbdriver();
-	boolean isDbdriver();
-
+	
 	@Option(shortName = "p",
-			description = "Port on which to listen for events. Will start a server if specified.")
+			description = "Port on which to listen for events.")
 	int getPort();
 	boolean isPort();
 
+	
+	// *** Execution Environment ***
+	@Option(longName = { "classpath", "cp" },
+			description = "Classpath with callable MLMs or a JDBC driver.")
+	String getClasspath();
+	boolean isClasspath();
+
+	@Option(longName = { "dbdriver", "db" },
+			description = "Class name of a JDBC driver to load.")
+	String getDbdriver();
+	boolean isDbdriver();
+
+	@Option(longName = { "environment", "env" },
+			description = "Argument for the execution environment.",
+			defaultValue = "stdio")
+	String getEnvironment();
+
+
+	// *** Files ***
 	@Unparsed
 	List<String> getFiles();
 	boolean isFiles();
+	
 }

@@ -149,8 +149,9 @@ public class MainClass {
 	}
 
 	private void printAdditionalHelp() {
-		System.out.println("All further command line arguments that are non-options are regarded as input files.");
-		System.out.println("For a command-line reference, see:");
+		System.out.println("All further arguments that are non-options are regarded as input files.");
+		System.out.println();
+		System.out.println("For a detailed command-line reference, see:");
 		System.out.println("https://plri.github.io/arden2bytecode/docs/command-line-options/");
 	}
 
