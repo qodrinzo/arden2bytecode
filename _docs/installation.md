@@ -19,7 +19,7 @@ Arden2ByteCode is a Java program, thus it requires a Java Runtime Environment (J
 
 ## Step 2: Download the Arden2ByteCode compiler
 
-1. Go to the [releases page](https://github.com/PLRI/arden2bytecode/releases). 
+1. Go to the [releases page](https://github.com/PLRI/arden2bytecode/releases).
 
 1. Download the most recent binary package either as .zip-file for Windows or as .tar.gz-file for Linux and MacOS.
 
@@ -38,4 +38,4 @@ Arden2ByteCode is a Java program, thus it requires a Java Runtime Environment (J
 
 1. Type `arden2bytecode -?` (Windows) or `./arden2bytecode -?` (Linux, MacOS) to display the options of the Arden2ByteCode compiler.
 
-1. If you see a copyright note displayed and a list of options, then Arden2ByteCode is good to go :+1:. You can now try running the [Hello World!]({{ baseurl }}/docs/hello-world!/) example.
+1. If you see a copyright note displayed and a list of options, then Arden2ByteCode is good to go. You can now try running the [Hello World!]({{ baseurl }}/docs/hello-world!/) example.
