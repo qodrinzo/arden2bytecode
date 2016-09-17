@@ -52,6 +52,10 @@ examples:
 # Build settings
 exclude: ['README.md', 'makedocs', 'Gemfile.lock', 'Gemfile']
 markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+
 gems:
   - jekyll-redirect-from # allowed on github pages
 compress_html:
