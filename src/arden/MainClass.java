@@ -149,8 +149,9 @@ public class MainClass {
 	}
 
 	private void printAdditionalHelp() {
-		System.out.println("All further command line arguments that are non-options are regarded as input files.");
-		System.out.println("For a command-line reference, see:");
+		System.out.println("All further arguments that are non-options are regarded as input files.");
+		System.out.println();
+		System.out.println("For a detailed command-line reference, see:");
 		System.out.println("https://plri.github.io/arden2bytecode/docs/command-line-options/");
 	}
 
@@ -255,7 +256,7 @@ public class MainClass {
 		ExecutionContext context = createExecutionContext();
 		for (MedicalLogicModule mlm : mlms) {
 			if (options.getVerbose()) {
-				System.out.println("Running MLM...");
+				System.out.println("Running MLM " + mlm.getName() + "...");
 				System.out.println();
 			}
 
@@ -272,9 +273,25 @@ public class MainClass {
 
 	public boolean compileFiles(List<File> files) {
 		boolean success = true;
-		boolean outputFileUsed = false;
+
+		// get output directory
+		File outputDir = null;
+		if (options.isDirectory()) {
+			outputDir = options.getDirectory();
+			if (!outputDir.exists()) {
+				if (options.getVerbose()) {
+					System.out.println("Creating directory: " + outputDir.getPath());
+				}
+				outputDir.mkdirs();
+			}
+		}
+
 		for (File file : files) {
+			// compile
 			CompiledMlm mlm;
+			if (options.getVerbose()) {
+				System.out.println("Compiling " + file.getPath());
+			}
 			try {
 				mlm = compileMlm(file);
 			} catch (MainException e) {
@@ -283,30 +300,25 @@ public class MainClass {
 				// skip MLM
 				continue;
 			}
+
+			// get output file name
+			String outName = mlm.getName() + COMPILED_MLM_FILE_EXTENSION;
 			File outputFile;
-			if (options.isOutput() && !outputFileUsed) {
-				// output file name given
-				outputFile = new File(options.getOutput());
-				outputFileUsed = true;
-			} else {
-				// output file name unknown or already used
-				// assume MLM name + '.class' extension
-				String assumedName = mlm.getName() + COMPILED_MLM_FILE_EXTENSION;
-				File assumed = new File(file.getParentFile(), assumedName);
-				if (!outputFileUsed) {
-					System.err.println(
-							"Warning: File " + file.getPath() + " compiled, but no output filename given. Assuming "
-									+ assumed.getPath() + " as output file.");
-				} else {
-					System.err.println("Warning: File " + file.getPath()
-							+ " compiled, but can't write to same output file again. Assuming " + assumed.getPath()
-							+ " as output file.");
+			if (outputDir != null) {
+				outputFile = new File(outputDir, outName);
+				if (options.getVerbose()) {
+					System.out.println("Saved to " + outputFile.getPath());
 				}
-				outputFile = assumed;
+			} else {
+				outputFile = new File(file.getParentFile(), outName);
+				System.err.println(
+						"Warning: File " + file.getPath() + " compiled, but no output directory given. Assuming "
+								+ outputFile.getPath() + " as output file.");
 			}
 
 			// write compiled MLM to file.
 			try {
+
 				BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(outputFile));
 				mlm.saveClassFile(bos);
 				bos.close();
