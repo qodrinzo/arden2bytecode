@@ -35,11 +35,11 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
-import arden.runtime.events.AfterEvokeEvent;
-import arden.runtime.events.CyclicEvokeEvent;
-import arden.runtime.events.EvokeEvent;
-import arden.runtime.events.NeverEvokeEvent;
-import arden.runtime.events.UntilEvokeEvent;
+import arden.runtime.evoke.AfterTrigger;
+import arden.runtime.evoke.CyclicTrigger;
+import arden.runtime.evoke.NeverTrigger;
+import arden.runtime.evoke.Trigger;
+import arden.runtime.evoke.UntilTrigger;
 
 /**
  * Static helper methods for ExpressionCompiler (mostly operators with special
@@ -778,18 +778,18 @@ public final class ExpressionHelpers {
 	}
 	
 	/** implements the AFTER duration operator */
-	public static EvokeEvent after(ArdenValue duration, EvokeEvent event) {
+	public static Trigger after(ArdenValue duration, Trigger trigger) {
 		if (duration instanceof ArdenDuration) {
-			long primaryTime = getCommonTime(new ArdenValue[]{duration, event});
-			return new AfterEvokeEvent((ArdenDuration) duration, event, primaryTime);
+			long primaryTime = getCommonTime(new ArdenValue[]{duration, trigger});
+			return new AfterTrigger((ArdenDuration) duration, trigger, primaryTime);
 		}
 		throw new RuntimeException("AFTER operator not implemented for "
 						+ getClassName(duration) 
-						+ " AFTER " + getClassName(event));
+						+ " AFTER " + getClassName(trigger));
 	}
 	
-	public static EvokeEvent timeOf(EvokeEvent event, ExecutionContext context) {
-		return event;
+	public static Trigger timeOf(Trigger eventTrigger, ExecutionContext context) {
+		return eventTrigger;
 	}
 	
 	public static ArdenValue createDuration(ArdenValue val, double multiplier, boolean isMonths) {
@@ -806,33 +806,33 @@ public final class ExpressionHelpers {
 		}
 	}
 	
-	public static EvokeEvent createEvokeCycle(ArdenValue interval, ArdenValue length, EvokeEvent start, ExecutionContext context) {
+	public static Trigger createCycleTrigger(ArdenValue interval, ArdenValue length, Trigger start, ExecutionContext context) {
 		if (interval instanceof ArdenDuration && length instanceof ArdenDuration) {
 			ArdenTime starting = start.getNextRunTime(context);
 			if (starting != null) {
-				return new CyclicEvokeEvent((ArdenDuration) interval, (ArdenDuration) length, starting);
+				return new CyclicTrigger((ArdenDuration) interval, (ArdenDuration) length, starting);
 			} else {
-				return new NeverEvokeEvent();
+				return new NeverTrigger();
 			}
 		}
-		throw new RuntimeException("cannot create evoke cycle with these types: " + 
+		throw new RuntimeException("cannot create cycle trigger with these types: " + 
 						getClassName(interval) + ", " +
 						getClassName(length) + ", " +
 						getClassName(start));
 	}
 
-	public static EvokeEvent until(EvokeEvent simpleEvokeCycle, ArdenValue untilExpr) {
+	public static Trigger until(Trigger cycleTrigger, ArdenValue untilExpr) {
 		if (untilExpr instanceof ArdenTime) {
-			return new UntilEvokeEvent(simpleEvokeCycle, (ArdenTime) untilExpr);
+			return new UntilTrigger(cycleTrigger, (ArdenTime) untilExpr);
 		} else if (untilExpr instanceof ArdenNull) {
-			return simpleEvokeCycle;
+			return cycleTrigger;
 		}
-		throw new RuntimeException("cannot create until event for type " + getClassName(untilExpr) + " after the 'until'");
+		throw new RuntimeException("cannot create until trigger for type " + getClassName(untilExpr) + " after the 'until'");
 	}
 	
-	/** returns the EvokeEvent when 'call' is stated in the evoke slot */
-	public static EvokeEvent evokeSlotCall() {
-		return new NeverEvokeEvent();
+	/** returns the Trigger when 'call' is stated in the evoke slot */
+	public static Trigger evokeSlotCall() {
+		return new NeverTrigger();
 	}
 	
 	public static ArdenValue extractTimeComponent(ArdenValue time, int component) {

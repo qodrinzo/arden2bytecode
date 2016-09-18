@@ -18,7 +18,7 @@ import arden.runtime.ArdenValue;
 import arden.runtime.BaseExecutionContext;
 import arden.runtime.ExecutionContext;
 import arden.runtime.MedicalLogicModule;
-import arden.runtime.events.EvokeEvent;
+import arden.runtime.evoke.Trigger;
 
 /**
  * <p>
@@ -36,7 +36,7 @@ import arden.runtime.events.EvokeEvent;
  * </p>
  * <p>
  * MlmCalls or EventCalls may trigger other MLMs after a delay, so the engine
- * uses each MLMs {@link EvokeEvent#getNextRunTime(ExecutionContext)} method to
+ * uses each MLMs {@link Trigger#getNextRunTime(ExecutionContext)} method to
  * check when it should run next. Delayed calls are added to the the queue after
  * their delay has passed, via a {@link ScheduledExecutorService}.
  * </p>
@@ -91,7 +91,7 @@ public class EvokeEngine implements Runnable {
 
 	@Override
 	public void run() {
-		// initialize schedule for fixed time constant triggers
+		// initialize schedule for fixed time triggers
 		scheduleTriggers();
 
 		// the scheduling loop
@@ -155,16 +155,16 @@ public class EvokeEngine implements Runnable {
 
 		// put MLMs which should run at the same time into groups sorted by time
 		for (MedicalLogicModule mlm : mlms) {
-			EvokeEvent evokeEvent;
+			Trigger trigger;
 			try {
-				evokeEvent = mlm.getEvoke(context, null);
+				trigger = mlm.getTrigger(context, null);
 			} catch (InvocationTargetException e) {
 				// print error and skip this MLM
 				e.printStackTrace();
 				continue;
 			}
 
-			ArdenTime nextRuntime = evokeEvent.getNextRunTime(context);
+			ArdenTime nextRuntime = trigger.getNextRunTime(context);
 			if (nextRuntime == null) {
 				// not scheduled
 				continue;
@@ -213,16 +213,16 @@ public class EvokeEngine implements Runnable {
 		public void run() {
 			// add MlmCalls for all MLMs which should run for the event to queue
 			for (MedicalLogicModule mlm : mlms) {
-				EvokeEvent evokeEvent;
+				Trigger trigger;
 				try {
-					evokeEvent = mlm.getEvoke(context, null);
+					trigger = mlm.getTrigger(context, null);
 				} catch (InvocationTargetException e) {
 					// print error and skip this MLM
 					e.printStackTrace();
 					continue;
 				}
 
-				if (evokeEvent.runOnEvent(mapping, eventTime)) {
+				if (trigger.runOnEvent(mapping, eventTime)) {
 					messages.add(new MlmCall(mlm, null));
 				}
 			}

@@ -1,16 +1,16 @@
-package arden.runtime.events;
+package arden.runtime.evoke;
 
 import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
 
-public class EmptyEvokeSlot extends EvokeEvent {
+public class UndefinedTrigger extends Trigger {
 
-	public EmptyEvokeSlot(long primaryTime) {
+	public UndefinedTrigger(long primaryTime) {
 		super(primaryTime);
 	}
 
-	public EmptyEvokeSlot() {
+	public UndefinedTrigger() {
 		this(NOPRIMARYTIME);
 	}
 
@@ -20,13 +20,13 @@ public class EmptyEvokeSlot extends EvokeEvent {
 	}
 
 	@Override
-	public boolean runOnEvent(String event, ArdenTime eventTime) {
+	public boolean runOnEvent(String mapping, ArdenTime eventTime) {
 		return false;
 	}
 
 	@Override
 	public ArdenValue setTime(long newPrimaryTime) {
-		return new EmptyEvokeSlot(newPrimaryTime);
+		return new UndefinedTrigger(newPrimaryTime);
 	}
 
 }

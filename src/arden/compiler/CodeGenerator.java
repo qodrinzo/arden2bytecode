@@ -50,7 +50,7 @@ import arden.runtime.LibraryMetadata;
 import arden.runtime.MaintenanceMetadata;
 import arden.runtime.MedicalLogicModule;
 import arden.runtime.MedicalLogicModuleImplementation;
-import arden.runtime.events.EvokeEvent;
+import arden.runtime.evoke.Trigger;
 
 /**
  * This class is responsible for generating the
@@ -266,12 +266,12 @@ final class CodeGenerator {
 		return new CompilerContext(this, w, 0);
 	}
 	
-	public CompilerContext createEvokeEvent() {
+	public CompilerContext createTrigger() {
 		MethodWriter w = classFileWriter.createMethod(
-				"getEvokeEvent", 
+				"getTrigger", 
 				Modifier.PUBLIC, 
 				new Class<?>[] { ExecutionContext.class }, 
-				EvokeEvent.class);
+				Trigger.class);
 		if (isDebuggingEnabled)
 			w.enableLineNumberTable();
 		return new CompilerContext(this, w, 1);

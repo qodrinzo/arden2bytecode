@@ -32,22 +32,22 @@ import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
 import arden.runtime.DatabaseQuery;
 import arden.runtime.ExecutionContext;
-import arden.runtime.events.EvokeEvent;
+import arden.runtime.evoke.Trigger;
 
 public class TestContext extends ExecutionContext {
 	StringBuilder b = new StringBuilder();
-	EvokeEvent defaultEvent = null;
+	Trigger defaultEvent = null;
 	ArdenTime defaultTime = null;
 	
 	public TestContext() {
 		
 	}
 	
-	public TestContext(EvokeEvent defaultEvent) {
+	public TestContext(Trigger defaultEvent) {
 		this.defaultEvent = defaultEvent;
 	}
 	
-	public TestContext(EvokeEvent defaultEvent, ArdenTime defaultTime) {
+	public TestContext(Trigger defaultEvent, ArdenTime defaultTime) {
 		this(defaultEvent);
 		this.defaultTime = defaultTime;
 	}
@@ -72,7 +72,7 @@ public class TestContext extends ExecutionContext {
 	}
 	
 	@Override
-	public EvokeEvent getEvent(String mapping) {
+	public Trigger getEvent(String mapping) {
 		if (defaultEvent != null) {
 			return defaultEvent;
 		}

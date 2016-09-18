@@ -1,27 +1,27 @@
-package arden.runtime.events;
+package arden.runtime.evoke;
 
 import arden.runtime.ArdenDuration;
 import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
 
-public class CyclicEvokeEvent extends EvokeEvent {
+public class CyclicTrigger extends Trigger {
 
 	private ArdenDuration interval;
 	private ArdenDuration length;
-	private ArdenTime starting; // FIXME Should be an EvokeEvent
+	private ArdenTime starting; // FIXME Should be a Trigger
 	private ArdenTime next;
 	private boolean triggered = false;
 	private ArdenTime limit;
 
-	public CyclicEvokeEvent(ArdenDuration interval, ArdenDuration length, ArdenTime starting, long primaryTime) {
+	public CyclicTrigger(ArdenDuration interval, ArdenDuration length, ArdenTime starting, long primaryTime) {
 		this.interval = interval;
 		this.starting = starting;
 		this.next = this.starting;
 		this.limit = new ArdenTime(starting.add(length));
 	}
 
-	public CyclicEvokeEvent(ArdenDuration interval, ArdenDuration length, ArdenTime starting) {
+	public CyclicTrigger(ArdenDuration interval, ArdenDuration length, ArdenTime starting) {
 		this(interval, length, starting, NOPRIMARYTIME);
 	}
 
@@ -55,13 +55,13 @@ public class CyclicEvokeEvent extends EvokeEvent {
 	}
 
 	@Override
-	public boolean runOnEvent(String event, ArdenTime eventTime) {
+	public boolean runOnEvent(String mapping, ArdenTime eventTime) {
 		return false;
 	}
 
 	@Override
 	public ArdenValue setTime(long newPrimaryTime) {
-		return new CyclicEvokeEvent(interval, length, starting, newPrimaryTime);
+		return new CyclicTrigger(interval, length, starting, newPrimaryTime);
 	}
 
 }

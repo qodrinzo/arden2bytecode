@@ -1,4 +1,4 @@
-package arden.runtime.events;
+package arden.runtime.evoke;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -8,20 +8,20 @@ import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
 
-public class AfterEvokeEvent extends EvokeEvent {
+public class AfterTrigger extends Trigger {
 
-	EvokeEvent target;
+	Trigger target;
 	ArdenDuration duration;
 	SortedSet<ArdenTime> additionalSchedules;
 	
-	public AfterEvokeEvent(ArdenDuration duration, EvokeEvent target, long primaryTime) {
+	public AfterTrigger(ArdenDuration duration, Trigger target, long primaryTime) {
 		super(primaryTime);
 		this.duration = duration;
 		this.target = target;
 		this.additionalSchedules = new TreeSet<ArdenTime>(new ArdenTime.NaturalComparator());
 	}
 	
-	public AfterEvokeEvent(ArdenDuration duration, EvokeEvent target) {
+	public AfterTrigger(ArdenDuration duration, Trigger target) {
 		this(duration, target, NOPRIMARYTIME);
 	}
 	
@@ -45,8 +45,8 @@ public class AfterEvokeEvent extends EvokeEvent {
 	}
 
 	@Override
-	public boolean runOnEvent(String event, ArdenTime eventTime) {
-		if (target.runOnEvent(event, eventTime)) {
+	public boolean runOnEvent(String mapping, ArdenTime eventTime) {
+		if (target.runOnEvent(mapping, eventTime)) {
 			// trigger in 'duration' after current time
 			additionalSchedules.add(new ArdenTime(eventTime.add(duration)));
 		}
@@ -55,7 +55,7 @@ public class AfterEvokeEvent extends EvokeEvent {
 
 	@Override
 	public ArdenValue setTime(long newPrimaryTime) {
-		return new AfterEvokeEvent(duration, target, newPrimaryTime);
+		return new AfterTrigger(duration, target, newPrimaryTime);
 	}
 	
 }

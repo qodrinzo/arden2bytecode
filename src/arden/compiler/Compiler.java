@@ -67,7 +67,7 @@ import arden.runtime.LibraryMetadata;
 import arden.runtime.MaintenanceMetadata;
 import arden.runtime.MedicalLogicModule;
 import arden.runtime.RuntimeHelpers;
-import arden.runtime.events.EvokeEvent;
+import arden.runtime.evoke.Trigger;
 
 /**
  * The main class of the compiler.
@@ -243,28 +243,28 @@ public final class Compiler {
 	}
 	
 	private void compileEvoke(CodeGenerator codeGen, PEvokeSlot evokeSlot) {
-		CompilerContext context = codeGen.createEvokeEvent();
+		CompilerContext context = codeGen.createTrigger();
 
 		// event is a keyword, thus there cannot be another field named 'event'
-		FieldReference eventField = context.codeGenerator.createField("event", EvokeEvent.class, Modifier.PRIVATE);
+		FieldReference triggerField = context.codeGenerator.createField("event", Trigger.class, Modifier.PRIVATE);
 		
 		Label isNull = new Label();
 		
 		context.writer.loadThis();
-		context.writer.loadInstanceField(eventField);
+		context.writer.loadInstanceField(triggerField);
 		context.writer.jumpIfNull(isNull);
 		context.writer.loadThis();
-		context.writer.loadInstanceField(eventField);
+		context.writer.loadInstanceField(triggerField);
 		context.writer.returnObjectFromFunction();
 		
 		context.writer.mark(isNull);		
 		evokeSlot.apply(new EvokeCompiler(context)); 
 		
-		// the evoke compiler is supposed to leave an EvokeEvent subclass instance on the stack		
+		// the evoke compiler is supposed to leave a Trigger subclass instance on the stack		
 		context.writer.dup();
 		context.writer.loadThis();
 		context.writer.swap();
-		context.writer.storeInstanceField(eventField);
+		context.writer.storeInstanceField(triggerField);
 		context.writer.returnObjectFromFunction();
 	}
 	

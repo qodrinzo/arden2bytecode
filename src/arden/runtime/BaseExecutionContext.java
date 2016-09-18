@@ -21,7 +21,7 @@ import arden.MainClass;
 import arden.compiler.CompiledMlm;
 import arden.compiler.Compiler;
 import arden.compiler.CompilerException;
-import arden.runtime.events.EvokeEvent;
+import arden.runtime.evoke.Trigger;
 
 /**
  * <p>
@@ -167,8 +167,8 @@ public class BaseExecutionContext extends ExecutionContext {
 					MedicalLogicModule mlm = (MedicalLogicModule) runnable;
 
 					try {
-						EvokeEvent evokeEvent = mlm.getEvoke(this, null);
-						if (evokeEvent.runOnEvent(mapping, getCurrentTime())) {
+						Trigger trigger = mlm.getTrigger(this, null);
+						if (trigger.runOnEvent(mapping, getCurrentTime())) {
 							super.eventTime = eventTime;
 							mlm.run(this, null);
 						}

@@ -1,16 +1,16 @@
-package arden.runtime.events;
+package arden.runtime.evoke;
 
 import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
 
 
-public abstract class EvokeEvent extends ArdenValue {
+public abstract class Trigger extends ArdenValue {
 	
-	public EvokeEvent() {
+	public Trigger() {
 	}
 	
-	public EvokeEvent(long primaryTime) {
+	public Trigger(long primaryTime) {
 		//super(primaryTime);
 	}
 

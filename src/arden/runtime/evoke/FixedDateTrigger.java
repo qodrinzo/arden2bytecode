@@ -1,20 +1,20 @@
-package arden.runtime.events;
+package arden.runtime.evoke;
 
 import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
 
-public class FixedDateEvokeEvent extends EvokeEvent {
+public class FixedDateTrigger extends Trigger {
 
 	private ArdenTime date;
 	protected boolean triggered = false;
 
-	public FixedDateEvokeEvent(ArdenTime date, long primaryTime) {
+	public FixedDateTrigger(ArdenTime date, long primaryTime) {
 		super(primaryTime);
 		this.date = date;
 	}
 
-	public FixedDateEvokeEvent(ArdenTime date) {
+	public FixedDateTrigger(ArdenTime date) {
 		this(date, NOPRIMARYTIME);
 	}
 
@@ -29,13 +29,13 @@ public class FixedDateEvokeEvent extends EvokeEvent {
 	}
 
 	@Override
-	public boolean runOnEvent(String event, ArdenTime eventTime) {
+	public boolean runOnEvent(String mapping, ArdenTime eventTime) {
 		return false;
 	}
 
 	@Override
 	public ArdenValue setTime(long newPrimaryTime) {
-		return new FixedDateEvokeEvent(date, newPrimaryTime);
+		return new FixedDateTrigger(date, newPrimaryTime);
 	}
 
 }

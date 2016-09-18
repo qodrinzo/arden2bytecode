@@ -15,8 +15,8 @@ import arden.runtime.ArdenString;
 import arden.runtime.ArdenValue;
 import arden.runtime.DatabaseQuery;
 import arden.runtime.ExecutionContext;
-import arden.runtime.events.EvokeEvent;
-import arden.runtime.events.MappedEvokeEvent;
+import arden.runtime.evoke.EventTrigger;
+import arden.runtime.evoke.Trigger;
 import arden.tests.specification.testcompiler.TestCompiler;
 import arden.tests.specification.testcompiler.TestCompilerResult.TestCompilerOutputText;
 
@@ -132,9 +132,9 @@ public class TestContext extends ExecutionContext {
 	}
 	
 	@Override
-	public EvokeEvent getEvent(String mapping) {
+	public Trigger getEvent(String mapping) {
 		if(EVENT_MAPPING.equals(mapping)) {
-			return new MappedEvokeEvent(mapping);
+			return new EventTrigger(mapping);
 		}
 		return super.getEvent(mapping);
 	}

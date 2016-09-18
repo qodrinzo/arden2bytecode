@@ -1,20 +1,20 @@
-package arden.runtime.events;
+package arden.runtime.evoke;
 
 import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
 
-public class UntilEvokeEvent extends EvokeEvent {
-	private EvokeEvent cycle;
+public class UntilTrigger extends Trigger {
+	private Trigger cycle;
 	private ArdenTime until; // FIXME Should be a boolean expression
 
-	public UntilEvokeEvent(EvokeEvent cycle, ArdenTime until, long primaryTime) {
+	public UntilTrigger(Trigger cycle, ArdenTime until, long primaryTime) {
 		super(primaryTime);
 		this.cycle = cycle;
 		this.until = until;
 	}
 
-	public UntilEvokeEvent(EvokeEvent cycle, ArdenTime until) {
+	public UntilTrigger(Trigger cycle, ArdenTime until) {
 		this(cycle, until, NOPRIMARYTIME);
 	}
 
@@ -28,13 +28,13 @@ public class UntilEvokeEvent extends EvokeEvent {
 	}
 
 	@Override
-	public boolean runOnEvent(String event, ArdenTime eventTime) {
-		return cycle.runOnEvent(event, eventTime);
+	public boolean runOnEvent(String mapping, ArdenTime eventTime) {
+		return cycle.runOnEvent(mapping, eventTime);
 	}
 
 	@Override
 	public ArdenValue setTime(long newPrimaryTime) {
-		return new UntilEvokeEvent(cycle, until, newPrimaryTime);
+		return new UntilTrigger(cycle, until, newPrimaryTime);
 	}
 
 }
