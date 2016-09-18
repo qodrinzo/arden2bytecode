@@ -27,8 +27,8 @@
 
 package arden.runtime;
 
+import arden.runtime.evoke.NeverTrigger;
 import arden.runtime.evoke.Trigger;
-import arden.runtime.evoke.UndefinedTrigger;
 
 /**
  * Base class for compiled logic etc. The compiler creates derived classes. An
@@ -82,7 +82,7 @@ public abstract class MedicalLogicModuleImplementation {
 	 * Gets the trigger when this MLM should be invoked
 	 */
 	public Trigger getTrigger(ExecutionContext context) {
-		return new UndefinedTrigger();
+		return new NeverTrigger();
 	}
 	
 	/**

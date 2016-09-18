@@ -40,9 +40,9 @@ import arden.runtime.DatabaseQuery;
 import arden.runtime.MedicalLogicModule;
 import arden.runtime.MemoryQuery;
 import arden.runtime.evoke.CyclicTrigger;
-import arden.runtime.evoke.EmptyEvokeSlot;
 import arden.runtime.evoke.EventTrigger;
 import arden.runtime.evoke.FixedDateTrigger;
+import arden.runtime.evoke.NeverTrigger;
 import arden.runtime.evoke.Trigger;
 
 public class ExampleEvokeTest extends ImplementationTest {
@@ -176,7 +176,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 		TestContext context = new TestContext();
 		Trigger trigger = mlm.getTrigger(context, null);
 
-		Assert.assertTrue(trigger instanceof EmptyEvokeSlot);		
+		Assert.assertTrue(trigger instanceof NeverTrigger);
 	}
 
 	@Test
@@ -196,6 +196,6 @@ public class ExampleEvokeTest extends ImplementationTest {
 		Trigger trigger = mlm.getTrigger(context, new ArdenValue[] { medOrders, medAllergens, patientAllergies,
 				patientReactions });
 
-		Assert.assertTrue(trigger instanceof EmptyEvokeSlot);	
+		Assert.assertTrue(trigger instanceof NeverTrigger);
 	}
 }

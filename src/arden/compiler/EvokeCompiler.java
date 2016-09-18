@@ -35,8 +35,8 @@ import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
 import arden.runtime.evoke.AnyTrigger;
-import arden.runtime.evoke.EmptyEvokeSlot;
 import arden.runtime.evoke.FixedDateTrigger;
+import arden.runtime.evoke.NeverTrigger;
 import arden.runtime.evoke.Trigger;
 
 public class EvokeCompiler extends VisitorBase {
@@ -116,10 +116,10 @@ public class EvokeCompiler extends VisitorBase {
 	
 	@Override
 	public void caseAEmptyEvokeStatement(AEmptyEvokeStatement stmt) {
-		context.writer.newObject(EmptyEvokeSlot.class);
+		context.writer.newObject(NeverTrigger.class);
 		context.writer.dup();
 		try {
-			context.writer.invokeConstructor(EmptyEvokeSlot.class.getConstructor());
+			context.writer.invokeConstructor(NeverTrigger.class.getConstructor());
 		} catch (NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		} catch (SecurityException e) {
