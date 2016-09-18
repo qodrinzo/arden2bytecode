@@ -141,7 +141,7 @@ public class MainClass {
 			return runEngine(inputFiles);
 		} else {
 			System.err.println("You should specify -r to run the files directly, "
-					+ "-c to compile the files or -e to start the event engine for the files.");
+					+ "-c to compile the files or -e to start the evoke engine for the files.");
 			System.err.println("Specifying files without telling what to do with them is not implemented.");
 			return false;
 		}
@@ -347,7 +347,7 @@ public class MainClass {
 			@Override
 			public void run() {
 				if (options.getVerbose()) {
-					System.out.println("Shutting down event engine.");
+					System.out.println("Shutting down evoke engine.");
 				}
 				engineThread.interrupt();
 				try {
@@ -365,7 +365,7 @@ public class MainClass {
 			new EventServer(context, options.getVerbose(), options.getPort()).startServer();
 		}
 
-		EventEngine engine = new EventEngine(context, mlms);
+		EvokeEngine engine = new EvokeEngine(context, mlms);
 		// launch engine loop on main thread -> only exits on interrupt
 		engine.run();
 

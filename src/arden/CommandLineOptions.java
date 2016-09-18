@@ -52,7 +52,7 @@ public interface CommandLineOptions {
 	boolean getCompile();
 
 	@Option(shortName = "e",
-			description = "Run event engine that executes MLMs when they are evoked.")
+			description = "Run evoke engine that runs MLMs when they are triggered.")
 	boolean getEngine();
 		
 	

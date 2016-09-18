@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import arden.CommandLineOptions;
-import arden.EventEngine;
+import arden.EvokeEngine;
 import arden.MainClass;
 import arden.compiler.CompiledMlm;
 import arden.compiler.Compiler;
@@ -30,14 +30,14 @@ import arden.runtime.events.EvokeEvent;
  * </p>
  * <p>
  * Also allows calling other MLMs in the action slot (directly or via event). If
- * an {@link EventEngine} is not set, cyclic or delayed triggers are not run and
+ * an {@link EvokeEngine} is not set, cyclic or delayed triggers are not run and
  * delayed calls are run immediately.
  * </p>
  */
 public class BaseExecutionContext extends ExecutionContext {
 	private List<URL> mlmSearchPath = new LinkedList<URL>();
 	private Map<String, ArdenRunnable> moduleList = new HashMap<String, ArdenRunnable>();
-	private EventEngine engine;
+	private EvokeEngine engine;
 
 	public BaseExecutionContext(URL[] mlmSearchPath) {
 		setURLs(mlmSearchPath);
@@ -117,7 +117,7 @@ public class BaseExecutionContext extends ExecutionContext {
 		return mlm;
 	}
 
-	public void setEngine(EventEngine engine) {
+	public void setEngine(EvokeEngine engine) {
 		this.engine = engine;
 	}
 
