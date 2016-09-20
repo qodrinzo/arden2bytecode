@@ -4,7 +4,7 @@ import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
 import arden.runtime.ExecutionContext;
 
-public abstract class Trigger {
+public interface Trigger {
 
 	/**
 	 * <p>
@@ -32,13 +32,13 @@ public abstract class Trigger {
 	 * 
 	 * @return The next run time or null if there is no next run time.
 	 */
-	public abstract ArdenTime getNextRunTime(ExecutionContext context);
+	public ArdenTime getNextRunTime(ExecutionContext context);
 
 	/**
 	 * Whether to run for an external event such as 'penicillin_storage'. This
 	 * will also mark some triggers as scheduled similar to
 	 * {@link #getNextRunTime(ExecutionContext)}.
 	 */
-	public abstract boolean runOnEvent(ArdenEvent event);
+	public boolean runOnEvent(ArdenEvent event);
 
 }

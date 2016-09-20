@@ -4,7 +4,7 @@ import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
 import arden.runtime.ExecutionContext;
 
-public class UntilTrigger extends Trigger {
+public class UntilTrigger implements Trigger {
 	private Trigger cycle;
 	private ArdenTime until; // FIXME Should be a boolean expression
 

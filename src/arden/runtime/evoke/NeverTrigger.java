@@ -4,7 +4,7 @@ import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
 import arden.runtime.ExecutionContext;
 
-public class NeverTrigger extends Trigger {
+public class NeverTrigger implements Trigger {
 
 	@Override
 	public ArdenTime getNextRunTime(ExecutionContext context) {

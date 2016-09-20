@@ -4,7 +4,7 @@ import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
 import arden.runtime.ExecutionContext;
 
-public class FixedDateTrigger extends Trigger {
+public class FixedDateTrigger implements Trigger {
 
 	private ArdenTime date;
 	protected boolean triggered = false;

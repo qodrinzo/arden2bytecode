@@ -7,7 +7,7 @@ import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
 import arden.runtime.ExecutionContext;
 
-public class AnyTrigger extends Trigger {
+public class AnyTrigger implements Trigger {
 
 	private List<Trigger> triggers;
 

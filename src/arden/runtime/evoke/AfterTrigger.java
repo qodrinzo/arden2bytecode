@@ -8,7 +8,7 @@ import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
 import arden.runtime.ExecutionContext;
 
-public class AfterTrigger extends Trigger {
+public class AfterTrigger implements Trigger {
 
 	Trigger target;
 	ArdenDuration duration;

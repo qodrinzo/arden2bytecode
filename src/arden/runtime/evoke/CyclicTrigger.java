@@ -5,7 +5,7 @@ import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
 import arden.runtime.ExecutionContext;
 
-public class CyclicTrigger extends Trigger {
+public class CyclicTrigger implements Trigger {
 
 	private ArdenDuration interval;
 	private ArdenTime starting; // FIXME Should be a a Trigger

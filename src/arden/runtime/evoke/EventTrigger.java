@@ -4,7 +4,7 @@ import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
 import arden.runtime.ExecutionContext;
 
-public class EventTrigger extends Trigger {
+public class EventTrigger implements Trigger {
 	private ArdenEvent event;
 
 	public EventTrigger(ArdenEvent event) {
