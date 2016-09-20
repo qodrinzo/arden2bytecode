@@ -12,6 +12,7 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenRunnable;
 import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
@@ -63,14 +64,14 @@ public class EvokeEngine implements Runnable {
 		context.setEngine(this);
 	}
 
-	public void callEvent(String mapping, ArdenTime eventTime) {
+	public void callEvent(ArdenEvent event) {
 		/*
 		 * Checking the evoke statements may require running the data slot,
 		 * which should not run concurrent to other (possibly data changing)
 		 * MLMs. Therefore add an EventCall to messages, so it is run on the
 		 * engines thread.
 		 */
-		messages.add(new EventCall(mapping, eventTime));
+		messages.add(new EventCall(event));
 	}
 
 	public void callWithDelay(ArdenRunnable mlm, ArdenValue[] arguments, int urgency, long delay) {
@@ -195,12 +196,10 @@ public class EvokeEngine implements Runnable {
 	}
 
 	private class EventCall implements Message {
-		String mapping;
-		ArdenTime eventTime;
+		ArdenEvent event;
 
-		public EventCall(String mapping, ArdenTime eventTime) {
-			this.mapping = mapping;
-			this.eventTime = eventTime;
+		public EventCall(ArdenEvent event) {
+			this.event = event;
 		}
 
 		@Override
@@ -222,7 +221,7 @@ public class EvokeEngine implements Runnable {
 					continue;
 				}
 
-				if (trigger.runOnEvent(mapping, eventTime)) {
+				if (trigger.runOnEvent(event)) {
 					messages.add(new MlmCall(mlm, null));
 				}
 			}

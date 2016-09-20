@@ -154,13 +154,13 @@ public class BaseExecutionContext extends ExecutionContext {
 	}
 
 	@Override
-	public void callEvent(String mapping, ArdenTime eventTime) {
+	public void callEvent(ArdenEvent event) {
 		if (engine != null) {
 			// run on engine
-			engine.callEvent(mapping, eventTime);
+			engine.callEvent(event);
 		} else {
 			// run MLMs for event now
-			System.out.println("event: " + mapping);
+			System.out.println("event: " + event.name);
 			for (Entry<String, ArdenRunnable> entry : moduleList.entrySet()) {
 				ArdenRunnable runnable = entry.getValue();
 				if (runnable instanceof MedicalLogicModule) {
@@ -168,7 +168,7 @@ public class BaseExecutionContext extends ExecutionContext {
 
 					try {
 						Trigger trigger = mlm.getTrigger(this, null);
-						if (trigger.runOnEvent(mapping, getCurrentTime())) {
+						if (trigger.runOnEvent(event)) {
 							super.eventTime = eventTime;
 							mlm.run(this, null);
 						}

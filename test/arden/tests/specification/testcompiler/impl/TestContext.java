@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import arden.compiler.CompiledMlm;
+import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenList;
 import arden.runtime.ArdenNumber;
 import arden.runtime.ArdenRunnable;
@@ -15,8 +16,6 @@ import arden.runtime.ArdenString;
 import arden.runtime.ArdenValue;
 import arden.runtime.DatabaseQuery;
 import arden.runtime.ExecutionContext;
-import arden.runtime.evoke.EventTrigger;
-import arden.runtime.evoke.Trigger;
 import arden.tests.specification.testcompiler.TestCompiler;
 import arden.tests.specification.testcompiler.TestCompilerResult.TestCompilerOutputText;
 
@@ -132,9 +131,9 @@ public class TestContext extends ExecutionContext {
 	}
 	
 	@Override
-	public Trigger getEvent(String mapping) {
+	public ArdenEvent getEvent(String mapping) {
 		if(EVENT_MAPPING.equals(mapping)) {
-			return new EventTrigger(mapping);
+			return new ArdenEvent(mapping);
 		}
 		return super.getEvent(mapping);
 	}

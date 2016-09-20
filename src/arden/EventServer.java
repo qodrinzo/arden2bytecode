@@ -8,12 +8,12 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import arden.runtime.ArdenTime;
+import arden.runtime.ArdenEvent;
 import arden.runtime.ExecutionContext;
 
 /**
  * Listens for events on a Socket. Calls
- * {@link ExecutionContext#callEvent(String, ArdenTime)} on the given
+ * {@link ExecutionContext#callEvent(ArdenEvent)} on the given
  * {@link ExecutionContext}. <br/>
  * To send an event to the server (in bash):
  * 
@@ -85,12 +85,13 @@ public class EventServer implements Runnable {
 				InputStream eventStream = connection.getInputStream();
 				Scanner scanner = new Scanner(eventStream);
 				while (scanner.hasNext() && !Thread.currentThread().isInterrupted()) {
-					String event = scanner.nextLine();
+					String eventName = scanner.nextLine();
 					if (verbose) {
-						System.out.println("Received event: " + event);
+						System.out.println("Received event: " + eventName);
 					}
-					// send event to all listeners
-					context.callEvent(event, context.getCurrentTime());
+					// send event to context
+					ArdenEvent event = new ArdenEvent(eventName, context.getCurrentTime().value);
+					context.callEvent(event);
 				}
 				scanner.close();
 			} catch (IOException e) {

@@ -31,10 +31,12 @@ import arden.compiler.node.PEventList;
 import arden.compiler.node.PEventOr;
 import arden.compiler.node.PEvokeBlock;
 import arden.compiler.node.PEvokeStatement;
+import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
 import arden.runtime.evoke.AnyTrigger;
+import arden.runtime.evoke.EventTrigger;
 import arden.runtime.evoke.FixedDateTrigger;
 import arden.runtime.evoke.NeverTrigger;
 import arden.runtime.evoke.Trigger;
@@ -235,6 +237,7 @@ public class EvokeCompiler extends VisitorBase {
 		factor.getEventFactor().apply(this);
 	}
 	
+	/** leaves ArdenEvent on stack */
 	@Override
 	public void caseAIdEventFactor(AIdEventFactor id) {
 		String name = id.getIdentifier().getText();
@@ -244,7 +247,16 @@ public class EvokeCompiler extends VisitorBase {
 		if (!(var instanceof EventVariable)) {
 			throw new RuntimeCompilerException(id.getIdentifier(), "This is not an event variable: \"" + name + "\"");
 		}
+		context.writer.newObject(EventTrigger.class);
+		context.writer.dup();
 		var.loadValue(context, id.getIdentifier());
+		try {
+			context.writer.invokeConstructor(EventTrigger.class.getConstructor(ArdenEvent.class));
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		} catch (SecurityException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override

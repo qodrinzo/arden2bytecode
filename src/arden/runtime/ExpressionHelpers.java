@@ -780,8 +780,7 @@ public final class ExpressionHelpers {
 	/** implements the AFTER duration operator */
 	public static Trigger after(ArdenValue duration, Trigger trigger) {
 		if (duration instanceof ArdenDuration) {
-			long primaryTime = getCommonTime(new ArdenValue[]{duration, trigger});
-			return new AfterTrigger((ArdenDuration) duration, trigger, primaryTime);
+			return new AfterTrigger((ArdenDuration) duration, trigger);
 		}
 		throw new RuntimeException("AFTER operator not implemented for "
 						+ getClassName(duration) 

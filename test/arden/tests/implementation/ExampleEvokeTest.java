@@ -31,6 +31,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import arden.runtime.ArdenDuration;
+import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenList;
 import arden.runtime.ArdenNull;
 import arden.runtime.ArdenString;
@@ -41,7 +42,6 @@ import arden.runtime.MedicalLogicModule;
 import arden.runtime.MemoryQuery;
 import arden.runtime.evoke.CyclicTrigger;
 import arden.runtime.evoke.EventTrigger;
-import arden.runtime.evoke.FixedDateTrigger;
 import arden.runtime.evoke.NeverTrigger;
 import arden.runtime.evoke.Trigger;
 
@@ -55,7 +55,8 @@ public class ExampleEvokeTest extends ImplementationTest {
 		Trigger trigger = mlm.getTrigger(context, null);
 
 		Assert.assertTrue(trigger instanceof EventTrigger);
-		Assert.assertTrue(trigger.runOnEvent("storage of urine electrolytes", context.getCurrentTime()));
+		ArdenEvent event = new ArdenEvent("storage of urine electrolytes", context.getCurrentTime().value);
+		Assert.assertTrue(trigger.runOnEvent(event));
 	}
 
 	@Test
@@ -66,7 +67,8 @@ public class ExampleEvokeTest extends ImplementationTest {
 		Trigger trigger = mlm.getTrigger(context, null);
 
 		Assert.assertTrue(trigger instanceof EventTrigger);
-		Assert.assertTrue(trigger.runOnEvent("'06210519','06210669'", context.getCurrentTime()));
+		ArdenEvent event = new ArdenEvent("'06210519','06210669'", context.getCurrentTime().value);
+		Assert.assertTrue(trigger.runOnEvent(event));
 	}
 
 	@Test
@@ -76,7 +78,8 @@ public class ExampleEvokeTest extends ImplementationTest {
 		Trigger trigger = mlm.getTrigger(context, null);
 		
 		Assert.assertTrue(trigger instanceof EventTrigger);
-		Assert.assertTrue(trigger.runOnEvent("medication_order where class = penicillin", context.getCurrentTime()));
+		ArdenEvent event = new ArdenEvent("medication_order where class = penicillin", context.getCurrentTime().value);
+		Assert.assertTrue(trigger.runOnEvent(event));
 	}
 
 	@Test
@@ -93,7 +96,8 @@ public class ExampleEvokeTest extends ImplementationTest {
 		Trigger trigger = mlm.getTrigger(context, null);
 		
 		Assert.assertTrue(trigger instanceof EventTrigger);
-		Assert.assertTrue(trigger.runOnEvent("medication_order where class = penicillin", context.getCurrentTime()));
+		ArdenEvent event = new ArdenEvent("medication_order where class = penicillin", context.getCurrentTime().value);
+		Assert.assertTrue(trigger.runOnEvent(event));
 	}
 
 	@Test
@@ -110,7 +114,8 @@ public class ExampleEvokeTest extends ImplementationTest {
 		Trigger trigger = mlm.getTrigger(context, null);
 		
 		Assert.assertTrue(trigger instanceof EventTrigger);
-		Assert.assertTrue(trigger.runOnEvent("medication_order where class = penicillin", context.getCurrentTime()));
+		ArdenEvent event = new ArdenEvent("medication_order where class = penicillin", context.getCurrentTime().value);
+		Assert.assertTrue(trigger.runOnEvent(event));
 	}
 
 	@Test
@@ -121,7 +126,8 @@ public class ExampleEvokeTest extends ImplementationTest {
 		Trigger trigger = mlm.getTrigger(context, null);
 
 		Assert.assertTrue(trigger instanceof EventTrigger);
-		Assert.assertTrue(trigger.runOnEvent("medication_order where class = gentamicin", context.getCurrentTime()));
+		ArdenEvent event = new ArdenEvent("medication_order where class = gentamicin", context.getCurrentTime().value);
+		Assert.assertTrue(trigger.runOnEvent(event));
 	}
 
 	@Test
@@ -129,7 +135,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 		MedicalLogicModule mlm = compile("x3.5.mlm");
 		ArdenTime defaultTime = createDateTime(1980, 0, 1, 0, 0, 0); // this is the default myExecutionContext.getCurrentTime()
 		ArdenTime defaultEventDate = createDateTime(2000, 0, 1, 0, 0, 0); // this is the default myExecutionContext.getEvent()
-		Trigger defaultEvent = new FixedDateTrigger(defaultEventDate);
+		ArdenEvent defaultEvent = new ArdenEvent("gentamicin_order", defaultEventDate.value);
 
 		TestContext context = new TestContext(defaultEvent, defaultTime);
 		Trigger trigger = mlm.getTrigger(context, null);
@@ -166,7 +172,8 @@ public class ExampleEvokeTest extends ImplementationTest {
 		Trigger trigger = mlm.getTrigger(context, null);
 
 		Assert.assertTrue(trigger instanceof EventTrigger);
-		Assert.assertTrue(trigger.runOnEvent("STORAGE OF ABSOLUTE_NEUTROPHILE_COUNT", context.getCurrentTime()));
+		ArdenEvent event = new ArdenEvent("STORAGE OF ABSOLUTE_NEUTROPHILE_COUNT", context.getCurrentTime().value);
+		Assert.assertTrue(trigger.runOnEvent(event));
 	}
 
 	@Test

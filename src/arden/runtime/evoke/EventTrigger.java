@@ -1,22 +1,17 @@
 package arden.runtime.evoke;
 
+import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
-import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
 
 public class EventTrigger extends Trigger {
-	private String mapping;
+	private ArdenEvent event;
 
-	public EventTrigger(String mapping, long primaryTime) {
-		super(primaryTime);
-		if (mapping == null) {
+	public EventTrigger(ArdenEvent event) {
+		if (event == null) {
 			throw new NullPointerException();
 		}
-		this.mapping = mapping;
-	}
-
-	public EventTrigger(String mapping) {
-		this(mapping, NOPRIMARYTIME);
+		this.event = event;
 	}
 
 	@Override
@@ -25,16 +20,11 @@ public class EventTrigger extends Trigger {
 	}
 
 	@Override
-	public boolean runOnEvent(String mapping, ArdenTime eventTime) {
-		if (this.mapping.equalsIgnoreCase(mapping)) {
+	public boolean runOnEvent(ArdenEvent event) {
+		if (event.equals(this.event)) {
 			return true;
 		}
 		return false;
-	}
-
-	@Override
-	public ArdenValue setTime(long newPrimaryTime) {
-		return new EventTrigger(mapping, newPrimaryTime);
 	}
 
 }

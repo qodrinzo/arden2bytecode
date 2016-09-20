@@ -3,24 +3,19 @@ package arden.runtime.evoke;
 import java.util.Arrays;
 import java.util.List;
 
+import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
-import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
 
 public class AnyTrigger extends Trigger {
-	
+
 	private List<Trigger> triggers;
 
-	public AnyTrigger(Trigger[] triggers, long primaryTime) {
+	public AnyTrigger(Trigger[] triggers) {
 		this.triggers = Arrays.asList(triggers);
 	}
 
-	public AnyTrigger(Trigger[] triggers) {
-		this(triggers, NOPRIMARYTIME);
-	}
-
-	public AnyTrigger(List<Trigger> triggers, long primaryTime) {
-		super(primaryTime);
+	public AnyTrigger(List<Trigger> triggers) {
 		this.triggers = triggers;
 	}
 
@@ -39,18 +34,13 @@ public class AnyTrigger extends Trigger {
 	}
 
 	@Override
-	public boolean runOnEvent(String mapping, ArdenTime eventTime) {
+	public boolean runOnEvent(ArdenEvent event) {
 		for (Trigger trigger : triggers) {
-			if (trigger.runOnEvent(mapping, eventTime)) {
+			if (trigger.runOnEvent(event)) {
 				return true;
 			}
 		}
 		return false;
-	}
-
-	@Override
-	public ArdenValue setTime(long newPrimaryTime) {
-		return new AnyTrigger(triggers, newPrimaryTime);
 	}
 
 }

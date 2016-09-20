@@ -1,17 +1,10 @@
 package arden.runtime.evoke;
 
+import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
-import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
 
-public abstract class Trigger extends ArdenValue {
-
-	public Trigger() {
-	}
-
-	public Trigger(long primaryTime) {
-		// super(primaryTime);
-	}
+public abstract class Trigger {
 
 	/**
 	 * <p>
@@ -46,6 +39,6 @@ public abstract class Trigger extends ArdenValue {
 	 * will also mark some triggers as scheduled similar to
 	 * {@link #getNextRunTime(ExecutionContext)}.
 	 */
-	public abstract boolean runOnEvent(String mapping, ArdenTime eventTime);
+	public abstract boolean runOnEvent(ArdenEvent event);
 
 }

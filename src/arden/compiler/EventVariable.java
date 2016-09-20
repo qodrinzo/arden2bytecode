@@ -31,13 +31,13 @@ import java.lang.reflect.Modifier;
 
 import arden.codegenerator.FieldReference;
 import arden.compiler.node.TIdentifier;
-import arden.runtime.evoke.Trigger;
+import arden.runtime.ArdenEvent;
 
 final class EventVariable extends DataVariable {
 	private EventVariable(TIdentifier name, FieldReference field) {
 		super(name, field);
 	}
-	
+
 	public static EventVariable getEventVariable(CodeGenerator codeGen, LeftHandSideResult lhs) {
 		if (!(lhs instanceof LeftHandSideIdentifier))
 			throw new RuntimeCompilerException(lhs.getPosition(), "EVENT variables must be simple identifiers");
@@ -46,7 +46,7 @@ final class EventVariable extends DataVariable {
 		if (variable instanceof EventVariable) {
 			return (EventVariable) variable;
 		} else {
-			FieldReference mlmField = codeGen.createField(ident.getText(), Trigger.class, Modifier.PRIVATE);
+			FieldReference mlmField = codeGen.createField(ident.getText(), ArdenEvent.class, Modifier.PRIVATE);
 			EventVariable ev = new EventVariable(ident, mlmField);
 			codeGen.addVariable(ev);
 			return ev;
