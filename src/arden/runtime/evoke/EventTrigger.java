@@ -5,6 +5,7 @@ import arden.runtime.ArdenTime;
 import arden.runtime.ExecutionContext;
 
 public class EventTrigger implements Trigger {
+
 	private ArdenEvent event;
 
 	public EventTrigger(ArdenEvent event) {
@@ -21,10 +22,11 @@ public class EventTrigger implements Trigger {
 
 	@Override
 	public boolean runOnEvent(ArdenEvent event) {
-		if (event.equals(this.event)) {
-			return true;
-		}
-		return false;
+		return event.equals(this.event);
+	}
+
+	@Override
+	public void scheduleEvent(ArdenEvent event) {
 	}
 
 }

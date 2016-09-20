@@ -101,6 +101,7 @@ public class EvokeTest extends ImplementationTest {
 		ArdenEvent event = new ArdenEvent("penicillin storage", createDate(1992, 0, 1).value);
 		
 		Assert.assertFalse(trigger.runOnEvent(event));
+		trigger.scheduleEvent(event);
 		Assert.assertEquals(createDate(1992, 0, 4), trigger.getNextRunTime(context));
 	}
 
@@ -179,7 +180,7 @@ public class EvokeTest extends ImplementationTest {
 		
 		Assert.assertTrue(trigger instanceof AfterTrigger);
 		Assert.assertEquals(null, trigger.getNextRunTime(context));
-		trigger.runOnEvent(new ArdenEvent("test", context.getCurrentTime().value));
+		trigger.scheduleEvent(new ArdenEvent("test", context.getCurrentTime().value));
 		Assert.assertEquals(createDate(1990, 0, 4), trigger.getNextRunTime(context));
 	}
 	

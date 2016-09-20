@@ -16,4 +16,8 @@ public class NeverTrigger implements Trigger {
 		return false;
 	}
 
+	@Override
+	public void scheduleEvent(ArdenEvent event) {
+	}
+
 }

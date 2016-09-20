@@ -35,10 +35,37 @@ public interface Trigger {
 	public ArdenTime getNextRunTime(ExecutionContext context);
 
 	/**
-	 * Whether to run for an external event such as 'penicillin_storage'. This
-	 * will also mark some triggers as scheduled similar to
-	 * {@link #getNextRunTime(ExecutionContext)}.
+	 * Whether to immediately (no delay) run for an external event such as
+	 * 'penicillin_storage'. The event will be compared with others via it's
+	 * {@link #equals(Object)} method, which can be overridden. <br>
+	 * No state is changed in contrast to {@link #scheduleEvent(ArdenEvent)}.
+	 * 
+	 * <p>
+	 * E.g. the trigger <code>10 SECONDS AFTER TIME OF an_event</code> will
+	 * return false, when this method called with a matching
+	 * <code>an_event</code>.
+	 * </p>
+	 * 
+	 * @param event
+	 *            The event to check.
+	 * @return whether this trigger is immediately triggered by the event.
 	 */
 	public boolean runOnEvent(ArdenEvent event);
+
+	/**
+	 * This method will mark some triggers as scheduled similar to
+	 * {@link #getNextRunTime(ExecutionContext)}.
+	 * 
+	 * <p>
+	 * E.g. after scheduling a matching <code>an_event</code> for the trigger
+	 * <code>10 SECONDS AFTER TIME OF an_event</code>,
+	 * {@link #getNextRunTime(ExecutionContext)} will return a time, that is 10
+	 * seconds after the events {@link ArdenEvent#eventTime}.
+	 * </p>
+	 * 
+	 * @param event
+	 * @return
+	 */
+	public void scheduleEvent(ArdenEvent event);
 
 }

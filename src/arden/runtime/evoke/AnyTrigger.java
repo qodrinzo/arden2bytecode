@@ -43,4 +43,11 @@ public class AnyTrigger implements Trigger {
 		return false;
 	}
 
+	@Override
+	public void scheduleEvent(ArdenEvent event) {
+		for (Trigger trigger : triggers) {
+			trigger.scheduleEvent(event);
+		}
+	}
+
 }

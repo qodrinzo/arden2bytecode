@@ -28,4 +28,8 @@ public class FixedDateTrigger implements Trigger {
 		return false;
 	}
 
+	@Override
+	public void scheduleEvent(ArdenEvent event) {
+	}
+
 }

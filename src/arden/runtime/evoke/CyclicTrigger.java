@@ -55,4 +55,9 @@ public class CyclicTrigger implements Trigger {
 		return false;
 	}
 
+	@Override
+	public void scheduleEvent(ArdenEvent event) {
+
+	}
+
 }

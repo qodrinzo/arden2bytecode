@@ -27,4 +27,9 @@ public class UntilTrigger implements Trigger {
 		return cycle.runOnEvent(event);
 	}
 
+	@Override
+	public void scheduleEvent(ArdenEvent event) {
+		cycle.scheduleEvent(event);
+	}
+
 }

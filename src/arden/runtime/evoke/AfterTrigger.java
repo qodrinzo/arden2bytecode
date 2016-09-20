@@ -41,12 +41,17 @@ public class AfterTrigger implements Trigger {
 
 	@Override
 	public boolean runOnEvent(ArdenEvent event) {
+		return false;
+	}
+
+	@Override
+	public void scheduleEvent(ArdenEvent event) {
+		target.scheduleEvent(event);
 		if (target.runOnEvent(event)) {
 			// trigger in 'duration' after eventtime
 			long triggerTime = new ArdenTime(event.eventTime).add(duration);
 			additionalSchedules.add(new ArdenTime(triggerTime));
 		}
-		return false;
 	}
 
 }

@@ -221,6 +221,7 @@ public class EvokeEngine implements Runnable {
 					continue;
 				}
 
+				trigger.scheduleEvent(event);
 				if (trigger.runOnEvent(event)) {
 					messages.add(new MlmCall(mlm, null));
 				}
