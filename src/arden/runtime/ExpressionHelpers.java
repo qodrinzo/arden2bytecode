@@ -807,12 +807,7 @@ public final class ExpressionHelpers {
 	
 	public static Trigger createCycleTrigger(ArdenValue interval, ArdenValue length, Trigger start, ExecutionContext context) {
 		if (interval instanceof ArdenDuration && length instanceof ArdenDuration) {
-			ArdenTime starting = start.getNextRunTime(context);
-			if (starting != null) {
-				return new CyclicTrigger((ArdenDuration) interval, (ArdenDuration) length, starting);
-			} else {
-				return new NeverTrigger();
-			}
+			return new CyclicTrigger((ArdenDuration) interval, (ArdenDuration) length, start);
 		}
 		throw new RuntimeException("cannot create cycle trigger with these types: " + 
 						getClassName(interval) + ", " +
