@@ -9,6 +9,7 @@ import arden.runtime.ExecutionContext;
 
 public class AnyTrigger implements Trigger {
 
+	private Trigger activeTrigger = null;
 	private List<Trigger> triggers;
 
 	public AnyTrigger(Trigger[] triggers) {
@@ -48,6 +49,25 @@ public class AnyTrigger implements Trigger {
 		for (Trigger trigger : triggers) {
 			trigger.scheduleEvent(event);
 		}
+	}
+
+	public ArdenEvent getTriggeringEvent() {
+		for (Trigger trigger : triggers) {
+			ArdenEvent triggeringEvent = trigger.getTriggeringEvent();
+			if (triggeringEvent != null) {
+				activeTrigger = trigger;
+				return triggeringEvent;
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public long getDelay() {
+		if (activeTrigger == null) {
+			return 0;
+		}
+		return activeTrigger.getDelay();
 	}
 
 }

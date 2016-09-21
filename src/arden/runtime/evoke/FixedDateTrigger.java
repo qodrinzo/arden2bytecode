@@ -30,6 +30,17 @@ public class FixedDateTrigger implements Trigger {
 
 	@Override
 	public void scheduleEvent(ArdenEvent event) {
+
+	}
+
+	public ArdenEvent getTriggeringEvent() {
+		// fixed date is not an event
+		return null;
+	}
+
+	@Override
+	public long getDelay() {
+		return 0;
 	}
 
 }

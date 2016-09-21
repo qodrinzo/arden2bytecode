@@ -7,6 +7,7 @@ import arden.runtime.ExecutionContext;
 public class EventTrigger implements Trigger {
 
 	private ArdenEvent event;
+	private ArdenEvent triggeringEvent = null;
 
 	public EventTrigger(ArdenEvent event) {
 		if (event == null) {
@@ -27,6 +28,18 @@ public class EventTrigger implements Trigger {
 
 	@Override
 	public void scheduleEvent(ArdenEvent event) {
+		// saves primarytime and eventtime
+		triggeringEvent = event.equals(this.event) ? event : null;
+	}
+
+	@Override
+	public ArdenEvent getTriggeringEvent() {
+		return triggeringEvent;
+	}
+
+	@Override
+	public long getDelay() {
+		return 0;
 	}
 
 }

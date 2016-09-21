@@ -18,6 +18,16 @@ public class NeverTrigger implements Trigger {
 
 	@Override
 	public void scheduleEvent(ArdenEvent event) {
+
+	}
+
+	public ArdenEvent getTriggeringEvent() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public long getDelay() {
+		throw new UnsupportedOperationException();
 	}
 
 }

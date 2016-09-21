@@ -60,4 +60,13 @@ public class CyclicTrigger implements Trigger {
 
 	}
 
+	public ArdenEvent getTriggeringEvent() {
+		return null;
+	}
+
+	@Override
+	public long getDelay() {
+		return 0;
+	}
+
 }

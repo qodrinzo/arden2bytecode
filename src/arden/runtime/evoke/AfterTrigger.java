@@ -54,4 +54,14 @@ public class AfterTrigger implements Trigger {
 		}
 	}
 
+	@Override
+	public ArdenEvent getTriggeringEvent() {
+		return target.getTriggeringEvent();
+	}
+
+	@Override
+	public long getDelay() {
+		return target.getDelay() + (long) (duration.toSeconds() * 1000);
+	}
+
 }

@@ -48,12 +48,12 @@ public interface Trigger {
 	 * 
 	 * @param event
 	 *            The event to check.
-	 * @return whether this trigger is immediately triggered by the event.
+	 * @return Whether this trigger is immediately triggered by the event.
 	 */
 	public boolean runOnEvent(ArdenEvent event);
 
 	/**
-	 * This method will mark some triggers as scheduled similar to
+	 * This method may mark some triggers as scheduled similar to
 	 * {@link #getNextRunTime(ExecutionContext)}.
 	 * 
 	 * <p>
@@ -64,8 +64,21 @@ public interface Trigger {
 	 * </p>
 	 * 
 	 * @param event
-	 * @return
+	 *            The event for which the trigger may create a schedule.
 	 */
 	public void scheduleEvent(ArdenEvent event);
 
+	/**
+	 * @return The event that caused the trigger to be triggered, or null if no
+	 *         such event exists.
+	 */
+	public ArdenEvent getTriggeringEvent();
+
+	/**
+	 * The delay (in millis) since the triggering event occurred. 0 if no such
+	 * event occurred.
+	 * 
+	 * @return The delay since the <code>EVENTTIME</code>.
+	 */
+	public long getDelay();
 }

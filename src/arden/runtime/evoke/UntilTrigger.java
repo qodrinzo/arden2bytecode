@@ -32,4 +32,13 @@ public class UntilTrigger implements Trigger {
 		cycle.scheduleEvent(event);
 	}
 
+	public ArdenEvent getTriggeringEvent() {
+		return cycle.getTriggeringEvent();
+	}
+
+	@Override
+	public long getDelay() {
+		return cycle.getDelay();
+	}
+
 }
