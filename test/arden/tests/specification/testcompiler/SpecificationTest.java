@@ -25,34 +25,36 @@ public abstract class SpecificationTest {
 	
 	/** Initialise your compiler here. It will be used by all tests. */
 	private final TestCompiler compiler = new arden.tests.specification.testcompiler.impl.TestCompilerImpl();
+	private final TestCompilerSettings settings = compiler.getSettings();
 	
 	// Decorator which intercepts calls to the compiler to skip unsupported tests
 	private TestCompiler runtimeCheckedCompiler = new TestCompiler() {
-		public TestCompilerResult compileAndRun(String code) throws TestCompilerException {
-			// only run tests if runtime is supported
-			assumeTrue("Compiler doesn't support runtime tests", isRuntimeSupported());
-			return compiler.compileAndRun(code);
-		}
 		@Override
-		public boolean isRuntimeSupported() {
-			return compiler.isRuntimeSupported();
-		}
-		@Override
-		public boolean isVersionSupported(ArdenVersion version) {
-			return compiler.isVersionSupported(version);
-		}
-		@Override
-		public void compile(String code) throws TestCompilerCompiletimeException {
-			compiler.compile(code);
-		}
+		public TestCompilerSettings getSettings() {
+			return compiler.getSettings();
+		};
 		@Override
 		public TestCompilerMappings getMappings() {
 			TestCompilerMappings mappings = compiler.getMappings();
 			// only run test if mappings are provided
 			assumeNotNull("Compiler doesn't support tests with mappings", mappings);
-			return compiler.getMappings();
+			return mappings;
 		};
+		@Override
+		public TestCompilerResult compileAndRun(String code) throws TestCompilerException {
+			// only run tests if runtime is supported
+			assumeTrue("Compiler doesn't support runtime tests", getSettings().isRuntimeSupported);
+			return compiler.compileAndRun(code);
+		}
+		@Override
+		public void compile(String code) throws TestCompilerCompiletimeException {
+			compiler.compile(code);
+		}
 	};
+	
+	protected TestCompilerSettings getSettings() {
+		return settings;
+	}
 	
 	protected TestCompiler getCompiler() {
 		return runtimeCheckedCompiler;
@@ -64,7 +66,7 @@ public abstract class SpecificationTest {
 	
 	// Used for backward compatibility tests with the <code>@Compatibility</code> annotation.
 	@Rule
-	public CompatibilityRule comaptibilityRule = new CompatibilityRule(getCompiler());
+	public CompatibilityRule comaptibilityRule = new CompatibilityRule(getSettings());
 	
 	
 	/**
@@ -87,7 +89,7 @@ public abstract class SpecificationTest {
 	}
 	
 	protected void assertReturns(String code, String... expected) throws TestCompilerException {
-		if(!getCompiler().isRuntimeSupported()) {
+		if(!getSettings().isRuntimeSupported) {
 			assertValid(code);
 			return;
 		}
@@ -125,7 +127,7 @@ public abstract class SpecificationTest {
 	}
 	
 	protected void assertWrites(String code, String expected) throws TestCompilerException {
-		if(!getCompiler().isRuntimeSupported()) {
+		if(!getSettings().isRuntimeSupported) {
 			assertValid(code);
 			return;
 		}

@@ -7,50 +7,45 @@ package arden.tests.specification.testcompiler;
 public interface TestCompiler {
 
 	/**
-	 * Used to check if runtime tests (e.g. operator tests, which check return
-	 * values) should be run by calling {@link #compileAndRun(String)}, or only
-	 * compiled to check for syntax errors by calling {@link #compile(String)}.
+	 * These settings influence, how the tests are run, e.g. if backward
+	 * compatibility tests should be skipped, or what value the "arden:" slot is
+	 * set to.
 	 * 
-	 * @return <code>true</code> if runtime tests should run, <code>false</code>
-	 *         if they should only be compiled.
+	 * @return {@link TestCompilerSettings}
+	 * @see TestCompilerSettings
 	 */
-	public boolean isRuntimeSupported();
+	public TestCompilerSettings getSettings();
 
 	/**
-	 * Used to only run backward compatibility tests for Arden Syntax versions
-	 * which are supported.
+	 * Used to insert valid mappings into tests, e.g. a <code>READ</code>
+	 * mapping or <code>INTERFACE</code> mapping .
 	 * 
-	 * @param version
-	 *            The {@link ArdenVersion} to check against
-	 * @return <code>true</code> if backward compatibility tests for this
-	 *         version should run, <code>false</code> otherwise.
+	 * @return {@link TestCompilerMappings} or <code>null</code> to skip tests
+	 *         which required mappings.
+	 * @see TestCompilerMappings
 	 */
-	public boolean isVersionSupported(ArdenVersion version);
-	
+	public TestCompilerMappings getMappings();
+
 	/**
 	 * Compile the given code
 	 * 
-	 * @param code Arden Syntax code, which may contain multiple mlms.
-	 * @throws TestCompilerCompiletimeException e.g. on a a lexer, parser or validation error
+	 * @param code
+	 *            Arden Syntax code, which may contain multiple mlms.
+	 * @throws TestCompilerCompiletimeException
+	 *             e.g. on a a lexer, parser or validation error
 	 */
 	public void compile(String code) throws TestCompilerCompiletimeException;
-	
+
 	/**
 	 * Compile and run the given code
 	 * 
-	 * @param code Arden Syntax code, which may contain multiple mlms. In that case the first mlm is run. 
+	 * @param code
+	 *            Arden Syntax code, which may contain multiple mlms. In that
+	 *            case the first mlm is run.
 	 * @return {@link TestCompilerResult}
 	 * @throws TestCompilerException
 	 * @see TestCompilerResult
 	 */
 	public TestCompilerResult compileAndRun(String code) throws TestCompilerException;
-	
-	/**
-	 * Used to insert mappings into tests, e.g. a <code>READ</code> mapping or <code>INTERFACE</code> mapping . 
-	 * 
-	 * @return {@link TestCompilerMappings} or <code>null</code> to skip tests which required mappings.
-	 * @see TestCompilerMappings
-	 */
-	public TestCompilerMappings getMappings();
 
 }

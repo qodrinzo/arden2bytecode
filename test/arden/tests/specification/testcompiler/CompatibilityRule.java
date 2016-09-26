@@ -13,13 +13,12 @@ import org.junit.runners.model.Statement;
 
 /**
  * JUnit rule to check all tests for the <code>@Compatibility</code> annotation
- * and skip backward compatibility tests for compilers which do not support the
- * given version. <br>
+ * and skip tests for compilers which do not support the given version. <br>
  * Usage:
  * 
  * <pre>
  * &#064;Rule
- * public CompatibilityRule rule = new CompatibilityRule();
+ * public CompatibilityRule rule = new CompatibilityRule(settings);
  * 
  * &#064;Test
  * &#064;Compatibility(ArdenVersion.V1)
@@ -29,10 +28,10 @@ import org.junit.runners.model.Statement;
  */
 public class CompatibilityRule implements MethodRule {
 
-	private TestCompiler compiler;
+	private TestCompilerSettings settings;
 
-	public CompatibilityRule(TestCompiler compiler) {
-		this.compiler = compiler;
+	public CompatibilityRule(TestCompilerSettings settings) {
+		this.settings = settings;
 	}
 
 	@Override
@@ -42,9 +41,9 @@ public class CompatibilityRule implements MethodRule {
 		Compatibility annotation = method.getAnnotation(Compatibility.class);
 		if (annotation != null) {
 			ArdenVersion version = annotation.value();
-			if (!compiler.isVersionSupported(version)) {
-				String message = "Compiler doesn't support backward compatibility tests for version: "
-						+ version.toString();
+			if (settings.targetVersion.ordinal() < version.ordinal()
+					|| settings.lowestVersion.ordinal() > version.ordinal()) {
+				String message = "Compiler doesn't support tests for version: " + version.toString();
 				result = new IgnoreStatement(message);
 			}
 		}
