@@ -67,7 +67,7 @@ public class LibraryCategoryTest extends SpecificationTest {
 	}
 	
 	@Test
-	@Compatibility(ArdenVersion.V1)
+	@Compatibility(max=ArdenVersion.V1)
 	public void testArbitrarySlotText() throws Exception {
 		String arbitraryCitationsText = new ArdenCodeBuilder()
 				.removeSlot("arden:") // v1

@@ -45,7 +45,7 @@ public class MaintenanceCategoryTest extends SpecificationTest {
 	}
 	
 	@Test
-	@Compatibility(ArdenVersion.V1)
+	@Compatibility(max=ArdenVersion.V1)
 	public void testFileName() throws Exception {
 		String alternative = new ArdenCodeBuilder()
 				.removeSlot("arden:") // v1
@@ -64,24 +64,24 @@ public class MaintenanceCategoryTest extends SpecificationTest {
 		String invalid = new ArdenCodeBuilder().replaceSlotContent("arden:", "x 2.5").toString();
 		assertInvalid(invalid);
 	}
-	
+
 	@Test
-	@Compatibility(ArdenVersion.V1)
+	@Compatibility(max = ArdenVersion.V1)
 	public void testArdenSyntaxVersionV1() throws Exception {
 		// no arden version slot in v1
 		String v1 = new ArdenCodeBuilder().removeSlot("arden:").toString();
 		assertValid(v1);
 	}
-	
+
 	@Test
-	@Compatibility(ArdenVersion.V2)
+	@Compatibility(min = ArdenVersion.V2, max = ArdenVersion.V2)
 	public void testArdenSyntaxVersionV2() throws Exception {
 		String v2 = new ArdenCodeBuilder().replaceSlotContent("arden:", "Version 2").toString();
 		assertValid(v2);
 	}
-	
+
 	@Test
-	@Compatibility(ArdenVersion.V2_1)
+	@Compatibility(min = ArdenVersion.V2_1, max = ArdenVersion.V2_1)
 	public void testArdenSyntaxVersionV21() throws Exception {
 		String v21 = new ArdenCodeBuilder().replaceSlotContent("arden:", "Version 2.1").toString();
 		assertValid(v21);

@@ -22,7 +22,7 @@ public class KnowledgeCategoryTest extends SpecificationTest {
 	}
 	
 	@Test
-	@Compatibility(ArdenVersion.V1)
+	@Compatibility(max=ArdenVersion.V1)
 	public void testTypeDash() throws Exception {
 		String typeDash = new ArdenCodeBuilder()
 				.removeSlot("arden:") // v1
