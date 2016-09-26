@@ -5,7 +5,12 @@ public enum ArdenVersion implements Comparable<ArdenVersion> {
 	V1(1, 0), // ASTM E1460-1992
 	V2(2, 0),
 	V2_1(2, 1),
-	V2_5(2, 5);
+	V2_5(2, 5),
+	V2_6(2, 6),
+	V2_7(2, 7),
+	V2_8(2, 8),
+	V2_9(2, 9),
+	V2_10(2, 10);
 
 	public final int major;
 	public final int minor;
