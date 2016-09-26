@@ -108,11 +108,11 @@ public class EvokeCompiler extends VisitorBase {
 	public void caseAEvokeSlot(AEvokeSlot evokeSlot) {
 		List<PEvokeStatement> statements = listEvokeBlocks(evokeSlot.getEvokeBlock());
 		if (statements.size() > 1) {
-			throw new RuntimeCompilerException(evokeSlot.getEvoke(), "not implemented yet");
+			throw new RuntimeCompilerException(evokeSlot.getEvokeColon(), "not implemented yet");
 		} else if (statements.size() == 1) {
 			statements.get(0).apply(this);
 		} else {
-			throw new RuntimeCompilerException(evokeSlot.getEvoke(), "no evoke statement given");
+			throw new RuntimeCompilerException(evokeSlot.getEvokeColon(), "no evoke statement given");
 		}
 	}
 	

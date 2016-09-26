@@ -145,7 +145,7 @@ public final class Compiler {
 		// System.out.println(knowledge.toString());
 		// knowledge.apply(new PrintTreeVisitor(System.out));
 
-		CodeGenerator codeGen = new CodeGenerator(metadata.maintenance.getMlmName(), knowledgeCategory.getKnowledge()
+		CodeGenerator codeGen = new CodeGenerator(metadata.maintenance.getMlmName(), knowledgeCategory.getKnowledgeColon()
 				.getLine());
 		if (isDebuggingEnabled)
 			codeGen.enableDebugging(sourceFileName);
@@ -300,7 +300,7 @@ public final class Compiler {
 		if (urgencySlot instanceof AUrgUrgencySlot) {
 			PUrgencyVal val = ((AUrgUrgencySlot) urgencySlot).getUrgencyVal();
 			CompilerContext context = codeGen.createUrgency();
-			context.writer.sequencePoint(((AUrgUrgencySlot) urgencySlot).getUrgency().getLine());
+			context.writer.sequencePoint(((AUrgUrgencySlot) urgencySlot).getUrgencyColon().getLine());
 			// urgency_val =
 			// {num} P.number
 			// | {id} identifier;
