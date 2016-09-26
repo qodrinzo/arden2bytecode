@@ -32,9 +32,11 @@ public enum ArdenVersion implements Comparable<ArdenVersion> {
 		StringBuilder versionBuilder = new StringBuilder("Version ");
 		versionBuilder.append(major);
 		if (minor != 0) {
+			versionBuilder.append('.');
 			versionBuilder.append(minor);
 		}
 		if (rev != 0) {
+			versionBuilder.append('.');
 			versionBuilder.append(rev);
 		}
 		return versionBuilder.toString();
