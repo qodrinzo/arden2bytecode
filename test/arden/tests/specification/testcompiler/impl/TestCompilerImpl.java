@@ -80,7 +80,7 @@ public class TestCompilerImpl implements TestCompiler {
 				result.returnValues.add(stringValue);
 			}
 		}
-		result.outputTexts.addAll(context.getOutputText());
+		result.messages.addAll(context.getMessages());
 	
 		return result;
 	}

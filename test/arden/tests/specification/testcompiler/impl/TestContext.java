@@ -17,7 +17,6 @@ import arden.runtime.ArdenValue;
 import arden.runtime.DatabaseQuery;
 import arden.runtime.ExecutionContext;
 import arden.tests.specification.testcompiler.TestCompiler;
-import arden.tests.specification.testcompiler.TestCompilerResult.TestCompilerOutputText;
 
 /**
  * See the requirements at the {@link TestCompiler} interface.
@@ -46,7 +45,7 @@ public class TestContext extends ExecutionContext {
 			new ArdenString("a", new GregorianCalendar(2000,Calendar.JANUARY,1).getTimeInMillis())
 	};
 	
-	private List<TestCompilerOutputText> outputTexts = new LinkedList<TestCompilerOutputText>();
+	private List<String> messages = new LinkedList<String>();
 	private List<CompiledMlm> mlms;
 	private String institutionSelf;
 	enum Validation {
@@ -166,10 +165,11 @@ public class TestContext extends ExecutionContext {
 	public void write(ArdenValue message, String destination) {
 		// save messages
 		String stringMessage = ((ArdenString) message).value;
-		outputTexts.add(new TestCompilerOutputText(destination, stringMessage));
+		messages.add(stringMessage);
 	}
 
-	public List<TestCompilerOutputText> getOutputText() {
-		return outputTexts;
+	public List<String> getMessages() {
+		return messages;
 	}
+
 }

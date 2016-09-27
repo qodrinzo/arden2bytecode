@@ -8,15 +8,7 @@ import static org.junit.Assume.assumeTrue;
 
 import org.junit.Rule;
 
-import arden.tests.specification.testcompiler.ArdenCodeBuilder;
-import arden.tests.specification.testcompiler.CompatibilityRule;
 import arden.tests.specification.testcompiler.CompatibilityRule.Compatibility;
-import arden.tests.specification.testcompiler.TestCompiler;
-import arden.tests.specification.testcompiler.TestCompilerCompiletimeException;
-import arden.tests.specification.testcompiler.TestCompilerException;
-import arden.tests.specification.testcompiler.TestCompilerMappings;
-import arden.tests.specification.testcompiler.TestCompilerResult;
-import arden.tests.specification.testcompiler.TestCompilerResult.TestCompilerOutputText;
 
 /**
  * Base test class which all tests extend. Adds useful asserts, annotations and shared access
@@ -153,14 +145,14 @@ public abstract class SpecificationTest {
 	}
 	
 	protected void assertWrites(String code, String expected) throws TestCompilerException {
-		if(!getSettings().isRuntimeSupported) {
+		if (!getSettings().isRuntimeSupported) {
 			assertValid(code);
 			return;
 		}
-		
+
 		TestCompilerResult result = getCompiler().compileAndRun(code);
-		TestCompilerOutputText outputText = result.outputTexts.get(0);
-		assertEquals(expected, outputText.text);
+		String message = result.messages.get(0);
+		assertEquals(expected, message);
 	}
 	
 	protected void assertValidStatement(String statement) throws TestCompilerException {
