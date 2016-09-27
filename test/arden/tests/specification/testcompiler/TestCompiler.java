@@ -30,7 +30,7 @@ public interface TestCompiler {
 	 * Compile the given code
 	 * 
 	 * @param code
-	 *            Arden Syntax code, which may contain multiple mlms.
+	 *            Arden Syntax code, which may contain multiple MLMs.
 	 * @throws TestCompilerCompiletimeException
 	 *             e.g. on a a lexer, parser or validation error
 	 */
@@ -40,12 +40,59 @@ public interface TestCompiler {
 	 * Compile and run the given code
 	 * 
 	 * @param code
-	 *            Arden Syntax code, which may contain multiple mlms. In that
+	 *            Arden Syntax code, which may contain multiple MLMs. In that
 	 *            case the first mlm is run.
 	 * @return {@link TestCompilerResult}
 	 * @throws TestCompilerException
+	 *             e.g. a {@link TestCompilerRuntimeException} on a runtime
+	 *             error
 	 * @see TestCompilerResult
 	 */
 	public TestCompilerResult compileAndRun(String code) throws TestCompilerException;
 
+	/**
+	 * Compile one or multiple MLMs and call an event that triggers them. Then
+	 * collect a certain number of {@link TestCompilerDelayedMessage#message
+	 * messages} and their {@link TestCompilerDelayedMessage#delayMillis delay},
+	 * and return them as a list of {@link TestCompilerDelayedMessage}s. <br>
+	 * Used to test delayed/cyclic triggers and delayed calls.
+	 *
+	 * <p>
+	 * Example calculation:
+	 * 
+	 * <pre>
+	 * engine.setMlms(compiler.compile(code));
+	 * long startTime = System.currentTimeMillis();
+	 * engine.callEvent(eventMapping);
+	 * while (messages.size() < messagesToCollect) {
+	 * 	// blocks until a message is received
+	 * 	String message = engine.getNextMessage();
+	 * 	long delay = System.currentTimeMillis() - startTime;
+	 * 	messages.add(new TestCompilerDelayedMessage(delay, message));
+	 * }
+	 * engine.shutdown();
+	 * </pre>
+	 * </p>
+	 * 
+	 * <p>
+	 * This method may block the execution of the current test until a result is
+	 * available.<br>
+	 * The long running tests that use this method can be skipped via the
+	 * {@link TestCompilerSettings#runDelayedTests} setting.
+	 * </p>
+	 * 
+	 * @param code
+	 *            Arden Syntax code, which may contain multiple MLMs. All MLMs
+	 *            should wait for events.
+	 * @param eventMapping
+	 *            The mapping for an event, that must be called.
+	 * @param messagesToCollect
+	 *            The number of messages that should be collected and returned.
+	 * @return The {@link TestCompilerDelayedMessage messages} that were
+	 *         collected with their respective delay.
+	 * @throws TestCompilerException
+	 * @see {@link TestCompilerDelayedMessage}
+	 */
+	public TestCompilerDelayedMessage[] compileAndRunForEvent(String code, String eventMapping, int messagesToCollect)
+			throws TestCompilerException;
 }

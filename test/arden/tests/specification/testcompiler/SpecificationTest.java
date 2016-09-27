@@ -43,6 +43,13 @@ public abstract class SpecificationTest {
 		public void compile(String code) throws TestCompilerCompiletimeException {
 			compiler.compile(code);
 		}
+		@Override
+		public TestCompilerDelayedMessage[] compileAndRunForEvent(String code, String eventMapping,
+				int messagesToCollect) throws TestCompilerException {
+			assumeTrue("Compiler doesn't support runtime tests", getSettings().isRuntimeSupported);
+			assumeTrue("Compiler doesn't support event tests", getSettings().runDelayTests);
+			return compiler.compileAndRunForEvent(code, eventMapping, messagesToCollect);
+		}
 	};
 	
 	protected TestCompilerSettings getSettings() {

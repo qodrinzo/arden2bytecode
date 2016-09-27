@@ -2,14 +2,19 @@ package arden.tests.specification.testcompiler.impl;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import arden.compiler.CompiledMlm;
 import arden.compiler.CompilerException;
+import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenValue;
 import arden.tests.specification.testcompiler.ArdenVersion;
 import arden.tests.specification.testcompiler.TestCompiler;
 import arden.tests.specification.testcompiler.TestCompilerCompiletimeException;
+import arden.tests.specification.testcompiler.TestCompilerDelayedMessage;
 import arden.tests.specification.testcompiler.TestCompilerException;
 import arden.tests.specification.testcompiler.TestCompilerMappings;
 import arden.tests.specification.testcompiler.TestCompilerResult;
@@ -20,9 +25,13 @@ public class TestCompilerImpl implements TestCompiler {
 
 	private arden.compiler.Compiler compiler = new arden.compiler.Compiler();
 
-	private TestCompilerMappings mappings = new TestCompilerMappings(TestContext.INTERFACE_MAPPING,
-			TestContext.EVENT_MAPPING, TestContext.MESSAGE_MAPPING, TestContext.DESTINATION_MAPPING,
-			TestContext.READ_MAPPING, TestContext.READ_MULTIPLE_MAPPING);
+	private TestCompilerMappings mappings = new TestCompilerMappings(
+			TestContext.INTERFACE_MAPPING,
+			TestContext.EVENT_MAPPING,
+			TestContext.MESSAGE_MAPPING,
+			TestContext.DESTINATION_MAPPING,
+			TestContext.READ_MAPPING,
+			TestContext.READ_MULTIPLE_MAPPING);
 
 	private TestCompilerSettings settings = new TestCompilerSettings(
 			ArdenVersion.V2_5, ArdenVersion.V1,
@@ -60,12 +69,12 @@ public class TestCompilerImpl implements TestCompiler {
 		} catch (IOException e) {
 			throw new TestCompilerCompiletimeException(e);
 		}
-	
+
 		// run and save return values
 		CompiledMlm firstMlm = compiledMlms.get(0);
 		TestContext context = new TestContext(compiledMlms, firstMlm.getMaintenance().getInstitution());
 		TestCompilerResult result = new TestCompilerResult();
-	
+
 		ArdenValue[] returnValues;
 		try {
 			returnValues = firstMlm.run(context, null);
@@ -81,8 +90,42 @@ public class TestCompilerImpl implements TestCompiler {
 			}
 		}
 		result.messages.addAll(context.getMessages());
-	
+
 		return result;
+	}
+
+	@Override
+	public TestCompilerDelayedMessage[] compileAndRunForEvent(String code, String eventMapping, int messagesToCollect)
+			throws TestCompilerException {
+		// compile
+		List<CompiledMlm> compiledMlms = new ArrayList<>();
+		try {
+			compiledMlms = compiler.compile(new StringReader(code));
+		} catch (CompilerException e) {
+			throw new TestCompilerCompiletimeException(e);
+		} catch (IOException e) {
+			throw new TestCompilerCompiletimeException(e);
+		}
+
+		// create constant time for deterministic tests
+		Calendar calendar = new GregorianCalendar();
+		calendar.set(2010, 1, 2, 3, 4, 5);
+		ArdenEvent event = new ArdenEvent(eventMapping, calendar.getTimeInMillis());
+
+		// collect messages
+		CompiledMlm firstMlm = compiledMlms.get(0);
+		TestEngine engine = new TestEngine(compiledMlms, firstMlm.getMaintenance().getInstitution());
+		List<TestCompilerDelayedMessage> messages = new ArrayList<>();
+		try {
+			engine.callEvent(event);
+			while (messages.size() < messagesToCollect) {
+				messages.add(engine.getNextDelayedMessage());
+			}
+		} catch (Exception e) {
+			throw new TestCompilerRuntimeException(e);
+		}
+
+		return messages.toArray(new TestCompilerDelayedMessage[messages.size()]);
 	}
 
 }
