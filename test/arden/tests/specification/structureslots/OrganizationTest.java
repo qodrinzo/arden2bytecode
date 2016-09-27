@@ -2,7 +2,6 @@ package arden.tests.specification.structureslots;
 
 import org.junit.Test;
 
-import arden.tests.specification.testcompiler.ArdenCodeBuilder;
 import arden.tests.specification.testcompiler.SpecificationTest;
 
 public class OrganizationTest extends SpecificationTest {
@@ -27,13 +26,13 @@ public class OrganizationTest extends SpecificationTest {
 	@Test
 	public void testVariables() throws Exception {
 		// null if no value assigned
-		String useBeforeAssign = new ArdenCodeBuilder()
+		String useBeforeAssign = createCodeBuilder()
 				.addData("x := x;")
 				.addAction("RETURN x;")
 				.toString();
 		assertReturns(useBeforeAssign, "NULL");
 
-		String uninitialized = new ArdenCodeBuilder()
+		String uninitialized = createCodeBuilder()
 				.addData("IF FALSE THEN x := 0;")
 				.addData("ENDIF;")
 				.addAction("RETURN x;")
@@ -44,21 +43,21 @@ public class OrganizationTest extends SpecificationTest {
 	@Test
 	public void testScope() throws Exception {
 		// entire mlm
-		String slotScope = new ArdenCodeBuilder()
+		String slotScope = createCodeBuilder()
 				.addData("x := 5;")
 				.addAction("RETURN x")
 				.toString();
 		assertReturns(slotScope, "5");
 		
 		// not other mlms
-		String otherMlm = new ArdenCodeBuilder()
+		String otherMlm = createCodeBuilder()
 				.replaceSlotContent("mlmname:", "other_mlm")
 				.addData("a := 1;")
 				.addData("c := 2;")
 				.addAction("a := 3;")
 				.addAction("RETURN a;")
 				.toString();
-		String scope = new ArdenCodeBuilder()
+		String scope = createCodeBuilder()
 				.addMlm(otherMlm)
 				.addData("a := 4;")
 				.addAction("b := 5;")

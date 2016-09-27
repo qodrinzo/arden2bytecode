@@ -2,22 +2,25 @@ package arden.tests.specification.operators;
 
 import org.junit.Test;
 
-import arden.tests.specification.testcompiler.ArdenCodeBuilder;
 import arden.tests.specification.testcompiler.SpecificationTest;
 
 public class TransformationOperatorsTest extends SpecificationTest {
 	
-	private static final String DATA = new ArdenCodeBuilder()
-			.addData("w := 4; TIME w := 1995-01-01T00:00:00;")
-			.addData("v := 5; TIME v := 2000-01-01T00:00:00;")
-			.addData("x := 5; TIME x := 1990-01-01T00:00:00;")
-			.addData("y := 3; TIME y := TIME x;")
-			.addData("z := 2; TIME z := 1990-01-03T00:00:00;")
-			.addData("mylist := (w,v,z);")
-			.toString();
+	private String createData() {
+		return createCodeBuilder()
+				.addData("w := 4; TIME w := 1995-01-01T00:00:00;")
+				.addData("v := 5; TIME v := 2000-01-01T00:00:00;")
+				.addData("x := 5; TIME x := 1990-01-01T00:00:00;")
+				.addData("y := 3; TIME y := TIME x;")
+				.addData("z := 2; TIME z := 1990-01-03T00:00:00;")
+				.addData("mylist := (w,v,z);")
+				.toString();
+	}
 	
 	@Test
 	public void testMinimumMaximum() throws Exception {
+		String data = createData();
+
 		assertEvaluatesTo("MINIMUM 2 FROM (11,14,13,12)","(11,12)");
 		assertEvaluatesTo("MINIMUM 2 FROM (12,14,13,11)","(12,11)");
 		assertEvaluatesTo("MINIMUM 2 FROM 3","(,3)");
@@ -28,7 +31,7 @@ public class TransformationOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("MIN 9 FROM (3,2,1)","(3,2,1)");
 		assertEvaluatesTo("MIN \"x\" FROM (2,3)","NULL");
 		assertEvaluatesTo("MIN (-3) FROM (2,3)","NULL");
-		assertEvaluatesToWithData(DATA, "TIME FIRST MIN 1 FROM (x,y,z)","1990-01-03T00:00:00");
+		assertEvaluatesToWithData(data, "TIME FIRST MIN 1 FROM (x,y,z)","1990-01-03T00:00:00");
 		assertEvaluatesTo("MAXIMUM 2 FROM (11,14,13,12)","(14,13)");
 		assertEvaluatesTo("MAXIMUM 2 FROM (11,13,14,12)","(13,14)");
 		assertEvaluatesTo("MAXIMUM 2 FROM 3","(,3)");
@@ -38,10 +41,10 @@ public class TransformationOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("MAX 3 FROM (1,5,2,4,1,4)","(5,4,4)");
 		
 		// latest of elements with primary time on tie
-		assertEvaluatesToWithData(DATA, "TIME FIRST MAX 1 FROM (x,v,5)", "2000-01-01T00:00:00");
-		assertEvaluatesToWithData(DATA, "TIME FIRST MAX 1 FROM (v,x,5)", "2000-01-01T00:00:00");
-		assertEvaluatesToWithData(DATA, "TIME FIRST MIN 1 FROM (x,v,5)", "2000-01-01T00:00:00");
-		assertEvaluatesToWithData(DATA, "TIME FIRST MIN 1 FROM (v,x,5)", "2000-01-01T00:00:00");
+		assertEvaluatesToWithData(data, "TIME FIRST MAX 1 FROM (x,v,5)", "2000-01-01T00:00:00");
+		assertEvaluatesToWithData(data, "TIME FIRST MAX 1 FROM (v,x,5)", "2000-01-01T00:00:00");
+		assertEvaluatesToWithData(data, "TIME FIRST MIN 1 FROM (x,v,5)", "2000-01-01T00:00:00");
+		assertEvaluatesToWithData(data, "TIME FIRST MIN 1 FROM (v,x,5)", "2000-01-01T00:00:00");
 	}
 	
 	@Test
@@ -71,8 +74,9 @@ public class TransformationOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("DECREASE (1 day, 2 days)","(,-86400 seconds)");
 		
 		// primary time of second item is kept
-		assertEvaluatesToWithData(DATA, "TIME FIRST INCREASE (x,z,v)", "1990-01-03T00:00:00");
-		assertEvaluatesToWithData(DATA, "TIME FIRST INCREASE (x,v,z)", "2000-01-01T00:00:00");
+		String data = createData();
+		assertEvaluatesToWithData(data, "TIME FIRST INCREASE (x,z,v)", "1990-01-03T00:00:00");
+		assertEvaluatesToWithData(data, "TIME FIRST INCREASE (x,v,z)", "2000-01-01T00:00:00");
 	}
 	
 	@Test
@@ -87,22 +91,24 @@ public class TransformationOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("PERCENT DECREASE (1 day, 2 days)","(,-100)");
 		
 		// primary time of second item is kept
-		assertEvaluatesToWithData(DATA, "TIME FIRST PERCENT INCREASE (z,v)", "2000-01-01T00:00:00");
-		assertEvaluatesToWithData(DATA, "TIME FIRST PERCENT DECREASE (v,z)", "1990-01-03T00:00:00");
+		String data = createData();
+		assertEvaluatesToWithData(data, "TIME FIRST PERCENT INCREASE (z,v)", "2000-01-01T00:00:00");
+		assertEvaluatesToWithData(data, "TIME FIRST PERCENT DECREASE (v,z)", "1990-01-03T00:00:00");
 	}
 	
 	@Test
 	public void testEarliestLatest() throws Exception {
+		String data = createData();
 		assertEvaluatesTo("EARLIEST 2 FROM ()", "()");
-		assertEvaluatesToWithData(DATA, "EARLIEST 2 FROM (w,v,z)", "(4,2)");
-		assertEvaluatesToWithData(DATA, "EARLIEST (-2) FROM (w,v,z)", "NULL");
-		assertEvaluatesToWithData(DATA, "EARLIEST 99 FROM (w,v,z)", "(4,5,2)");
-		assertEvaluatesToWithData(DATA, "EARLIEST 2 FROM (w,v,z,5)", "NULL");
-		assertEvaluatesToWithData(DATA, "EARLIEST 1 FROM (y,x)", "(,3)");
-		assertEvaluatesToWithData(DATA, "EARLIEST 1 FROM (x,y)", "(,5)");
+		assertEvaluatesToWithData(data, "EARLIEST 2 FROM (w,v,z)", "(4,2)");
+		assertEvaluatesToWithData(data, "EARLIEST (-2) FROM (w,v,z)", "NULL");
+		assertEvaluatesToWithData(data, "EARLIEST 99 FROM (w,v,z)", "(4,5,2)");
+		assertEvaluatesToWithData(data, "EARLIEST 2 FROM (w,v,z,5)", "NULL");
+		assertEvaluatesToWithData(data, "EARLIEST 1 FROM (y,x)", "(,3)");
+		assertEvaluatesToWithData(data, "EARLIEST 1 FROM (x,y)", "(,5)");
 		assertEvaluatesTo("LATEST 2 FROM ()", "()");
-		assertEvaluatesToWithData(DATA, "LATEST 2 FROM (v,w,z)", "(5,4)");
-		assertEvaluatesToWithData(DATA, "LATEST 2 FROM (w,v,z)", "(4,5)");
+		assertEvaluatesToWithData(data, "LATEST 2 FROM (v,w,z)", "(5,4)");
+		assertEvaluatesToWithData(data, "LATEST 2 FROM (w,v,z)", "(4,5)");
 	}
 	
 	@Test
@@ -119,11 +125,12 @@ public class TransformationOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("INDEX MAXIMUM 0 FROM (2,3)","()");
 		
 		// latest of elements with primary time on tie
-		assertEvaluatesToWithData(DATA, "FIRST INDEX MAXIMUM 1 FROM (v,x)", "1");
-		assertEvaluatesToWithData(DATA, "FIRST INDEX MAXIMUM 1 FROM (x,v)", "2");
+		String data = createData();
+		assertEvaluatesToWithData(data, "FIRST INDEX MAXIMUM 1 FROM (v,x)", "1");
+		assertEvaluatesToWithData(data, "FIRST INDEX MAXIMUM 1 FROM (x,v)", "2");
 		
 		// primary time lost
-		assertEvaluatesToWithData(DATA, "TIME FIRST INDEX MAXIMUM 2 FROM (x,y,z)", "NULL");
+		assertEvaluatesToWithData(data, "TIME FIRST INDEX MAXIMUM 2 FROM (x,y,z)", "NULL");
 	}
 	
 	@Test

@@ -11,7 +11,7 @@ public class ActionSlotTest extends SpecificationTest {
 	
 	@Test
 	public void testWriteStatement() throws Exception {
-		String data = new ArdenCodeBuilder()
+		String data = createCodeBuilder()
 				.addData("text := \"test message\";")
 				.addData("msg := MESSAGE {"+getMappings().getMessageMapping()+"};")
 				.addData("dest := DESTINATION {"+getMappings().getDestinationMapping()+"};")
@@ -33,7 +33,7 @@ public class ActionSlotTest extends SpecificationTest {
 	}
 	
 	private void assertStatementReturns(String statement, String expected) throws TestCompilerException {
-		String code = new ArdenCodeBuilder().addAction(statement).toString();
+		String code = createCodeBuilder().addAction(statement).toString();
 		assertReturns(code, expected);
 	}
 	
@@ -43,21 +43,21 @@ public class ActionSlotTest extends SpecificationTest {
 		assertStatementReturns("RETURN (5, 3);","(5,3)");
 		assertStatementReturns("RETURN 1; RETURN 2;", "1");
 		
-		String multiReturn = new ArdenCodeBuilder().addAction("RETURN 5, (\"a\", \"b\");").toString();
+		String multiReturn = createCodeBuilder().addAction("RETURN 5, (\"a\", \"b\");").toString();
 		assertReturns(multiReturn, "5", "(\"a\",\"b\")");
 		
-		String empty = new ArdenCodeBuilder().toString();
+		String empty = createCodeBuilder().toString();
 		assertNoReturn(empty);
 	}
 
 
 	@Test
 	public void testCallStatement() throws Exception {
-		String othermlm = new ArdenCodeBuilder()
+		String othermlm = createCodeBuilder()
 				.replaceSlotContent("mlmname:", "other_mlm")
 				.addAction("WRITE \"test message\";")
 				.toString();
-		String data = new ArdenCodeBuilder()
+		String data = createCodeBuilder()
 				.addMlm(othermlm)
 				.addData("othermlm := MLM 'other_mlm';")
 				.toString();

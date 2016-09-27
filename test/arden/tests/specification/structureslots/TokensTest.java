@@ -4,7 +4,6 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import arden.tests.specification.testcompiler.ArdenCodeBuilder;
 import arden.tests.specification.testcompiler.SpecificationTest;
 import arden.tests.specification.testcompiler.TestCompilerCompiletimeException;
 import arden.tests.specification.testcompiler.TestCompilerException;
@@ -13,7 +12,7 @@ public class TokensTest extends SpecificationTest {
 	
 	public void assertInvalidIdentifier(String reservedWord) {
 		try {
-			String invalidIdentifier = new ArdenCodeBuilder().addAction("let" + reservedWord + " be 5;").toString();
+			String invalidIdentifier = createCodeBuilder().addAction("let" + reservedWord + " be 5;").toString();
 			getCompiler().compile(invalidIdentifier);
 			fail("Expected an " + TestCompilerException.class.getSimpleName() + " to be thrown for reserved word: \"" + reservedWord+ "\"");
 		} catch(TestCompilerCompiletimeException e) {
@@ -74,7 +73,7 @@ public class TokensTest extends SpecificationTest {
 		// invalid length
 		assertInvalidStatement("Lorem_ipsum_dolor_sit_amet_consectetur_adipiscing_elit_Quisque_libero_felis_bibendum_at_ullamcorper_ac_dictum_eget_eros := 5;");
 		
-		String case_ = new ArdenCodeBuilder()
+		String case_ = createCodeBuilder()
 				.addData("AbCd := 5;")
 				.addAction("abcd := ABCD + 5;")
 				.addAction(" RETURN abCD;")
@@ -144,14 +143,14 @@ public class TokensTest extends SpecificationTest {
 	
 	@Test
 	public void testTermConstant() throws Exception {
-		String term = new ArdenCodeBuilder().addData("x := MLM 'other_mlm';").toString();
+		String term = createCodeBuilder().addData("x := MLM 'other_mlm';").toString();
 		assertValid(term);
 	}
 
 	@Test
 	public void testMappingClauses() throws Exception {
 		// READ only in data slot
-		String mapping = new ArdenCodeBuilder().addData("x := READ {Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque libero felis, bibendum at ullamcorper ac, dictum eget eros.};").toString();
+		String mapping = createCodeBuilder().addData("x := READ {Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque libero felis, bibendum at ullamcorper ac, dictum eget eros.};").toString();
 		assertValid(mapping);
 	}
 

@@ -15,7 +15,7 @@ public class TimeFunctionOperatorsTest extends SpecificationTest {
 	
 	@Test
 	public void testTime() throws Exception {
-		String data = new ArdenCodeBuilder()
+		String data = createCodeBuilder()
 				.addData("x := 1; TIME x := 1990-03-15T15:00:00;")
 				.addData("y := 2; TIME y := 1990-03-16T15:00:00;")
 				.addData("z := 3; TIME z := 1990-03-18T21:00:00;")
@@ -29,7 +29,7 @@ public class TimeFunctionOperatorsTest extends SpecificationTest {
 	
 	@Test
 	public void testTimeObjects() throws Exception {
-		String data = new ArdenCodeBuilder()
+		String data = createCodeBuilder()
 				.addData("obj := OBJECT [attr1, attr2];")
 				.addData("x := 1; TIME x := 2004-01-16T00:00:00;")
 				.addData("y := 2.0; TIME y := 2004-01-17T00:00:00;")

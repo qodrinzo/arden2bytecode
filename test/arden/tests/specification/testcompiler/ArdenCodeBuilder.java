@@ -6,10 +6,12 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
- * Builder for generating arden code from a template.
+ * Builder for generating Arden code from a template.
  */
 public class ArdenCodeBuilder {
-	private static String template = readTemplate("Template.mlm");
+	private static final String DEFAULT_TEMPLATE = readTemplate("Template.mlm");
+	private static final String V1_TEMPLATE = readTemplate("Template_V1.mlm");
+	private static final String RESOURCES_TEMPLATE = readTemplate("Template_Resources.mlm");
 	private StringBuilder resultBuilder;
 
 	private static String readTemplate(String filename) {
@@ -35,10 +37,37 @@ public class ArdenCodeBuilder {
 		return stringBuilder.toString();
 	}
 
-	public ArdenCodeBuilder() {
-		resultBuilder = new StringBuilder(template);
+	/**
+	 * Initialize the code builder with a template for the given version and set
+	 * the "arden:" slot accordingly. <br>
+	 * For version 1 the "filename:" slot is used instead of the "mlmname:" slot
+	 * and the "arden:" slot is removed. <br>
+	 * For versions greater or equal to version 2.9 the resources category is
+	 * used in the builder's template, as it is no longer optional.
+	 * 
+	 * @param version
+	 *            The Arden Syntax version for which the template must be
+	 *            compatible.
+	 */
+	ArdenCodeBuilder(ArdenVersion version) {
+		if (version == ArdenVersion.V1) {
+			resultBuilder = new StringBuilder(V1_TEMPLATE);
+		} else if (version.ordinal() >= ArdenVersion.V2_6.ordinal()) {
+			resultBuilder = new StringBuilder(RESOURCES_TEMPLATE);
+			setArdenVersion(version);
+		} else {
+			resultBuilder = new StringBuilder(DEFAULT_TEMPLATE);
+			setArdenVersion(version);
+		}
+
 	}
-	
+
+	/**
+	 * Initialize the code builder with a template or the output from another
+	 * code builder.
+	 * 
+	 * @param template complete code for an MLM
+	 */
 	public ArdenCodeBuilder(String template) {
 		resultBuilder = new StringBuilder(template);
 	}
@@ -133,7 +162,14 @@ public class ArdenCodeBuilder {
 		resultBuilder.append(mlmCode);
 		return this;
 	}
-	
+
+	public ArdenCodeBuilder setArdenVersion(ArdenVersion version) {
+		if (version == ArdenVersion.V1) {
+			return removeSlot("arden:");
+		}
+		return replaceSlotContent("arden:", version.toString());
+	}
+
 	@Override
 	public String toString() {
 		return resultBuilder.toString();

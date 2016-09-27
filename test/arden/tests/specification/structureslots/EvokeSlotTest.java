@@ -6,7 +6,7 @@ import arden.tests.specification.testcompiler.ArdenCodeBuilder;
 import arden.tests.specification.testcompiler.SpecificationTest;
 
 public class EvokeSlotTest extends SpecificationTest {
-	private final String event_data = new ArdenCodeBuilder()
+	private final String event_data = createCodeBuilder()
 			.addData("test_event := EVENT {" + getMappings().getEventMapping() + "};")
 			.toString();
 
@@ -30,7 +30,7 @@ public class EvokeSlotTest extends SpecificationTest {
 
 	@Test
 	public void testSimpleTriggerStatement() throws Exception {
-		String any = new ArdenCodeBuilder()
+		String any = createCodeBuilder()
 				.addData("test_event1 := EVENT {" + getMappings().getEventMapping() + "};")
 				.addData("test_event2 := EVENT {" + getMappings().getEventMapping() + "};")
 				.addData("test_event3 := EVENT {" + getMappings().getEventMapping() + "};")
@@ -38,17 +38,17 @@ public class EvokeSlotTest extends SpecificationTest {
 				.toString();
 		assertValid(any);
 		
-		String invalidEvent = new ArdenCodeBuilder()
+		String invalidEvent = createCodeBuilder()
 				.addData("a := 5;")
 				.addEvoke("a;")
 				.toString();
 		assertInvalid(invalidEvent);
 		
-		String othermlm = new ArdenCodeBuilder()
+		String othermlm = createCodeBuilder()
 				.replaceSlotContent("mlmname:", "other_mlm")
 				.addEvoke("CALL;")
 				.toString();
-		String call = new ArdenCodeBuilder()
+		String call = createCodeBuilder()
 				.addMlm(othermlm)
 				.addData("othermlm := MLM 'other_mlm';")
 				.addAction("CALL othermlm;")

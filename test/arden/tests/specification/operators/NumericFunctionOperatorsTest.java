@@ -2,7 +2,6 @@ package arden.tests.specification.operators;
 
 import org.junit.Test;
 
-import arden.tests.specification.testcompiler.ArdenCodeBuilder;
 import arden.tests.specification.testcompiler.SpecificationTest;
 
 public class NumericFunctionOperatorsTest extends SpecificationTest {
@@ -66,7 +65,9 @@ public class NumericFunctionOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("() AS NUMBER","()");
 		
 		// primary time is preserved
-		String data = new ArdenCodeBuilder().addData("x := \"5\"; TIME x := 1997-10-31T00:00:00;").toString();
+		String data = createCodeBuilder()
+				.addData("x := \"5\"; TIME x := 1997-10-31T00:00:00;")
+				.toString();
 		assertEvaluatesToWithData(data, "TIME (x AS NUMBER)", "1997-10-31T00:00:00");
 	}
 	

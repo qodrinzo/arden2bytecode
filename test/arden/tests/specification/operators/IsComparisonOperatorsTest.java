@@ -2,7 +2,6 @@ package arden.tests.specification.operators;
 
 import org.junit.Test;
 
-import arden.tests.specification.testcompiler.ArdenCodeBuilder;
 import arden.tests.specification.testcompiler.SpecificationTest;
 
 public class IsComparisonOperatorsTest extends SpecificationTest {
@@ -40,7 +39,7 @@ public class IsComparisonOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("2 IS NOT IN (4,5,6)", "TRUE");
 		assertEvaluatesTo("2 IN (4,5,6)", "FALSE");
 		
-		String data = new ArdenCodeBuilder()
+		String data = createCodeBuilder()
 				.addData("x := 5; TIME x := 1990-01-01T00:00:00;")
 				.addData("y := 3; TIME y := 1990-01-02T00:00:00;")
 				.addData("z := 2; TIME z := 1990-01-03T00:00:00;")
@@ -72,7 +71,7 @@ public class IsComparisonOperatorsTest extends SpecificationTest {
 
 	@Test
 	public void testObjectCheck() throws Exception {
-		String pixelObject = new ArdenCodeBuilder()
+		String pixelObject = createCodeBuilder()
 				.addData("Pixel := OBJECT [x, y];")
 				.addData("p := new Pixel;")
 				.toString();

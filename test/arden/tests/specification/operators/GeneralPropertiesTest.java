@@ -52,7 +52,7 @@ public class GeneralPropertiesTest extends SpecificationTest {
 
 	@Test
 	public void testPrimaryTimeHandling() throws Exception {
-		String data = new ArdenCodeBuilder()
+		String data = createCodeBuilder()
 				.addData("w := 1;")
 				.addData("x := 5; TIME x := 1990-01-01T00:00:00;")
 				.addData("y := 3; TIME y := TIME x;")

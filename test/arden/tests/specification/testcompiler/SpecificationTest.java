@@ -10,6 +10,7 @@ import org.junit.Rule;
 
 import arden.tests.specification.testcompiler.ArdenCodeBuilder;
 import arden.tests.specification.testcompiler.CompatibilityRule;
+import arden.tests.specification.testcompiler.CompatibilityRule.Compatibility;
 import arden.tests.specification.testcompiler.TestCompiler;
 import arden.tests.specification.testcompiler.TestCompilerCompiletimeException;
 import arden.tests.specification.testcompiler.TestCompilerException;
@@ -63,10 +64,35 @@ public abstract class SpecificationTest {
 	protected TestCompilerMappings getMappings() {
 		return runtimeCheckedCompiler.getMappings();
 	}
-	
-	// Used for backward compatibility tests with the <code>@Compatibility</code> annotation.
+
+	/**
+	 * Initializes a code builder with a
+	 * {@link ArdenCodeBuilder#ArdenCodeBuilder(ArdenVersion) template}
+	 * compatible to the highest possible version. <br>
+	 * The highest possible version is either the compiler's
+	 * {@link TestCompilerSettings#targetVersion target version} or the tests
+	 * {@link Compatibility#max() max compatible version}, whichever is lower.
+	 * 
+	 * @return the {@link ArdenCodeBuilder}
+	 */
+	protected ArdenCodeBuilder createCodeBuilder() {
+		ArdenVersion maxPossibleVersion;
+		if (settings.targetVersion.ordinal() <= compatibilityRule.getCurrentTestMaxVersion().ordinal()) {
+			maxPossibleVersion = settings.targetVersion;
+		} else {
+			maxPossibleVersion = compatibilityRule.getCurrentTestMaxVersion();
+		}
+
+		return new ArdenCodeBuilder(maxPossibleVersion);
+	}
+
+	protected ArdenCodeBuilder createEmptyLogicSlotCodeBuilder() {
+		return createCodeBuilder().clearSlotContent("logic:");
+	}
+
+	// Used for compatibility tests with the <code>@Compatibility</code> annotation.
 	@Rule
-	public CompatibilityRule comaptibilityRule = new CompatibilityRule(getSettings());
+	public CompatibilityRule compatibilityRule = new CompatibilityRule(getSettings());
 	
 	
 	/**
@@ -82,7 +108,7 @@ public abstract class SpecificationTest {
 		if(dataCode != null) {
 			builder = new ArdenCodeBuilder(dataCode);
 		} else {
-			builder = new ArdenCodeBuilder();
+			builder = createCodeBuilder();
 		}
 		String code = builder.addExpression(expression).toString();
 		assertReturns(code, expected);
@@ -138,17 +164,17 @@ public abstract class SpecificationTest {
 	}
 	
 	protected void assertValidStatement(String statement) throws TestCompilerException {
-		String code = new ArdenCodeBuilder().addAction(statement).toString();
+		String code = createCodeBuilder().addAction(statement).toString();
 		assertValid(code);
 	}
 	
 	protected void assertInvalidStatement(String statement) throws TestCompilerException {
-		String code = new ArdenCodeBuilder().addAction(statement).toString();
+		String code = createCodeBuilder().addAction(statement).toString();
 		assertInvalid(code);
 	}
 	
 	protected void assertInvalidExpression(String expression) throws TestCompilerException {
-		String code = new ArdenCodeBuilder().addExpression(expression).toString();
+		String code = createCodeBuilder().addExpression(expression).toString();
 		assertInvalid(code);
 	}
 	

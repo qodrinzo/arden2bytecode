@@ -2,7 +2,6 @@ package arden.tests.specification;
 
 import org.junit.Test;
 
-import arden.tests.specification.testcompiler.ArdenCodeBuilder;
 import arden.tests.specification.testcompiler.SpecificationTest;
 
 public class DataTypesTest extends SpecificationTest {
@@ -25,14 +24,14 @@ public class DataTypesTest extends SpecificationTest {
 		// time before 1800-01-01
 		//assertInvalidStatement("x := 1500-01-01T00:00:00;");
 		
-		String constantNow = new ArdenCodeBuilder()
+		String constantNow = createCodeBuilder()
 				.addData("n := NOW;")
 				.addAction(DELAY)
 				.addAction("RETURN n = NOW;")
 				.toString();
 		assertReturns(constantNow, "TRUE");
 		
-		String currentTime = new ArdenCodeBuilder()
+		String currentTime = createCodeBuilder()
 				.addData("c := CURRENTTIME;")
 				.addAction(DELAY)
 				.addAction("RETURN c < CURRENTTIME;")

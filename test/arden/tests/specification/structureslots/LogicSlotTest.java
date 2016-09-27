@@ -8,22 +8,28 @@ import arden.tests.specification.testcompiler.SpecificationTest;
 public class LogicSlotTest extends SpecificationTest {
 	// TODO error on illegal statements
 	
-	private static final String EMPTY_LOGIC_SLOT = new ArdenCodeBuilder().clearSlotContent("logic:").toString();
+	private ArdenCodeBuilder createEmptyLogicSlotCodeBuilder() {
+		return createCodeBuilder().clearSlotContent("logic:");
+	}
 
 	@Test
 	public void testAssignmentStatement() throws Exception {
-		String data = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String data = createEmptyLogicSlotCodeBuilder()
 				.addData("Pixel := OBJECT [x, y];")
 				.addData("p := new Pixel;")
 				.toString();
 		
-		String let = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT).addLogic("LET v BE 5;").toString();
+		String let = createEmptyLogicSlotCodeBuilder()
+				.addLogic("LET v BE 5;")
+				.toString();
 		assertValid(let);
 		
-		String assignNull = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT).addLogic("x := NULL;").toString();
+		String assignNull = createEmptyLogicSlotCodeBuilder()
+				.addLogic("x := NULL;")
+				.toString();
 		assertValid(assignNull);	
 		
-		String notReference = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String notReference = createEmptyLogicSlotCodeBuilder()
 				.addLogic("a := 5;")
 				.addLogic("b := a + 3;")
 				.addLogic("a := 0;")
@@ -59,35 +65,35 @@ public class LogicSlotTest extends SpecificationTest {
 	
 	@Test
 	public void testReassignment() throws Exception {
-		String object = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String object = createEmptyLogicSlotCodeBuilder()
 				.addData("Patient := OBJECT [Name, DateOfBirth, Id];")
 				.addLogic("Patient := 5;")
 				.toString();
 		assertInvalid(object);
 		
-		String event = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String event = createEmptyLogicSlotCodeBuilder()
 				.addData("e := EVENT {something happens};")
 				.addLogic("e := 5;")
 				.toString();
 		assertInvalid(event);
 		
-		String mlm = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String mlm = createEmptyLogicSlotCodeBuilder()
 				.addData("mymlm := MLM 'testmlm';")
 				.addLogic("mymlm := 3;")
 				.toString();
 		assertInvalid(mlm);
 		
-		String interface_ = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String interface_ = createEmptyLogicSlotCodeBuilder()
 				.addData("curl := INTERFACE {curl};")
 				.addLogic("curl := NULL;")
 				.toString();
 		assertInvalid(interface_);
 		
-		String otherMlm = new ArdenCodeBuilder()
+		String otherMlm = createCodeBuilder()
 				.replaceSlotContent("mlmname:", "other_mlm")
 				.addAction("RETURN 1")
 				.toString();
-		String chooseMlmOrInterface = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String chooseMlmOrInterface = createEmptyLogicSlotCodeBuilder()
 				.addMlm(otherMlm)
 				.addData("IF FALSE THEN x := MLM 'other_mlm';")
 				.addData("ELSE x := INTERFACE {"+getMappings().getInterfaceMapping()+"};")
@@ -101,7 +107,7 @@ public class LogicSlotTest extends SpecificationTest {
 
 	@Test
 	public void testIfThenStatement() throws Exception {
-		String if_ = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String if_ = createEmptyLogicSlotCodeBuilder()
 				.addLogic("IF 5 = 5 THEN a := 0;")
 				.addLogic("ENDIF;")
 				.addLogic("CONCLUDE TRUE;")
@@ -109,7 +115,7 @@ public class LogicSlotTest extends SpecificationTest {
 				.toString();
 		assertReturns(if_, "0");
 		
-		String else_ = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String else_ = createEmptyLogicSlotCodeBuilder()
 				.addAction("IF ,TRUE THEN a := 0;")
 				.addAction("ELSE a := 1;")
 				.addAction("ENDIF;")
@@ -118,7 +124,7 @@ public class LogicSlotTest extends SpecificationTest {
 				.toString();
 		assertReturns(else_, "1");
 		
-		String elseif1 = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String elseif1 = createEmptyLogicSlotCodeBuilder()
 				.addLogic("IF 5 THEN a := 0;")
 				.addLogic("ELSEIF TRUE THEN a := 1;")
 				.addLogic("ENDIF;")
@@ -127,7 +133,7 @@ public class LogicSlotTest extends SpecificationTest {
 				.toString();
 		assertReturns(elseif1, "1");
 		
-		String elseif2 = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String elseif2 = createEmptyLogicSlotCodeBuilder()
 				.addLogic("IF NULL THEN a := 0;")
 				.addLogic("ELSEIF FALSE THEN a := 1;")
 				.addLogic("ELSEIF TRUE THEN a := 3;")
@@ -141,13 +147,13 @@ public class LogicSlotTest extends SpecificationTest {
 	
 	@Test
 	public void testConcludeStatement() throws Exception {
-		String conclude = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String conclude = createEmptyLogicSlotCodeBuilder()
 				.addLogic("CONCLUDE TRUE;")
 				.addAction("RETURN TRUE;")
 				.toString();
 		assertReturns(conclude, "TRUE");
 		
-		String concludeVariable = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String concludeVariable = createEmptyLogicSlotCodeBuilder()
 				.addLogic("a := 5;")
 				.addLogic("CONCLUDE TRUE;")
 				.addLogic("a := 3;")
@@ -156,31 +162,31 @@ public class LogicSlotTest extends SpecificationTest {
 				.toString();
 		assertReturns(concludeVariable, "5");
 		
-		String noAction1 = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String noAction1 = createEmptyLogicSlotCodeBuilder()
 				.addLogic("CONCLUDE FALSE;")
 				.addAction("RETURN TRUE;")
 				.toString();
 		assertNoReturn(noAction1);
 				
-		String noAction2 = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String noAction2 = createEmptyLogicSlotCodeBuilder()
 				.clearSlotContent("logic:")
 				.addAction("RETURN TRUE;")
 				.toString();
 		assertNoReturn(noAction2);
 				
-		String noAction3 = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String noAction3 = createEmptyLogicSlotCodeBuilder()
 				.addLogic("CONCLUDE NULL;")
 				.addAction("RETURN TRUE;")
 				.toString();
 		assertNoReturn(noAction3);
 				
-		String noAction4 = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String noAction4 = createEmptyLogicSlotCodeBuilder()
 				.addLogic("CONCLUDE ,TRUE;")
 				.addAction("RETURN TRUE;")
 				.toString();
 		assertNoReturn(noAction4);
 		
-		String noAction5 = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String noAction5 = createEmptyLogicSlotCodeBuilder()
 				.addLogic("CONCLUDE FALSE;")
 				.addLogic("CONCLUDE TRUE;")
 				.addAction("RETURN TRUE;")
@@ -191,12 +197,12 @@ public class LogicSlotTest extends SpecificationTest {
 	@Test
 	public void testMlmCallStatement() throws Exception {
 		// other mlm which is called
-		String otherMlm = new ArdenCodeBuilder()
+		String otherMlm = createCodeBuilder()
 				.replaceSlotContent("mlmname:", "other_mlm")
 				.addData("(a, b) := ARGUMENT;")
 				.addAction("IF a IS PRESENT THEN RETURN a, b; ENDIF;")
 				.toString();
-		String data = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String data = createEmptyLogicSlotCodeBuilder()
 				.addMlm(otherMlm)
 				.addData("othermlm := MLM 'other_mlm';")
 				.toString();
@@ -241,7 +247,7 @@ public class LogicSlotTest extends SpecificationTest {
 	public void testEventCallStatement() throws Exception {
 		String eventAssignment = "test_event := EVENT {" + getMappings().getEventMapping() + "};";
 		
-		String mlm1 = new ArdenCodeBuilder()
+		String mlm1 = createCodeBuilder()
 				.replaceSlotContent("mlmname:", "mlm1")
 				.addData(eventAssignment)
 				.addData("(a, b) := ARGUMENT;")
@@ -249,7 +255,7 @@ public class LogicSlotTest extends SpecificationTest {
 				.addAction("RETURN a+b;")
 				.toString();
 		
-		String mlm2 = new ArdenCodeBuilder()
+		String mlm2 = createCodeBuilder()
 				.replaceSlotContent("mlmname:", "mlm2")
 				.addData(eventAssignment)
 				.addData("(a, b) := ARGUMENT;")
@@ -257,14 +263,14 @@ public class LogicSlotTest extends SpecificationTest {
 				.addAction("RETURN a*b;")
 				.toString();
 		
-		String mlm3 = new ArdenCodeBuilder()
+		String mlm3 = createCodeBuilder()
 				.replaceSlotContent("mlmname:", "mlm3")
 				.addData(eventAssignment)
 				.addEvoke("test_event;")
 				.addAction("RETURN NULL;")
 				.toString();
 		
-		String eventCall = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String eventCall = createEmptyLogicSlotCodeBuilder()
 				.addMlm(mlm1)
 				.addMlm(mlm2)
 				.addMlm(mlm3)
@@ -281,7 +287,7 @@ public class LogicSlotTest extends SpecificationTest {
 	
 	@Test
 	public void testInterfaceCallStatement() throws Exception {
-		String interfaceCall = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String interfaceCall = createEmptyLogicSlotCodeBuilder()
 				.addData("test_interface := INTERFACE {" + getMappings().getInterfaceMapping() + "};")
 				.addLogic("(x, y, z) := CALL test_interface WITH 3, 4;")
 				.addLogic("CONCLUDE TRUE;")
@@ -292,7 +298,7 @@ public class LogicSlotTest extends SpecificationTest {
 
 	@Test
 	public void testWhileLoop() throws Exception {
-		String whileLoop = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String whileLoop = createEmptyLogicSlotCodeBuilder()
 				.addData("i := 0;")
 				.addData("c := 100;")
 				.addLogic("WHILE c > 0 DO c := c-7;")
@@ -306,7 +312,7 @@ public class LogicSlotTest extends SpecificationTest {
 
 	@Test
 	public void testForLoop() throws Exception {
-		String forLoop1 = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String forLoop1 = createEmptyLogicSlotCodeBuilder()
 				.addData("fac := 1;")
 				.addLogic("FOR i IN 1 SEQTO 5 DO fac := fac*i;")
 				.addLogic("ENDDO;")
@@ -315,7 +321,7 @@ public class LogicSlotTest extends SpecificationTest {
 				.toString();
 		assertReturns(forLoop1, "120");
 		
-		String forLoop2 = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String forLoop2 = createEmptyLogicSlotCodeBuilder()
 				.addLogic("FOR i IN () DO CONCLUDE FALSE;")
 				.addLogic("ENDDO;")
 				.addLogic("CONCLUDE TRUE")
@@ -323,7 +329,7 @@ public class LogicSlotTest extends SpecificationTest {
 				.toString();
 		assertReturns(forLoop2, "1");
 		
-		String forLoop3 = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String forLoop3 = createEmptyLogicSlotCodeBuilder()
 				.addLogic("FOR i IN NULL DO CONCLUDE FALSE;")
 				.addLogic("ENDDO;")
 				.addLogic("CONCLUDE TRUE")
@@ -331,7 +337,7 @@ public class LogicSlotTest extends SpecificationTest {
 				.toString();
 		assertReturns(forLoop3, "1");
 		
-		String reassign = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String reassign = createEmptyLogicSlotCodeBuilder()
 				.addLogic("FOR i IN (1,2,3) DO i := 1;")
 				.addLogic("ENDDO;")
 				.addLogic("CONCLUDE TRUE;")
@@ -342,7 +348,7 @@ public class LogicSlotTest extends SpecificationTest {
 
 	@Test
 	public void testNewStatement() throws Exception {
-		String data = new ArdenCodeBuilder(EMPTY_LOGIC_SLOT)
+		String data = createEmptyLogicSlotCodeBuilder()
 				.addData("Patient := OBJECT [Name, DateOfBirth, Id];")
 				.toString();
 		

@@ -2,14 +2,15 @@ package arden.tests.specification.operators;
 
 import org.junit.Test;
 
-import arden.tests.specification.testcompiler.ArdenCodeBuilder;
 import arden.tests.specification.testcompiler.SpecificationTest;
 
 public class StringOperatorsTest extends SpecificationTest {
 	
-	private static final String DATA = new ArdenCodeBuilder()
-			.addData("x := \"hello world\"; TIME x := 1990-01-01T00:00:00;")
-			.toString();
+	private String createData() {
+		return createCodeBuilder()
+				.addData("x := \"hello world\"; TIME x := 1990-01-01T00:00:00;")
+				.toString();
+	}
 
 	@Test
 	public void testConcatenation() throws Exception {
@@ -20,7 +21,7 @@ public class StringOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("3 days || \" left\"", "\"3 days left\"");
 		assertEvaluatesTo("\"on \" || 1990-03-15T13:45:01", "\"on 1990-03-15T13:45:01\"");
 		assertEvaluatesTo("\"list=\" || (1,2,3)", "\"list=(1,2,3)\"");
-		assertEvaluatesToWithData(DATA, "TIME (x || x)", "NULL");
+		assertEvaluatesToWithData(createData(), "TIME (x || x)", "NULL");
 	}
 
 	@Test
@@ -55,7 +56,7 @@ public class StringOperatorsTest extends SpecificationTest {
 	public void testString() throws Exception {
 		assertEvaluatesTo("STRING (\"a\",\"bc\")", "\"abc\"");
 		assertEvaluatesTo("STRING ()", "\"\"");
-		assertEvaluatesToWithData(DATA, "TIME STRING x", "NULL");
+		assertEvaluatesToWithData(createData(), "TIME STRING x", "NULL");
 		assertEvaluatesTo("STRING ()", "\"\"");
 		assertEvaluatesTo("STRING REVERSE EXTRACT CHARACTERS \"abcde\"", "\"edcba\"");
 	}
@@ -67,7 +68,7 @@ public class StringOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("\"abnormal values\" MATCHES PATTERN \"%value_\"", "TRUE");
 		assertEvaluatesTo("(\"stunned myocardium\", \"myocardial infarction\") MATCHES PATTERN \"%myocardium\"", "(TRUE,FALSE)");
 		assertEvaluatesTo("\"5%\" MATCHES PATTERN \"_\\%\"", "TRUE");
-		assertEvaluatesToWithData(DATA, "TIME (x MATCHES PATTERN \"%hello%\")", "NULL");
+		assertEvaluatesToWithData(createData(), "TIME (x MATCHES PATTERN \"%hello%\")", "NULL");
 	}
 
 	@Test
@@ -77,7 +78,7 @@ public class StringOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("LENGTH ()", "NULL");
 		assertEvaluatesTo("LENGTH OF NULL", "NULL");
 		assertEvaluatesTo("LENGTH OF (\"Negative\", \"Pos\", 2)", "(8,3,NULL)");
-		assertEvaluatesToWithData(DATA, "TIME LENGTH x", "NULL");
+		assertEvaluatesToWithData(createData(), "TIME LENGTH x", "NULL");
 	}
 
 	@Test
@@ -88,7 +89,7 @@ public class StringOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("UPPERCASE ()", "NULL");
 		assertEvaluatesTo("LOWERCASE 12.8", "NULL");
 		assertEvaluatesTo("UPPERCASE (\"5-Hiaa\", \"Pos\", 2)", "(\"5-HIAA\",\"POS\",NULL)");
-		assertEvaluatesToWithData(DATA, "TIME (UPPERCASE x)", "1990-01-01T00:00:00");
+		assertEvaluatesToWithData(createData(), "TIME (UPPERCASE x)", "1990-01-01T00:00:00");
 	}
 
 	@Test
@@ -99,7 +100,7 @@ public class StringOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("TRIM LEFT \" result: \"", "\"result: \"");
 		assertEvaluatesTo("TRIM RIGHT \" result: \"", "\" result:\"");
 		assertEvaluatesTo("TRIM (\" 5 N\", \"2 E \", 2)", "(\"5 N\",\"2 E\",NULL)");
-		assertEvaluatesToWithData(DATA, "TIME (TRIM x)", "1990-01-01T00:00:00");
+		assertEvaluatesToWithData(createData(), "TIME (TRIM x)", "1990-01-01T00:00:00");
 	}
 
 	@Test
@@ -116,7 +117,7 @@ public class StringOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("FIND \"e\" IN STRING \"Example Here\" STARTING AT \"x\"", "NULL");
 		assertEvaluatesTo("FIND \"e\" IN STRING \"Example Here\" STARTING AT 99", "0");
 		assertEvaluatesTo("FIND \"e\" IN STRING \"Example Here\" STARTING AT (10,11)", "(10,12)");
-		assertEvaluatesToWithData(DATA, "TIME (FIND \"e\" IN STRING x)", "NULL");
+		assertEvaluatesToWithData(createData(), "TIME (FIND \"e\" IN STRING x)", "NULL");
 	}
 
 	@Test
@@ -136,7 +137,7 @@ public class StringOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("SUBSTRING 1 CHARACTERS FROM \"abcdefg\"", "\"a\"");
 		assertEvaluatesTo("SUBSTRING -1 CHARACTERS STARTING AT LENGTH OF \"abcdefg\" FROM \"abcdefg\"", "\"g\"");
 		assertEvaluatesTo("SUBSTRING 3 CHARACTERS FROM (\"Positive\",\"Negative\",2)", "(\"Pos\",\"Neg\",NULL)");
-		assertEvaluatesToWithData(DATA, "TIME (SUBSTRING 3 CHARACTERS FROM x)", "1990-01-01T00:00:00");
+		assertEvaluatesToWithData(createData(), "TIME (SUBSTRING 3 CHARACTERS FROM x)", "1990-01-01T00:00:00");
 	}
 
 }

@@ -13,14 +13,14 @@ public class DataSlotTest extends SpecificationTest {
 		String readMapping = getMappings().getReadMapping();
 		String readMultiMapping = getMappings().getReadMultipleMapping();
 		
-		String sortedByTime1 = new ArdenCodeBuilder()
+		String sortedByTime1 = createCodeBuilder()
 				.addData("first_ := READ FIRST {"+readMapping+"};")
 				.addData("earliest_  := READ EARLIEST {"+readMapping+"};")
 				.addAction("RETURN first_ = earliest_;")
 				.toString();
 		assertReturns(sortedByTime1, "TRUE");
 		
-		String sortedByTime2 = new ArdenCodeBuilder()
+		String sortedByTime2 = createCodeBuilder()
 				.addData("last_ := READ LAST {"+readMapping+"};")
 				.addData("latest_  := READ LATEST {"+readMapping+"};")
 				.addAction("RETURN last_ = latest_;")
@@ -36,13 +36,13 @@ public class DataSlotTest extends SpecificationTest {
 		// no aggregation
 		assertEvaluatesTo("READ {"+readMapping+"}", "(5,3,2,4,1)");
 		
-		String multipleResults = new ArdenCodeBuilder()
+		String multipleResults = createCodeBuilder()
 				.addData("(id, val):= READ LAST 2 FROM {"+readMultiMapping+"};")
 				.addAction("RETURN (id, val);")
 				.toString();
 		assertReturns(multipleResults, "(4,1,\"d\",\"a\")");
 		
-		String readAs = new ArdenCodeBuilder()
+		String readAs = createCodeBuilder()
 				.addData("DbResult := OBJECT [Id, Val];")
 				.addData("entries := READ AS DbResult {"+readMultiMapping+"};")
 				.addAction("RETURN entries.val;")
@@ -58,7 +58,7 @@ public class DataSlotTest extends SpecificationTest {
 	@Test
 	public void testEventStatement() throws Exception {
 		// usable as boolean
-		String other_mlm = new ArdenCodeBuilder()
+		String other_mlm = createCodeBuilder()
 				.replaceSlotContent("mlmname:", "other_mlm")
 				.addData("test_event := EVENT {"+getMappings().getEventMapping()+"};")
 				.addEvoke("test_event;")
@@ -67,7 +67,7 @@ public class DataSlotTest extends SpecificationTest {
 				.addAction("RETURN 2;")
 				.toString();
 		
-		String eventAsBoolean = new ArdenCodeBuilder()
+		String eventAsBoolean = createCodeBuilder()
 			.addMlm(other_mlm)
 			.addData("test_event := EVENT {"+getMappings().getEventMapping()+"};")
 			.clearSlotContent("logic:")
@@ -82,27 +82,27 @@ public class DataSlotTest extends SpecificationTest {
 	public void testMlmStatement() throws Exception {
 		// mlm search algorithm
 		// 1. institution (mlm_self if missing) 2. mlmname 3. validation (only with institution missing) 4. version
-		String mlm1_instself = new ArdenCodeBuilder()
+		String mlm1_instself = createCodeBuilder()
 				.replaceSlotContent("mlmname:", "mlm1")
 				.addExpression("\"mlm1_instself\"")
 				.toString();
-		String mlm1_instother = new ArdenCodeBuilder()
+		String mlm1_instother = createCodeBuilder()
 				.replaceSlotContent("mlmname:", "mlm1")
 				.replaceSlotContent("institution:", "other_institute")
 				.addExpression("\"mlm1_instother\"")
 				.toString();
-		String mlm2_testing = new ArdenCodeBuilder()
+		String mlm2_testing = createCodeBuilder()
 				.replaceSlotContent("mlmname:", "mlm2")
 				.replaceSlotContent("validation:", "testing")
 				.addExpression("\"mlm2_testing\"")
 				.toString();
-		String mlm2_production = new ArdenCodeBuilder()
+		String mlm2_production = createCodeBuilder()
 				.replaceSlotContent("mlmname:", "mlm2")
 				.replaceSlotContent("validation:", "production")
 				.addExpression("\"mlm2_production\"")				
 				.toString();
 		
-		String data = new ArdenCodeBuilder()
+		String data = createCodeBuilder()
 				.addMlm(mlm1_instother)
 				.addMlm(mlm1_instself)
 				.addMlm(mlm2_testing)
@@ -123,7 +123,7 @@ public class DataSlotTest extends SpecificationTest {
 		assertReturns(validation, "\"mlm2_production\"");
 		
 		// mlm self
-		String mlmSelf = new ArdenCodeBuilder()
+		String mlmSelf = createCodeBuilder()
 				.addData("this := MLM MLM_SELF;")
 				.addData("arg := ARGUMENT;")
 				.clearSlotContent("logic:")
@@ -140,12 +140,12 @@ public class DataSlotTest extends SpecificationTest {
 
 	@Test
 	public void testArgumentStatement() throws Exception {
-		String othermlm = new ArdenCodeBuilder()
+		String othermlm = createCodeBuilder()
 				.replaceSlotContent("mlmname:", "other_mlm")
 				.addData("(x,y) := ARGUMENT;")
 				.addAction("RETURN (x,y);")
 				.toString();
-		String mlmSelf = new ArdenCodeBuilder()
+		String mlmSelf = createCodeBuilder()
 				.addMlm(othermlm)
 				.addData("othermlm := MLM 'other_mlm';")
 				.clearSlotContent("logic:")
@@ -158,19 +158,19 @@ public class DataSlotTest extends SpecificationTest {
 
 	@Test
 	public void testMessageStatement() throws Exception {
-		String message = new ArdenCodeBuilder()
+		String message = createCodeBuilder()
 				.addData("m := MESSAGE {"+getMappings().getMessageMapping()+"};")
 				.toString();
 		assertValid(message);
 		
 		// TODO too implementation specific? 		
-		//		String messageAs = new ArdenCodeBuilder()
+		//		String messageAs = createCodeBuilder()
 		//				.addData("Email := OBJECT [subject, text];")
 		//				.addData("mail := MESSAGE AS Email {"+getMappings().getMessageMapping()+"};")
 		//				.toString();
 		//		assertValid(messageAs);
 		//		
-		//		String messageAsDefault = new ArdenCodeBuilder()
+		//		String messageAsDefault = createCodeBuilder()
 		//				.addData("Email := OBJECT [subject, text];")
 		//				.addData("mail := MESSAGE AS Email;")
 		//				.toString();
@@ -179,19 +179,19 @@ public class DataSlotTest extends SpecificationTest {
 
 	@Test
 	public void testDestinationStatement() throws Exception {
-		String destination = new ArdenCodeBuilder()
+		String destination = createCodeBuilder()
 				.addData("d := DESTINATION {"+getMappings().getDestinationMapping()+"};")
 				.toString();
 		assertValid(destination);
 		
 		// TODO too implementation specific?		
-		//		String destinationAs = new ArdenCodeBuilder()
+		//		String destinationAs = createCodeBuilder()
 		//				.addData("File := OBJECT [name];")
 		//				.addData("d := DESTINATION AS File {"+getMappings().getDestinationMapping()+"};")
 		//				.toString();
 		//		assertValid(destinationAs);
 		//		
-		//		String destinationAsDefault = new ArdenCodeBuilder()
+		//		String destinationAsDefault = createCodeBuilder()
 		//				.addData("File := OBJECT [name];")
 		//				.addData("d := DESTINATION AS File;")
 		//				.toString();
@@ -200,7 +200,7 @@ public class DataSlotTest extends SpecificationTest {
 
 	@Test
 	public void testObjectStatement() throws Exception {
-		String object = new ArdenCodeBuilder()
+		String object = createCodeBuilder()
 				.addData("Patient := OBJECT [Name, DateOfBirth, Id];")
 				.addData("p := NEW patient;")
 				.toString();
@@ -209,16 +209,16 @@ public class DataSlotTest extends SpecificationTest {
 
 	@Test
 	public void testIncludeStatement() throws Exception {
-		String mlm1 = new ArdenCodeBuilder()
+		String mlm1 = createCodeBuilder()
 				.replaceSlotContent("mlmname:", "mlm1")
 				.addData("Patient := OBJECT [Name, DateOfBirth, Id];")
 				.toString();
-		String mlm2 = new ArdenCodeBuilder()
+		String mlm2 = createCodeBuilder()
 				.replaceSlotContent("mlmname:", "mlm2")
 				.addData("Patient := OBJECT [Id, Name, DateOfBirth, Gender, Phone];")
 				.toString();
 		
-		String include = new ArdenCodeBuilder()
+		String include = createCodeBuilder()
 				.addMlm(mlm1)
 				.addData("othermlm := MLM 'mlm1';")
 				.addData("INCLUDE othermlm;")
@@ -228,7 +228,7 @@ public class DataSlotTest extends SpecificationTest {
 				.toString();
 		assertReturns(include, "5");
 		
-		String localPrecedence = new ArdenCodeBuilder()
+		String localPrecedence = createCodeBuilder()
 				.addMlm(mlm1)
 				.addData("Patient := OBJECT [Id, Name, Phone];")
 				.addData("othermlm := MLM 'mlm1';")
@@ -239,7 +239,7 @@ public class DataSlotTest extends SpecificationTest {
 				.toString();
 		assertReturns(localPrecedence, "12345");
 		
-		String latestPrecedence = new ArdenCodeBuilder()
+		String latestPrecedence = createCodeBuilder()
 				.addMlm(mlm1)
 				.addMlm(mlm2)
 				.addData("mlm1 := MLM 'mlm1';")

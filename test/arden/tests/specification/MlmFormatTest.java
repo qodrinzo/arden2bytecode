@@ -3,18 +3,20 @@ package arden.tests.specification;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import arden.tests.specification.testcompiler.ArdenCodeBuilder;
+import arden.tests.specification.testcompiler.ArdenVersion;
+import arden.tests.specification.testcompiler.CompatibilityRule.Compatibility;
 import arden.tests.specification.testcompiler.SpecificationTest;
 
 public class MlmFormatTest extends SpecificationTest {
 
 	@Test
+	@Compatibility(min=ArdenVersion.V2)
 	public void testFileFormat() throws Exception {
-		String otherMlm = new ArdenCodeBuilder().replaceSlotContent("mlmname:", "other_mlm").toString();
-		String multipleMlms = new ArdenCodeBuilder().addMlm(otherMlm).toString();
+		String otherMlm = createCodeBuilder().replaceSlotContent("mlmname:", "other_mlm").toString();
+		String multipleMlms = createCodeBuilder().addMlm(otherMlm).toString();
 		assertValid(multipleMlms);
 		
-		String missingEnd = new ArdenCodeBuilder().renameSlot("end:", "").toString();
+		String missingEnd = createCodeBuilder().renameSlot("end:", "").toString();
 		assertInvalid(missingEnd);
 	}
 
@@ -26,34 +28,34 @@ public class MlmFormatTest extends SpecificationTest {
 
 	@Test
 	public void testSlots() throws Exception {
-		String duplicateSlot = new ArdenCodeBuilder()
+		String duplicateSlot = createCodeBuilder()
 				.renameSlot("citations:", "links:")
 				.toString();
 		assertInvalid(duplicateSlot);
 		
-		String wrongOrder = new ArdenCodeBuilder()
+		String wrongOrder = createCodeBuilder()
 				.renameSlot("specialist:", "temp:")
 				.renameSlot("author:", "specialist:")
 				.renameSlot("temp:", "author:")
 				.toString();
 		assertInvalid(wrongOrder);
 		
-		String doubleSemicolonInSlot = new ArdenCodeBuilder().replaceSlotContent("institution:", "abc;;xyz").toString();
+		String doubleSemicolonInSlot = createCodeBuilder().replaceSlotContent("institution:", "abc;;xyz").toString();
 		assertInvalid(doubleSemicolonInSlot);
 		
 		// double semicolon allowed in string constants
 		assertValidStatement("x := \";;\";");
 		
-		String doubleSemicolonInMapping = new ArdenCodeBuilder().addData("x := READ {;;};").toString();
+		String doubleSemicolonInMapping = createCodeBuilder().addData("x := READ {;;};").toString();
 		assertValid(doubleSemicolonInMapping);
 	}
 
 	@Test
 	public void testSlotBodyTypes() throws Exception {
-		String arbitrayTextInTextualSlot = new ArdenCodeBuilder().replaceSlotContent("title:", "the mlm at time of now & = + - * ; abs if else >= mlmname mlmname:").toString();
+		String arbitrayTextInTextualSlot = createCodeBuilder().replaceSlotContent("title:", "the mlm at time of now & = + - * ; abs if else >= mlmname mlmname:").toString();
 		assertValid(arbitrayTextInTextualSlot);
 		
-		String emptyTextualSlots = new ArdenCodeBuilder()
+		String emptyTextualSlots = createCodeBuilder()
 				.replaceSlotContent("title:", "")
 				.replaceSlotContent("version:", "")
 				.replaceSlotContent("institution:", "")
@@ -70,7 +72,7 @@ public class MlmFormatTest extends SpecificationTest {
 
 	@Test
 	public void testCaseInsensitivity() throws Exception {
-		String mixedCases = new ArdenCodeBuilder()
+		String mixedCases = createCodeBuilder()
 				.renameSlot("end:", "eNd:")
 				.renameSlot("library:", "LIBraRy:")
 				.renameSlot("author:", "aUTHOr:")
