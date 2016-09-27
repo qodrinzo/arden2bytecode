@@ -189,5 +189,47 @@ public abstract class SpecificationTest {
 			// test passed
 		}
 	}
-	
+
+	protected void assertValidSlot(String slotname, String slotcontent) throws TestCompilerCompiletimeException {
+		String code = createCodeBuilder().replaceSlotContent(slotname, slotcontent).toString();
+		assertValid(code);
+	}
+
+	protected void assertInvalidSlot(String slotname, String slotcontent) {
+		String code = createCodeBuilder().replaceSlotContent(slotname, slotcontent).toString();
+		assertInvalid(code);
+	}
+
+	protected void assertSlotIsRequired(String slotname) {
+		String missingSlot = createCodeBuilder().removeSlot(slotname).toString();
+		assertInvalid(missingSlot);
+	}
+
+	protected void assertSlotIsOptional(String slotname) throws TestCompilerCompiletimeException {
+		String missingSlot = createCodeBuilder().removeSlot(slotname).toString();
+		assertValid(missingSlot);
+	}
+
+	protected void assertWritesAfterEvent(String code, String event, String... messages) throws TestCompilerException {
+		if (!getSettings().isRuntimeSupported || !getSettings().runDelayTests) {
+			assertValid(code);
+			return;
+		}
+		TestCompilerDelayedMessage[] delayedMessages = getCompiler().compileAndRunForEvent(code, event, messages.length);
+		for (int i = 0; i < messages.length; i++) {
+			assertEquals(messages[i].toLowerCase(), delayedMessages[i].message.toLowerCase());
+		}
+	}
+
+	protected void assertDelayedBy(String code, String event, long... delayMillis) throws TestCompilerException {
+		if (!getSettings().isRuntimeSupported || !getSettings().runDelayTests) {
+			assertValid(code);
+			return;
+		}
+		TestCompilerDelayedMessage[] messages = getCompiler().compileAndRunForEvent(code, event, delayMillis.length);
+		for (int i = 0; i < delayMillis.length; i++) {
+			assertEquals(delayMillis[i], messages[i].delayMillis, TestCompilerDelayedMessage.PRECISION_MILLIS);
+		}
+	}
+
 }
