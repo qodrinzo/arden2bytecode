@@ -24,7 +24,9 @@ public class TestCompilerImpl implements TestCompiler {
 			TestContext.EVENT_MAPPING, TestContext.MESSAGE_MAPPING, TestContext.DESTINATION_MAPPING,
 			TestContext.READ_MAPPING, TestContext.READ_MULTIPLE_MAPPING);
 
-	private TestCompilerSettings settings = new TestCompilerSettings(ArdenVersion.V2_5, ArdenVersion.V1, true, true);
+	private TestCompilerSettings settings = new TestCompilerSettings(
+			ArdenVersion.V2_5, ArdenVersion.V1,
+			true, true, false);
 
 	@Override
 	public TestCompilerSettings getSettings() {

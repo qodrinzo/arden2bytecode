@@ -30,8 +30,8 @@ import org.junit.runners.model.Statement;
 public class CompatibilityRule implements MethodRule {
 
 	private TestCompilerSettings settings;
-	private ArdenVersion currentTestMaxVersion;
-	private ArdenVersion currentTestMinVersion;
+	private ArdenVersion currentTestMaxVersion = MAX_VERSION;
+	private ArdenVersion currentTestMinVersion = MIN_VERSION;
 
 	private static final ArdenVersion MIN_VERSION = getAnnotationDefaultValue("min");
 	private static final ArdenVersion MAX_VERSION = getAnnotationDefaultValue("max");
@@ -48,7 +48,10 @@ public class CompatibilityRule implements MethodRule {
 		if (annotation != null) {
 			currentTestMinVersion = annotation.min();
 			currentTestMaxVersion = annotation.max();
-			if (settings.lowestVersion.ordinal() > currentTestMaxVersion.ordinal()) {
+			if (annotation.pedantic() && !settings.runPedanticTests) {
+				String message = "Pedantic tests are not enabled.";
+				result = new IgnoreStatement(message);
+			} else if (settings.lowestVersion.ordinal() > currentTestMaxVersion.ordinal()) {
 				String message = "Compiler is not backwards compatible to version: " + currentTestMaxVersion.toString();
 				result = new IgnoreStatement(message);
 			} else if (settings.targetVersion.ordinal() < currentTestMinVersion.ordinal()) {
@@ -104,6 +107,30 @@ public class CompatibilityRule implements MethodRule {
 		 * deprecated or removed.
 		 */
 		ArdenVersion max() default ArdenVersion.V2_10;
+
+		/**
+		 * Pedantic tests require that the compiler <b>restricts</b> usage of
+		 * features in some way, instead of being more permissive. This forces
+		 * that MLMs written with this compiler are guaranteed to be compilable
+		 * with other standard compliant compilers. <br>
+		 * For example pedantic tests check with regard to the used Arden Syntax
+		 * version (as specified in the "arden:" slot), ignoring backward and
+		 * forward compatibility.
+		 * <p>
+		 * <b>Backward compatibility / Deprecation:</b><br>
+		 * E.g. the citations and links slot structured format is tested,
+		 * ignoring the deprecated free-form text format. <br>
+		 * </p>
+		 * <p>
+		 * <b>Forward compatibility:</b><br>
+		 * There are tests, that check whether features introduced in later
+		 * versions are not usable with the current version. <br>
+		 * For example it should not be possible to use fuzzy operators in an
+		 * MLM with <code>"arden: version 2.5"</code> as fuzzy logic requires
+		 * Arden Syntax version 2.9 or greater.<br>
+		 * </p>
+		 */
+		boolean pedantic() default false;
 	}
 
 	private static class IgnoreStatement extends Statement {

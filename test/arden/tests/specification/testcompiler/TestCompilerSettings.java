@@ -1,5 +1,7 @@
 package arden.tests.specification.testcompiler;
 
+import arden.tests.specification.testcompiler.CompatibilityRule.Compatibility;
+
 /**
  * These settings influence, how the tests are run. See each fields comment for
  * more information.
@@ -25,13 +27,6 @@ public class TestCompilerSettings {
 	 * will be skipped. E.g. tests for the "filename:" slot or the free text in
 	 * the "citations:" and "links:" slot, when lowestVersion is Version 2.
 	 * </p>
-	 * <p>
-	 * This is also used in tests, that create MLMs in every version from
-	 * lowestVersion to {@linkplain #targetVersion} (inclusive), and check that
-	 * no languages features newer than the specified version are usable. <br>
-	 * These tests are necessary as otherwise portability of the MLMs can not be
-	 * guaranteed.
-	 * </p>
 	 */
 	public final ArdenVersion lowestVersion;
 
@@ -39,10 +34,16 @@ public class TestCompilerSettings {
 	 * Used to check if runtime tests (e.g. operator tests, which check return
 	 * values) should be run by calling
 	 * {@link TestCompiler#compileAndRun(String)}, or only compiled to check for
-	 * syntax errors by calling {@link TestCompiler#compile(String)}. <br>
+	 * syntax errors by calling {@link TestCompiler#compile(String)}.<br>
 	 * This is useful for testing parsers in text editors, which can't run code.
 	 */
 	public final boolean isRuntimeSupported;
+
+	/**
+	 * Used to check whether tests marked as
+	 * {@linkplain Compatibility#pedantic() pedantic} should run.
+	 */
+	public final boolean runPedanticTests;
 
 	/**
 	 * Whether possibly long running tests that call the
@@ -52,10 +53,11 @@ public class TestCompilerSettings {
 	public final boolean runDelayTests;
 
 	public TestCompilerSettings(ArdenVersion targetVersion, ArdenVersion lowestVersion, boolean isRuntimeSupported,
-			boolean runDelayTests) {
+			boolean runDelayTests, boolean runPedanticTests) {
 		this.targetVersion = targetVersion;
 		this.lowestVersion = lowestVersion;
 		this.isRuntimeSupported = isRuntimeSupported;
 		this.runDelayTests = runDelayTests;
+		this.runPedanticTests = runPedanticTests;
 	}
 }
