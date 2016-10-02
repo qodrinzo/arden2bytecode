@@ -1,6 +1,5 @@
 package arden.tests.specification;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import arden.tests.specification.testcompiler.ArdenVersion;
@@ -9,63 +8,98 @@ import arden.tests.specification.testcompiler.SpecificationTest;
 
 public class MlmFormatTest extends SpecificationTest {
 
+	// TODO test character set (ASCII/UNICODE, linebreak)?
+
 	@Test
-	@Compatibility(min=ArdenVersion.V2)
 	public void testFileFormat() throws Exception {
-		String otherMlm = createCodeBuilder().replaceSlotContent("mlmname:", "other_mlm").toString();
-		String multipleMlms = createCodeBuilder().addMlm(otherMlm).toString();
+		String otherMlm = createCodeBuilder()
+				.setName("other_mlm")
+				.toString();
+		String multipleMlms = createCodeBuilder()
+				.addMlm(otherMlm)
+				.toString();
 		assertValid(multipleMlms);
-		
-		String missingEnd = createCodeBuilder().renameSlot("end:", "").toString();
+
+		String missingEnd = createCodeBuilder()
+				.toString()
+				.replace("end:", "");
 		assertInvalid(missingEnd);
 	}
 
 	@Test
-	@Ignore
 	public void testCategories() throws Exception {
-		// TODO error on wrong order
+		String spaceBeforeColon = createCodeBuilder().renameSlot("maintenance:", "maintenance :").toString();
+		assertInvalid(spaceBeforeColon);
+
+		// error on wrong category order
+		String wrongOrder = createCodeBuilder().toString();
+		int maintenanceIndex = wrongOrder.indexOf("maintenance:");
+		int libraryIndex = wrongOrder.indexOf("library:");
+		int knowledgeIndex = wrongOrder.indexOf("knowledge:");
+		String maintenanceCode = wrongOrder.substring(maintenanceIndex, libraryIndex);
+		String libraryCode = wrongOrder.substring(libraryIndex, knowledgeIndex);
+		wrongOrder = wrongOrder
+				.replace(maintenanceCode, "$TEMP")
+				.replace(libraryCode, maintenanceCode)
+				.replace("$TEMP", libraryCode);
+		assertInvalid(wrongOrder);
 	}
 
 	@Test
 	public void testSlots() throws Exception {
-		String duplicateSlot = createCodeBuilder()
-				.renameSlot("citations:", "links:")
-				.toString();
+		String spaceBeforeColon = createCodeBuilder().renameSlot("version:", "version :").toString();
+		assertInvalid(spaceBeforeColon);
+
+		String duplicateSlot = createCodeBuilder().renameSlot("citations:", "links:").toString();
 		assertInvalid(duplicateSlot);
-		
+
 		String wrongOrder = createCodeBuilder()
 				.renameSlot("specialist:", "temp:")
 				.renameSlot("author:", "specialist:")
 				.renameSlot("temp:", "author:")
 				.toString();
 		assertInvalid(wrongOrder);
-		
-		String doubleSemicolonInSlot = createCodeBuilder().replaceSlotContent("institution:", "abc;;xyz").toString();
-		assertInvalid(doubleSemicolonInSlot);
-		
-		// double semicolon allowed in string constants
+
+		// double semicolon not allowed in slot
+		assertInvalidSlot("institution:", "abc;;xyz");
+	}
+
+	@Test
+	@Compatibility(min = ArdenVersion.V2)
+	public void testDoubleSemicolon() throws Exception {
+		// double semicolon in string constants
 		assertValidStatement("x := \";;\";");
-		
-		String doubleSemicolonInMapping = createCodeBuilder().addData("x := READ {;;};").toString();
-		assertValid(doubleSemicolonInMapping);
+
+		// double semicolon in mapping
+		assertValidSlot("data:", "x := EVENT {;;};");
+
+		// double semicolon in comment
+		assertValidSlot("data:", "//;;" + System.lineSeparator());
+	}
+
+	@Test
+	@Compatibility(max = ArdenVersion.V1, pedantic = true)
+	public void testDoubleSemicolonInvalid() throws Exception {
+		// double semicolon are not allowed in string constants in version 1
+		assertInvalidStatement("x := \";;\";");
 	}
 
 	@Test
 	public void testSlotBodyTypes() throws Exception {
-		String arbitrayTextInTextualSlot = createCodeBuilder().replaceSlotContent("title:", "the mlm at time of now & = + - * ; abs if else >= mlmname mlmname:").toString();
-		assertValid(arbitrayTextInTextualSlot);
-		
+		// arbitrary text in textual slots
+		assertValidSlot("title:", "the mlm at time of now & = + - * ; abs if else >= mlmname mlmname:");
+
 		String emptyTextualSlots = createCodeBuilder()
-				.replaceSlotContent("title:", "")
-				.replaceSlotContent("version:", "")
-				.replaceSlotContent("institution:", "")
-				.replaceSlotContent("author:", "")
-				.replaceSlotContent("specialist:", "")
-				.replaceSlotContent("purpose:", "")
-				.replaceSlotContent("explanation:", "")
-				.replaceSlotContent("keywords:", "")
-				.replaceSlotContent("citations:", "")
-				.replaceSlotContent("links:", "")
+				.clearSlotContent("title:")
+				.clearSlotContent("version:")
+				.clearSlotContent("institution:")
+				.clearSlotContent("author:")
+				.clearSlotContent("specialist:")
+				.clearSlotContent("purpose:")
+				.clearSlotContent("explanation:")
+				.clearSlotContent("keywords:")
+				.clearSlotContent("citations:")
+				.clearSlotContent("links:")
 				.toString();
 		assertValid(emptyTextualSlots);
 	}
