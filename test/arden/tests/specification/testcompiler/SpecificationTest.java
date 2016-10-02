@@ -159,7 +159,7 @@ public abstract class SpecificationTest {
 
 		TestCompilerResult result = getCompiler().compileAndRun(code);
 		String message = result.messages.get(0);
-		assertEquals(expected, message);
+		assertEquals(expected.toLowerCase(), message.toLowerCase());
 	}
 	
 	protected void assertValidStatement(String statement) throws TestCompilerException {
