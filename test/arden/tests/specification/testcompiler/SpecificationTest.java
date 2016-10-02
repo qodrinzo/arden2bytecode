@@ -11,21 +11,22 @@ import org.junit.Rule;
 import arden.tests.specification.testcompiler.CompatibilityRule.Compatibility;
 
 /**
- * Base test class which all tests extend. Adds useful asserts, annotations and shared access
- * to the compiler.
+ * Base test class which all tests extend. Adds useful asserts, annotations and
+ * access to the compiler.
  */
 public abstract class SpecificationTest {
-	
+
 	/** Initialise your compiler here. It will be used by all tests. */
 	private final TestCompiler compiler = new arden.tests.specification.testcompiler.impl.TestCompilerImpl();
 	private final TestCompilerSettings settings = compiler.getSettings();
-	
-	// Decorator which intercepts calls to the compiler to skip unsupported tests
+
+	// decorator which intercepts calls to the compiler to skip unsupported tests
 	private TestCompiler runtimeCheckedCompiler = new TestCompiler() {
 		@Override
 		public TestCompilerSettings getSettings() {
 			return compiler.getSettings();
 		};
+
 		@Override
 		public TestCompilerMappings getMappings() {
 			TestCompilerMappings mappings = compiler.getMappings();
@@ -33,16 +34,19 @@ public abstract class SpecificationTest {
 			assumeNotNull("Compiler doesn't support tests with mappings", mappings);
 			return mappings;
 		};
+
 		@Override
 		public TestCompilerResult compileAndRun(String code) throws TestCompilerException {
 			// only run tests if runtime is supported
 			assumeTrue("Compiler doesn't support runtime tests", getSettings().isRuntimeSupported);
 			return compiler.compileAndRun(code);
 		}
+
 		@Override
 		public void compile(String code) throws TestCompilerCompiletimeException {
 			compiler.compile(code);
 		}
+
 		@Override
 		public TestCompilerDelayedMessage[] compileAndRunForEvent(String code, String eventMapping,
 				int messagesToCollect) throws TestCompilerException {
@@ -51,15 +55,15 @@ public abstract class SpecificationTest {
 			return compiler.compileAndRunForEvent(code, eventMapping, messagesToCollect);
 		}
 	};
-	
+
 	protected TestCompilerSettings getSettings() {
 		return settings;
 	}
-	
+
 	protected TestCompiler getCompiler() {
 		return runtimeCheckedCompiler;
 	}
-	
+
 	protected TestCompilerMappings getMappings() {
 		return runtimeCheckedCompiler.getMappings();
 	}
@@ -89,11 +93,10 @@ public abstract class SpecificationTest {
 		return createCodeBuilder().clearSlotContent("logic:");
 	}
 
-	// Used for compatibility tests with the <code>@Compatibility</code> annotation.
+	// Used for compatibility tests with the @Compatibility annotation.
 	@Rule
 	public CompatibilityRule compatibilityRule = new CompatibilityRule(getSettings());
-	
-	
+
 	/**
 	 * Tests if the result of the evaluated expressions is equal to the expected
 	 * string (case insensitive).
@@ -101,10 +104,10 @@ public abstract class SpecificationTest {
 	protected void assertEvaluatesTo(String expression, String expected) throws TestCompilerException {
 		assertEvaluatesToWithData(null, expression, expected);
 	}
-	
+
 	protected void assertEvaluatesToWithData(String dataCode, String expression, String expected) throws TestCompilerException {
 		ArdenCodeBuilder builder;
-		if(dataCode != null) {
+		if (dataCode != null) {
 			builder = new ArdenCodeBuilder(dataCode);
 		} else {
 			builder = createCodeBuilder();
@@ -112,17 +115,17 @@ public abstract class SpecificationTest {
 		String code = builder.addExpression(expression).toString();
 		assertReturns(code, expected);
 	}
-	
+
 	protected void assertReturns(String code, String... expected) throws TestCompilerException {
-		if(!getSettings().isRuntimeSupported) {
+		if (!getSettings().isRuntimeSupported) {
 			assertValid(code);
 			return;
 		}
-		
+
 		TestCompilerResult result = getCompiler().compileAndRun(code);
-		if(expected.length == 0) {
+		if (expected.length == 0) {
 			// no return values
-			if(result.returnValues.isEmpty()) {
+			if (result.returnValues.isEmpty()) {
 				// test passed
 			} else {
 				// a single "NULL" is also okay
@@ -146,11 +149,11 @@ public abstract class SpecificationTest {
 			assertArrayEquals(expected_lowercase, returnValues_lowercase);
 		}
 	}
-	
+
 	protected void assertNoReturn(String code) throws TestCompilerException {
 		assertReturns(code); // no expected values
 	}
-	
+
 	protected void assertWrites(String code, String expected) throws TestCompilerException {
 		if (!getSettings().isRuntimeSupported) {
 			assertValid(code);
@@ -161,31 +164,31 @@ public abstract class SpecificationTest {
 		String message = result.messages.get(0);
 		assertEquals(expected.toLowerCase(), message.toLowerCase());
 	}
-	
+
 	protected void assertValidStatement(String statement) throws TestCompilerException {
 		String code = createCodeBuilder().addData(statement).toString();
 		assertValid(code);
 	}
-	
+
 	protected void assertInvalidStatement(String statement) throws TestCompilerException {
 		String code = createCodeBuilder().addData(statement).toString();
 		assertInvalid(code);
 	}
-	
+
 	protected void assertInvalidExpression(String expression) throws TestCompilerException {
 		String code = createCodeBuilder().addExpression(expression).toString();
 		assertInvalid(code);
 	}
-	
+
 	protected void assertValid(String code) throws TestCompilerCompiletimeException {
 		getCompiler().compile(code);
 	}
-	
+
 	protected void assertInvalid(String code) {
 		try {
 			getCompiler().compile(code);
 			fail("Expected a " + TestCompilerCompiletimeException.class.getSimpleName() + " to be thrown.");
-		} catch(TestCompilerCompiletimeException e) {
+		} catch (TestCompilerCompiletimeException e) {
 			// test passed
 		}
 	}
