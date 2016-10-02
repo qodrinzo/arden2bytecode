@@ -3,130 +3,154 @@ package arden.tests.specification.structureslots;
 import org.junit.Test;
 
 import arden.tests.specification.testcompiler.ArdenCodeBuilder;
+import arden.tests.specification.testcompiler.ArdenVersion;
+import arden.tests.specification.testcompiler.CompatibilityRule.Compatibility;
 import arden.tests.specification.testcompiler.SpecificationTest;
 
 public class DataSlotTest extends SpecificationTest {
-	// TODO error on illegal statements	
-	
+	// TODO error on illegal statements
+
 	@Test
 	public void testReadStatement() throws Exception {
+		assertEvaluatesTo("READ {" + getMappings().getReadMapping() + "}", "(5,3,2,4,1)");
+	}
+
+	@Test
+	@Compatibility(min = ArdenVersion.V2)
+	public void testReadSortedByTime() throws Exception {
 		String readMapping = getMappings().getReadMapping();
-		String readMultiMapping = getMappings().getReadMultipleMapping();
-		
+
 		String sortedByTime1 = createCodeBuilder()
-				.addData("first_ := READ FIRST {"+readMapping+"};")
-				.addData("earliest_  := READ EARLIEST {"+readMapping+"};")
+				.addData("first_ := READ FIRST {" + readMapping + "};")
+				.addData("earliest_  := READ EARLIEST {" + readMapping + "};")
 				.addAction("RETURN first_ = earliest_;")
 				.toString();
 		assertReturns(sortedByTime1, "TRUE");
-		
+
 		String sortedByTime2 = createCodeBuilder()
-				.addData("last_ := READ LAST {"+readMapping+"};")
-				.addData("latest_  := READ LATEST {"+readMapping+"};")
+				.addData("last_ := READ LAST {" + readMapping + "};")
+				.addData("latest_  := READ LATEST {" + readMapping + "};")
 				.addAction("RETURN last_ = latest_;")
 				.toString();
 		assertReturns(sortedByTime2, "TRUE");
-		
-		// constraint
-		assertEvaluatesTo("READ THE FIRST 2 FROM {"+readMapping+"} WHERE THEY OCCURRED WITHIN THE 10 DAYS SURROUNDING 1990-01-01T00:00:00", "(3,2)");
-		
-		// brackets
-		assertEvaluatesTo("READ SUM ({"+readMapping+"} WHERE IT OCCURRED BEFORE 1995-01-01T00:00:00)", "14");
-		
-		// no aggregation
-		assertEvaluatesTo("READ {"+readMapping+"}", "(5,3,2,4,1)");
-		
+	}
+
+	@Test
+	@Compatibility(min = ArdenVersion.V2)
+	public void testReadAggregation() throws Exception {
+		String readMapping = getMappings().getReadMapping();
+		String readMultiMapping = getMappings().getReadMultipleMapping();
+
+		assertEvaluatesTo("READ THE FIRST 2 FROM ({" + readMapping + "} WHERE THEY OCCURRED WITHIN THE 10 DAYS SURROUNDING 1990-01-01T00:00:00)", "(3,2)");
+		assertEvaluatesTo("READ SUM ({" + readMapping + "} WHERE IT OCCURRED BEFORE 1995-01-01T00:00:00)", "14");
+
 		String multipleResults = createCodeBuilder()
-				.addData("(id, val):= READ LAST 2 FROM {"+readMultiMapping+"};")
+				.addData("(id, val):= READ LAST 2 FROM {" + readMultiMapping + "};")
 				.addAction("RETURN (id, val);")
 				.toString();
 		assertReturns(multipleResults, "(4,1,\"d\",\"a\")");
-		
+
+		/*
+		 * TODO check (not) permitted aggregations
+		 */
+	}
+
+	@Test
+	@Compatibility(min = ArdenVersion.V2_5)
+	public void testReadAs() throws Exception {
+		String readMultiMapping = getMappings().getReadMultipleMapping();
 		String readAs = createCodeBuilder()
 				.addData("DbResult := OBJECT [Id, Val];")
-				.addData("entries := READ AS DbResult {"+readMultiMapping+"};")
+				.addData("entries := READ AS DbResult {" + readMultiMapping + "};")
 				.addAction("RETURN entries.val;")
 				.toString();
 		assertReturns(readAs, "(\"e\",\"c\",\"b\",\"d\",\"a\")");
-		
-		// TODO permitted aggregations:
-		// exist,sum, average avg, minimum min, maximum max, last, first, earliest, latest, minimum ... from min ... from, max ... from maximum ... from, last ... from, first ... from, earliest ... from, latest ... from
-		// TODO not permitted:
-		// Median, Stddev, Variance, Any, All, No, Element, Extract Characters, Seqto, Reverse, Index Extraction
+	}
+
+	@Test
+	@Compatibility(min = ArdenVersion.V2)
+	public void testInterfaceStatement() throws Exception {
+		assertValidStatement("i := INTERFACE {" + getMappings().getInterfaceMapping() + "};");
 	}
 
 	@Test
 	public void testEventStatement() throws Exception {
 		// usable as boolean
+		String event = getMappings().createEventMapping();
 		String other_mlm = createCodeBuilder()
-				.replaceSlotContent("mlmname:", "other_mlm")
-				.addData("test_event := EVENT {"+getMappings().getEventMapping()+"};")
+				.setName("other_mlm")
+				.addData("test_event := EVENT {" + event + "};")
 				.addEvoke("test_event;")
 				.addAction("IF test_event THEN RETURN 1;")
 				.addAction("ENDIF;")
-				.addAction("RETURN 2;")
+				.addAction("RETURN 0;")
 				.toString();
-		
-		String eventAsBoolean = createCodeBuilder()
-			.addMlm(other_mlm)
-			.addData("test_event := EVENT {"+getMappings().getEventMapping()+"};")
-			.clearSlotContent("logic:")
-			.addLogic("x := CALL test_event;")
-			.addLogic("CONCLUDE TRUE;")
-			.addAction("RETURN x;")
-			.toString();
+		String eventAsBoolean = createEmptyLogicSlotCodeBuilder()
+				.addMlm(other_mlm)
+				.addData("test_event := EVENT {" + event + "};")
+				.addLogic("x := CALL test_event;")
+				.addLogic("CONCLUDE TRUE;")
+				.addAction("RETURN x;")
+				.toString();
 		assertReturns(eventAsBoolean, "1");
 	}
 
 	@Test
 	public void testMlmStatement() throws Exception {
-		// mlm search algorithm
-		// 1. institution (mlm_self if missing) 2. mlmname 3. validation (only with institution missing) 4. version
 		String mlm1_instself = createCodeBuilder()
-				.replaceSlotContent("mlmname:", "mlm1")
+				.setName("mlm1")
 				.addExpression("\"mlm1_instself\"")
 				.toString();
 		String mlm1_instother = createCodeBuilder()
-				.replaceSlotContent("mlmname:", "mlm1")
+				.setName("mlm1")
 				.replaceSlotContent("institution:", "other_institute")
 				.addExpression("\"mlm1_instother\"")
 				.toString();
 		String mlm2_testing = createCodeBuilder()
-				.replaceSlotContent("mlmname:", "mlm2")
+				.setName("mlm2")
 				.replaceSlotContent("validation:", "testing")
 				.addExpression("\"mlm2_testing\"")
 				.toString();
 		String mlm2_production = createCodeBuilder()
-				.replaceSlotContent("mlmname:", "mlm2")
+				.setName("mlm2")
 				.replaceSlotContent("validation:", "production")
-				.addExpression("\"mlm2_production\"")				
+				.addExpression("\"mlm2_production\"")
 				.toString();
-		
-		String data = createCodeBuilder()
+		String data = createEmptyLogicSlotCodeBuilder()
 				.addMlm(mlm1_instother)
 				.addMlm(mlm1_instself)
 				.addMlm(mlm2_testing)
 				.addMlm(mlm2_production)
-				.clearSlotContent("logic:")
 				.addLogic("found_name := CALL found_mlm;")
 				.addLogic("CONCLUDE TRUE;")
 				.addAction("RETURN found_name;")
 				.toString();
-		
+
+		/*
+		 * Search algorithm:
+		 * 1. institution (from mlm_self if missing)
+		 * 2. mlmname
+		 * 3. validation (only with institution missing)
+		 * 4. version (implementation dependent)
+		 */
+
 		String noInstitution = new ArdenCodeBuilder(data).addData("found_mlm := MLM 'mlm1';").toString();
 		assertReturns(noInstitution, "\"mlm1_instself\"");
-		
-		String otherInstitution = new ArdenCodeBuilder(data).addData("found_mlm := MLM 'mlm1' FROM INSTITUTION \"other_institute\";").toString();
+
+		String otherInstitution = new ArdenCodeBuilder(data)
+				.addData("found_mlm := MLM 'mlm1' FROM INSTITUTION \"other_institute\";").toString();
 		assertReturns(otherInstitution, "\"mlm1_instother\"");
-		
+
 		String validation = new ArdenCodeBuilder(data).addData("found_mlm := MLM 'mlm2';").toString();
 		assertReturns(validation, "\"mlm2_production\"");
-		
-		// mlm self
-		String mlmSelf = createCodeBuilder()
+	}
+
+	@Test
+	public void testMlmSelf() throws Exception {
+		// recursive call
+		String mlmSelf = createEmptyLogicSlotCodeBuilder()
 				.addData("this := MLM MLM_SELF;")
 				.addData("arg := ARGUMENT;")
-				.clearSlotContent("logic:")
 				.addLogic("IF arg IS NOT PRESENT THEN arg := 10;")
 				.addLogic("res := CALL this WITH arg-1;")
 				.addLogic("ELSEIF arg > 1 THEN res := CALL this WITH (arg-1);")
@@ -139,85 +163,101 @@ public class DataSlotTest extends SpecificationTest {
 	}
 
 	@Test
-	public void testArgumentStatement() throws Exception {
+	@Compatibility(min = ArdenVersion.V2)
+	public void testMultipleArgumentStatement() throws Exception {
 		String othermlm = createCodeBuilder()
-				.replaceSlotContent("mlmname:", "other_mlm")
+				.setName("other_mlm")
 				.addData("(x,y) := ARGUMENT;")
 				.addAction("RETURN (x,y);")
 				.toString();
-		String mlmSelf = createCodeBuilder()
+		String call = createCodeBuilder()
 				.addMlm(othermlm)
-				.addData("othermlm := MLM 'other_mlm';")
+				.addData("other_mlm := MLM 'other_mlm';")
 				.clearSlotContent("logic:")
-				.addLogic("res := CALL othermlm WITH \"a\", (1,2);")
+				.addLogic("res := CALL other_mlm WITH \"a\", (1,2);")
 				.addLogic("CONCLUDE TRUE;")
 				.addAction("RETURN res;")
 				.toString();
-		assertReturns(mlmSelf, "(\"a\",1,2)");
+		assertReturns(call, "(\"a\",1,2)");
 	}
 
 	@Test
 	public void testMessageStatement() throws Exception {
 		String message = createCodeBuilder()
-				.addData("m := MESSAGE {"+getMappings().getMessageMapping()+"};")
+				.addData("m := MESSAGE {" + getMappings().getMessageMapping() + "};")
 				.toString();
 		assertValid(message);
-		
-		// TODO too implementation specific? 		
-		//		String messageAs = createCodeBuilder()
-		//				.addData("Email := OBJECT [subject, text];")
-		//				.addData("mail := MESSAGE AS Email {"+getMappings().getMessageMapping()+"};")
-		//				.toString();
-		//		assertValid(messageAs);
-		//		
-		//		String messageAsDefault = createCodeBuilder()
-		//				.addData("Email := OBJECT [subject, text];")
-		//				.addData("mail := MESSAGE AS Email;")
-		//				.toString();
-		//		assertValid(messageAsDefault);
+
+		// TODO too implementation specific?
+		// String messageAs = createCodeBuilder()
+		// 	.addData("Email := OBJECT [subject, text];")
+		// 	.addData("mail := MESSAGE AS Email {"+getMappings().getMessageMapping()+"};")
+		// 	.toString();
+		// assertValid(messageAs);
+
+		// String messageAsDefault = createCodeBuilder()
+		// 	.addData("Email := OBJECT [subject, text];")
+		// 	.addData("mail := MESSAGE AS Email;")
+		// 	.toString();
+		// assertValid(messageAsDefault);
 	}
 
 	@Test
 	public void testDestinationStatement() throws Exception {
 		String destination = createCodeBuilder()
-				.addData("d := DESTINATION {"+getMappings().getDestinationMapping()+"};")
-				.toString();
+				.addData("d := DESTINATION {" + getMappings().getDestinationMapping() + "};").toString();
 		assertValid(destination);
-		
-		// TODO too implementation specific?		
-		//		String destinationAs = createCodeBuilder()
-		//				.addData("File := OBJECT [name];")
-		//				.addData("d := DESTINATION AS File {"+getMappings().getDestinationMapping()+"};")
-		//				.toString();
-		//		assertValid(destinationAs);
-		//		
-		//		String destinationAsDefault = createCodeBuilder()
-		//				.addData("File := OBJECT [name];")
-		//				.addData("d := DESTINATION AS File;")
-		//				.toString();
-		//		assertValid(destinationAsDefault);
+
+		// TODO too implementation specific?
+		// String destinationAs = createCodeBuilder()
+		// 	.addData("File := OBJECT [name];")
+		// 	.addData("d := DESTINATION AS File {"+getMappings().getDestinationMapping()+"};")
+		// 	.toString();
+		// assertValid(destinationAs);
+
+		// String destinationAsDefault = createCodeBuilder()
+		// 	.addData("File := OBJECT [name];")
+		// 	.addData("d := DESTINATION AS File;")
+		// 	.toString();
+		// assertValid(destinationAsDefault);
 	}
 
 	@Test
+	@Compatibility(min = ArdenVersion.V2_5)
 	public void testObjectStatement() throws Exception {
 		String object = createCodeBuilder()
 				.addData("Patient := OBJECT [Name, DateOfBirth, Id];")
 				.addData("p := NEW patient;")
 				.toString();
-		assertValid(object); 
+		assertValid(object);
 	}
 
 	@Test
+	@Compatibility(min = ArdenVersion.V2_9)
+	public void testLinguisticVariableStatement() throws Exception {
+		String data = createCodeBuilder().addData("RangeOfAge := LINGUISTIC VARIABLE [young, middleAge, old];")
+				.addData("Age := new RangeOfAge;")
+				.addData("Age.young := FUZZY SET (0 YEARS, TRUE), (25 YEARS, TRUE),(35 YEARS, FALSE);")
+				.addData("Age.middleAge := FUZZY SET (25 YEARS, FALSE), (35 YEARS, TRUE), (55 YEARS, TRUE), (65 YEARS, FALSE);")
+				.addData("Age.old := FUZZY SET (55 YEARS, FALSE), (65 YEARS, TRUE);")
+				.toString();
+		assertEvaluatesToWithData(data, "25 YEARS IS Age.young", "TRUE");
+		assertEvaluatesToWithData(data, "45 YEARS IS Age.middleAge", "TRUE");
+		assertEvaluatesToWithData(data, "45 YEARS IS Age.young", "FALSE");
+	}
+
+	@Test
+	@Compatibility(min = ArdenVersion.V2_5)
 	public void testIncludeStatement() throws Exception {
 		String mlm1 = createCodeBuilder()
-				.replaceSlotContent("mlmname:", "mlm1")
+				.setName("mlm1")
 				.addData("Patient := OBJECT [Name, DateOfBirth, Id];")
 				.toString();
 		String mlm2 = createCodeBuilder()
-				.replaceSlotContent("mlmname:", "mlm2")
+				.setName("mlm2")
 				.addData("Patient := OBJECT [Id, Name, DateOfBirth, Gender, Phone];")
 				.toString();
-		
+
 		String include = createCodeBuilder()
 				.addMlm(mlm1)
 				.addData("othermlm := MLM 'mlm1';")
@@ -227,7 +267,7 @@ public class DataSlotTest extends SpecificationTest {
 				.addAction("RETURN p.Id;")
 				.toString();
 		assertReturns(include, "5");
-		
+
 		String localPrecedence = createCodeBuilder()
 				.addMlm(mlm1)
 				.addData("Patient := OBJECT [Id, Name, Phone];")
@@ -238,7 +278,7 @@ public class DataSlotTest extends SpecificationTest {
 				.addAction("RETURN p.Phone;")
 				.toString();
 		assertReturns(localPrecedence, "12345");
-		
+
 		String latestPrecedence = createCodeBuilder()
 				.addMlm(mlm1)
 				.addMlm(mlm2)
@@ -251,6 +291,23 @@ public class DataSlotTest extends SpecificationTest {
 				.addAction("RETURN p.Gender;")
 				.toString();
 		assertReturns(latestPrecedence, "\"f\"");
+	}
+
+	@Test
+	@Compatibility(min = ArdenVersion.V2_6)
+	public void testIncludeResources() throws Exception {
+		String resourceDefinitionMlm = createCodeBuilder()
+				.setName("resource_mlm")
+				.addTextConstant("en", "msg", "a message")
+				.toString();
+		String localized = createCodeBuilder()
+				.addMlm(resourceDefinitionMlm)
+				.addData("resource_mlm := MLM 'resource_mlm';")
+				.addData("INCLUDE resource_mlm;")
+				.addData("msg := LOCALIZED 'msg';")
+				.addAction("RETURN msg;")
+				.toString();
+		assertReturns(localized, "\"a message\"");
 	}
 
 }
