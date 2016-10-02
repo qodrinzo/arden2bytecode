@@ -163,12 +163,12 @@ public abstract class SpecificationTest {
 	}
 	
 	protected void assertValidStatement(String statement) throws TestCompilerException {
-		String code = createCodeBuilder().addAction(statement).toString();
+		String code = createCodeBuilder().addData(statement).toString();
 		assertValid(code);
 	}
 	
 	protected void assertInvalidStatement(String statement) throws TestCompilerException {
-		String code = createCodeBuilder().addAction(statement).toString();
+		String code = createCodeBuilder().addData(statement).toString();
 		assertInvalid(code);
 	}
 	
