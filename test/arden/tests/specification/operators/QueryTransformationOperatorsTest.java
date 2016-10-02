@@ -5,7 +5,7 @@ import org.junit.Test;
 import arden.tests.specification.testcompiler.SpecificationTest;
 
 public class QueryTransformationOperatorsTest extends SpecificationTest {
-	
+
 	@Test
 	public void testInterval() throws Exception {
 		String data = createCodeBuilder()
@@ -15,12 +15,13 @@ public class QueryTransformationOperatorsTest extends SpecificationTest {
 				.addData("mylist := (x, y, z);")
 				.toString();
 
-		assertEvaluatesToWithData(data, "INTERVAL mylist","(86400 seconds,194400 seconds)");
-		assertEvaluatesTo("INTERVAL OF (3,4)","null");
-		assertEvaluatesTo("INTERVAL OF ()","null");
+		assertEvaluatesToWithData(data, "INTERVAL mylist", "(86400 SECONDS,194400 SECONDS)");
+		assertEvaluatesToWithData(data, "INTERVAL x", "()");
+		assertEvaluatesTo("INTERVAL OF (3,4)", "NULL");
+		assertEvaluatesTo("INTERVAL OF ()", "NULL");
 
 		// primary times lost
-		assertEvaluatesToWithData(data, "THE TIME OF THE FIRST INTERVAL OF mylist","NULL");
+		assertEvaluatesToWithData(data, "THE TIME OF THE FIRST INTERVAL OF mylist", "NULL");
 	}
 
 }
