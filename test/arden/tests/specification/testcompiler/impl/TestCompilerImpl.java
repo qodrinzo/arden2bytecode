@@ -27,7 +27,6 @@ public class TestCompilerImpl implements TestCompiler {
 
 	private TestCompilerMappings mappings = new TestCompilerMappings(
 			TestContext.INTERFACE_MAPPING,
-			TestContext.EVENT_MAPPING,
 			TestContext.MESSAGE_MAPPING,
 			TestContext.DESTINATION_MAPPING,
 			TestContext.READ_MAPPING,

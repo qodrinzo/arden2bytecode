@@ -5,19 +5,18 @@ package arden.tests.specification.testcompiler;
  */
 public class TestCompilerMappings {
 	protected String interfaceMapping;
-	protected String eventMapping;
 	protected String messageMapping;
 	protected String destinationMapping;
 	protected String readMapping;
 	protected String readMultipleMapping;
+	private long eventNr = 0;
 
 	public TestCompilerMappings() {
 	}
 
-	public TestCompilerMappings(String interfaceMapping, String eventMapping, String messageMapping,
+	public TestCompilerMappings(String interfaceMapping, String messageMapping,
 			String destinationMapping, String readMapping, String readMultipleMapping) {
 		this.interfaceMapping = interfaceMapping;
-		this.eventMapping = eventMapping;
 		this.messageMapping = messageMapping;
 		this.destinationMapping = destinationMapping;
 		this.readMapping = readMapping;
@@ -41,13 +40,14 @@ public class TestCompilerMappings {
 
 	/**
 	 * This method is used to test events. <br>
-	 * Test mlms must be able to subscribe to the event for this mapping via the
-	 * evoke slot. It must also be possible to <code>CALL</code> the event.
+	 * Test MLMs must be able to subscribe to the event for this mapping via the
+	 * evoke slot. It must also be possible to <code>CALL</code> the event. <br>
+	 * A mapping for a different event should be returned every time.
 	 * 
 	 * @return a mapping for an event
 	 */
-	public String getEventMapping() {
-		return eventMapping;
+	public String createEventMapping() {
+		return "event " + eventNr++;
 	}
 
 	/**
