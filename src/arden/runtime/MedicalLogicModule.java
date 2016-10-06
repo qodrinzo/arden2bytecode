@@ -29,7 +29,7 @@ package arden.runtime;
 
 import java.lang.reflect.InvocationTargetException;
 
-import arden.runtime.events.EvokeEvent;
+import arden.runtime.evoke.Trigger;
 
 
 /**
@@ -57,9 +57,9 @@ public interface MedicalLogicModule extends ArdenRunnable {
 	/** Gets the urgency value of this module. */
 	double getUrgency();
 	
-	/** Gets an evoke event telling when to run this MLM 
+	/** Gets a trigger telling when to run this MLM 
 	 * @throws InvocationTargetException */
-	EvokeEvent getEvoke(ExecutionContext context, ArdenValue[] arguments) throws InvocationTargetException;
+	Trigger getTrigger(ExecutionContext context, ArdenValue[] arguments) throws InvocationTargetException;
 	
 	/**
 	 * Gets the value of a variable declared in a Medical Logic Module

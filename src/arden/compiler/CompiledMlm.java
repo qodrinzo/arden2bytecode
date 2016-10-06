@@ -44,7 +44,7 @@ import arden.runtime.LibraryMetadata;
 import arden.runtime.MaintenanceMetadata;
 import arden.runtime.MedicalLogicModule;
 import arden.runtime.MedicalLogicModuleImplementation;
-import arden.runtime.events.EvokeEvent;
+import arden.runtime.evoke.Trigger;
 
 /**
  * Represents a compiled MedicalLogicModule with minimal Metadata (as loaded from a .class File)
@@ -66,7 +66,7 @@ public final class CompiledMlm implements MedicalLogicModule {
 	Class<? extends MedicalLogicModuleImplementation> clazz = null;
 	private MedicalLogicModuleImplementation uninitializedInstance = null;	
 	private MedicalLogicModuleImplementation initializedInstance = null;
-	private EvokeEvent evokeEvent = null;
+	private Trigger trigger = null;
 	private String mlmname;
 
 	public CompiledMlm(byte[] data, String mlmname) {
@@ -235,19 +235,20 @@ public final class CompiledMlm implements MedicalLogicModule {
 		return getNonInitializedInstance().getPriority();
 	}
 
-	/** Gets an evoke event telling when to run the MLM. 
-	 * As that evoke event may depend on data set in the 
-	 * constructor, the data section of the MLM is run */
+	/**
+	 * Gets a trigger telling when to run the MLM. As that trigger may depend on
+	 * data set in the constructor, the data section of the MLM is run.
+	 */
 	@Override
-	public EvokeEvent getEvoke(ExecutionContext context, ArdenValue[] arguments) throws InvocationTargetException {
-		if (evokeEvent == null) {
+	public Trigger getTrigger(ExecutionContext context, ArdenValue[] arguments) throws InvocationTargetException {
+		if (trigger == null) {
 			MedicalLogicModuleImplementation instance = initializedInstance;
 			if (instance == null) {
 				instance = createInstance(context, arguments);
 			}
-			evokeEvent = instance.getEvokeEvent(context);
+			trigger = instance.getTrigger(context);
 		}
-		return evokeEvent;
+		return trigger;
 	}
 
 	public ArdenValue getValue(String name) {

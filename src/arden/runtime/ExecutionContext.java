@@ -29,9 +29,6 @@ package arden.runtime;
 
 import java.util.Date;
 
-import arden.runtime.events.EvokeEvent;
-import arden.runtime.events.MappedEvokeEvent;
-
 /**
  * Describes the environment in which a Medical Logic Module is executed.
  * 
@@ -61,10 +58,10 @@ public abstract class ExecutionContext {
 	public ArdenValue getMessage(String mapping) {
 		return new ArdenString(mapping);
 	}
-	
+
 	/** Gets an event defined with the EVENT{mapping} statement */
-	public EvokeEvent getEvent(String mapping) {
-		return new MappedEvokeEvent(mapping);
+	public ArdenEvent getEvent(String mapping) {
+		return new ArdenEvent(mapping);
 	}
 
 	/**
@@ -117,7 +114,7 @@ public abstract class ExecutionContext {
 	public void callWithDelay(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay) {
 		throw new RuntimeException("callWithDelay not implemented");
 	}
-	
+
 	/**
 	 * Calls an event.
 	 * 
@@ -126,7 +123,7 @@ public abstract class ExecutionContext {
 	 * @param eventTime
 	 *            The time that the event occurred
 	 */
-	public void callEvent(String mapping, ArdenTime eventTime) {
+	public void callEvent(ArdenEvent event) {
 		throw new RuntimeException("callEvent not implemented");
 	}
 

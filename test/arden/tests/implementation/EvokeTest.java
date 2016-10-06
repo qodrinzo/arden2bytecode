@@ -37,14 +37,14 @@ import org.junit.Test;
 import arden.compiler.CompiledMlm;
 import arden.compiler.Compiler;
 import arden.compiler.CompilerException;
+import arden.runtime.ArdenEvent;
 import arden.runtime.MedicalLogicModule;
-import arden.runtime.events.AfterEvokeEvent;
-import arden.runtime.events.CyclicEvokeEvent;
-import arden.runtime.events.EvokeEvent;
-import arden.runtime.events.FixedDateEvokeEvent;
+import arden.runtime.evoke.AfterTrigger;
+import arden.runtime.evoke.CyclicTrigger;
+import arden.runtime.evoke.Trigger;
 
 public class EvokeTest extends ImplementationTest {
-	
+
 	private static CompiledMlm parseTemplate(String dataCode, String evokeCode, String logicCode, String actionCode)
 			throws CompilerException {
 		try {
@@ -60,11 +60,11 @@ public class EvokeTest extends ImplementationTest {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	private static CompiledMlm parseEvoke(String evokeCode) throws CompilerException {
 		return parseEvoke("", evokeCode);
 	}
-	
+
 	private static CompiledMlm parseEvoke(String data, String evokeCode) throws CompilerException {
 		return parseEvoke(data, evokeCode, "");
 	}
@@ -72,160 +72,241 @@ public class EvokeTest extends ImplementationTest {
 	private static CompiledMlm parseEvoke(String data, String evokeCode, String actionCode) throws CompilerException {
 		return parseTemplate(data, evokeCode, "conclude true;", actionCode);
 	}
-	
-	private static TestContext createTestContext() {
-		return new TestContext(createDate(1990, 0, 1)) {
-			@Override
-			public EvokeEvent getEvent(String mapping) {
-				if (mapping.equals("penicillin storage")) {
-					return new FixedDateEvokeEvent(createDate(1992, 0, 1));
-				} else if (mapping.equals("cephalosporin storage")) {
-					return new FixedDateEvokeEvent(createDate(1993, 0, 1));
-				} else if (mapping.equals("aminoglycoside storage")) {
-					return new FixedDateEvokeEvent(createDate(1994, 0, 1));
-				}
-				return super.getEvent(mapping);
-			}
-		};
-	}
-	
+
 	@Test
 	public void testAfterFixedDateOperator() throws Exception {
-		TestContext context = createTestContext();
-		
+		TestContext context = new TestContext();
+
 		MedicalLogicModule mlm = parseEvoke("3 days after 1992-01-01T00:00:00");
-		
-		EvokeEvent e = mlm.getEvoke(context, null);
-		Assert.assertEquals(createDate(1992, 0, 4), e.getNextRunTime(context));
+
+		Trigger trigger = mlm.getTrigger(context, null);
+		Assert.assertEquals(createDate(1992, 0, 4), trigger.getNextRunTime(context));
+		Assert.assertNull(trigger.getTriggeringEvent());
 	}
 
 	@Test
 	public void testEventVariable() throws Exception {
-		TestContext context = createTestContext();
-		
+		TestContext context = new TestContext();
+
 		MedicalLogicModule mlm = parseEvoke("penicillin_storage := EVENT{penicillin storage}", "penicillin_storage");
-		EvokeEvent e = mlm.getEvoke(context, null);
-		
-		Assert.assertEquals(createDate(1992, 0, 1), e.getNextRunTime(context));
+		Trigger trigger = mlm.getTrigger(context, null);
+
+		ArdenEvent event = new ArdenEvent("penicillin storage");
+		Assert.assertTrue(trigger.runOnEvent(event));
+		trigger.scheduleEvent(event);
+		Assert.assertEquals(event, trigger.getTriggeringEvent());
 	}
-	
+
 	@Test
 	public void testAfterTimeOfEventOperator() throws Exception {
-		TestContext context = createTestContext();
-		
+		TestContext context = new TestContext();
+
 		CompiledMlm mlm = parseEvoke("event1 := EVENT{penicillin storage}", "3 days after time of event1");
-		EvokeEvent e = mlm.getEvoke(context, null);
-		
-		Assert.assertEquals(createDate(1992, 0, 4), e.getNextRunTime(context));
+		Trigger trigger = mlm.getTrigger(context, null);
+		ArdenEvent event = new ArdenEvent("penicillin storage", createDate(1992, 0, 1).value);
+
+		Assert.assertFalse(trigger.runOnEvent(event));
+		trigger.scheduleEvent(event);
+		Assert.assertEquals(event, trigger.getTriggeringEvent());
+
+		Assert.assertEquals(createDate(1992, 0, 4), trigger.getNextRunTime(context));
+	}
+
+	@Test
+	public void testAfterAfterTimeOfEvent() throws Exception {
+		TestContext context = new TestContext();
+
+		CompiledMlm mlm = parseEvoke("event1 := EVENT{penicillin storage}", "3 days after 2 days after time of event1");
+		Trigger trigger = mlm.getTrigger(context, null);
+		ArdenEvent event = new ArdenEvent("penicillin storage", createDate(1992, 0, 1).value);
+
+		Assert.assertFalse(trigger.runOnEvent(event));
+		trigger.scheduleEvent(event);
+		Assert.assertEquals(event, trigger.getTriggeringEvent());
+
+		Assert.assertEquals(createDate(1992, 0, 6), trigger.getNextRunTime(context));
+		Assert.assertEquals(1000 * 60 * 60 * 24 * 5, trigger.getDelay());
 	}
 
 	@Test
 	public void testFixedDate() throws Exception {
-		TestContext context = createTestContext();
-		
+		TestContext context = new TestContext();
+
 		MedicalLogicModule mlm = parseEvoke("1992-03-04");
-		EvokeEvent e = mlm.getEvoke(context, null);
-		
-		Assert.assertEquals(createDate(1992, 2, 4), e.getNextRunTime(context));
+		Trigger trigger = mlm.getTrigger(context, null);
+
+		Assert.assertEquals(createDate(1992, 2, 4), trigger.getNextRunTime(context));
 	}
-	
+
 	@Test
 	public void testFixedDateTime() throws Exception {
-		TestContext context = createTestContext();
-		
+		TestContext context = new TestContext();
+
 		MedicalLogicModule mlm = parseEvoke("1992-01-03T14:23:17.0");
-		EvokeEvent e = mlm.getEvoke(context, null);
-		
-		Assert.assertEquals(createDateTime(1992, 0, 3, 14, 23, 17), e.getNextRunTime(context));
-	}	
-	
+		Trigger trigger = mlm.getTrigger(context, null);
+
+		Assert.assertEquals(createDateTime(1992, 0, 3, 14, 23, 17), trigger.getNextRunTime(context));
+
+		Assert.assertNull(trigger.getTriggeringEvent());
+	}
+
 	@Test
 	public void testOrOperator() throws Exception {
-		TestContext context = createTestContext();
-		
+		TestContext context = new TestContext();
+
 		MedicalLogicModule mlm = parseEvoke(
-				"penicillin_storage := EVENT{penicillin storage};" +
-				"cephalosporin_storage := EVENT{cephalosporin storage};" +
-				"aminoglycoside_storage := EVENT{aminoglycoside storage};", "penicillin_storage OR cephalosporin_storage OR aminoglycoside_storage");
-		EvokeEvent e = mlm.getEvoke(context, null);
-		
-		Assert.assertEquals(createDate(1992, 0, 1), e.getNextRunTime(context));
+				"penicillin_storage := EVENT{penicillin storage};"
+						+ "cephalosporin_storage := EVENT{cephalosporin storage};"
+						+ "aminoglycoside_storage := EVENT{aminoglycoside storage};",
+				"penicillin_storage OR cephalosporin_storage OR aminoglycoside_storage");
+		Trigger trigger = mlm.getTrigger(context, null);
+
+		Assert.assertFalse(trigger.runOnEvent(new ArdenEvent("other storage")));
+		Assert.assertTrue(trigger.runOnEvent(new ArdenEvent("aminoglycoside storage")));
+		Assert.assertTrue(trigger.runOnEvent(new ArdenEvent("cephalosporin storage")));
+		Assert.assertTrue(trigger.runOnEvent(new ArdenEvent("aminoglycoside storage")));
+
+		ArdenEvent event = new ArdenEvent("aminoglycoside storage");
+		trigger.scheduleEvent(event);
+		Assert.assertEquals(event, trigger.getTriggeringEvent());
 	}
-	
-	@Test
-	public void testOrOperator2() throws Exception {
-		TestContext context = createTestContext();
-		
-		MedicalLogicModule mlm = parseEvoke(
-				"cephalosporin_storage := EVENT{cephalosporin storage};" +
-				"aminoglycoside_storage := EVENT{aminoglycoside storage};", "cephalosporin_storage OR aminoglycoside_storage");
-		EvokeEvent e = mlm.getEvoke(context, null);
-		
-		Assert.assertEquals(createDate(1993, 0, 1), e.getNextRunTime(context));
-	}
-	
+
 	@Test
 	public void testAnyOperator() throws Exception {
-		TestContext context = createTestContext();
-		
+		TestContext context = new TestContext();
+
 		MedicalLogicModule mlm = parseEvoke(
-				"penicillin_storage := EVENT{penicillin storage};" +
-				"cephalosporin_storage := EVENT{cephalosporin storage};" +
-				"aminoglycoside_storage := EVENT{aminoglycoside storage};", "ANY OF (penicillin_storage, cephalosporin_storage, aminoglycoside_storage)");
-		EvokeEvent e = mlm.getEvoke(context, null);
-		
-		Assert.assertEquals(createDate(1992, 0, 1), e.getNextRunTime(context));
+				"penicillin_storage := EVENT{penicillin storage};"
+						+ "cephalosporin_storage := EVENT{cephalosporin storage};"
+						+ "aminoglycoside_storage := EVENT{aminoglycoside storage};",
+				"ANY OF (penicillin_storage, cephalosporin_storage, aminoglycoside_storage)");
+		Trigger trigger = mlm.getTrigger(context, null);
+
+		Assert.assertFalse(trigger.runOnEvent(new ArdenEvent("other storage")));
+		Assert.assertTrue(trigger.runOnEvent(new ArdenEvent("aminoglycoside storage")));
+		Assert.assertTrue(trigger.runOnEvent(new ArdenEvent("cephalosporin storage")));
+		Assert.assertTrue(trigger.runOnEvent(new ArdenEvent("aminoglycoside storage")));
+
+		ArdenEvent event = new ArdenEvent("cephalosporin storage");
+		trigger.scheduleEvent(event);
+		Assert.assertEquals(event, trigger.getTriggeringEvent());
 	}
-	
+
 	@Test
 	public void testAnyOperator2() throws Exception {
-		TestContext context = createTestContext();
-		
+		TestContext context = new TestContext();
+
 		MedicalLogicModule mlm = parseEvoke(
-				"cephalosporin_storage := EVENT{cephalosporin storage};" +
-				"aminoglycoside_storage := EVENT{aminoglycoside storage};", "ANY OF (cephalosporin_storage, aminoglycoside_storage)");
-		EvokeEvent e = mlm.getEvoke(context, null);
-		
-		Assert.assertEquals(createDate(1993, 0, 1), e.getNextRunTime(context));
+				"cephalosporin_storage := EVENT{cephalosporin storage};"
+						+ "aminoglycoside_storage := EVENT{aminoglycoside storage};",
+				"ANY OF (cephalosporin_storage, aminoglycoside_storage)");
+		Trigger trigger = mlm.getTrigger(context, null);
+
+		Assert.assertFalse(trigger.runOnEvent(new ArdenEvent("other storage")));
+		Assert.assertTrue(trigger.runOnEvent(new ArdenEvent("cephalosporin storage")));
+		Assert.assertTrue(trigger.runOnEvent(new ArdenEvent("aminoglycoside storage")));
+
+		ArdenEvent event = new ArdenEvent("aminoglycoside storage");
+		trigger.scheduleEvent(event);
+		Assert.assertEquals(event, trigger.getTriggeringEvent());
 	}
-	
+
 	@Test
 	public void testAfterTimeOfEventOperator2() throws Exception {
-		TestContext context = createTestContext();
-		
+		TestContext context = new TestContext(createDate(1990, 0, 1));
+
 		CompiledMlm mlm = parseEvoke("event1 := EVENT{test}", "3 days after time of event1");
-		EvokeEvent e = mlm.getEvoke(context, null);
-		
-		Assert.assertTrue(e instanceof AfterEvokeEvent);
-		Assert.assertEquals(null, e.getNextRunTime(context));
-		Assert.assertEquals(createDate(1990, 0, 1), context.getCurrentTime());
-		e.runOnEvent("test", context.getCurrentTime());
-		Assert.assertEquals(createDate(1990, 0, 4), e.getNextRunTime(context));
+		Trigger trigger = mlm.getTrigger(context, null);
+
+		Assert.assertTrue(trigger instanceof AfterTrigger);
+		Assert.assertEquals(null, trigger.getNextRunTime(context));
+
+		ArdenEvent event = new ArdenEvent("test", context.getCurrentTime().value);
+		Assert.assertFalse(trigger.runOnEvent(event));
+
+		trigger.scheduleEvent(event);
+		Assert.assertFalse(trigger.runOnEvent(event));
+		Assert.assertEquals(event, trigger.getTriggeringEvent());
+		Assert.assertEquals(1000 * 60 * 60 * 24 * 3, trigger.getDelay());
+		Assert.assertEquals(createDate(1990, 0, 4), trigger.getNextRunTime(context));
 	}
-	
+
 	@Test
 	public void testCyclicEvent() throws Exception {
-		TestContext context = createTestContext();
-		
+		TestContext context = new TestContext(createDate(1990, 0, 1));
+
 		CompiledMlm mlm = parseEvoke("every 5 days for 10 years starting 5 days after 1992-03-04");
-		EvokeEvent e = mlm.getEvoke(context, null);
-		
-		Assert.assertTrue(e instanceof CyclicEvokeEvent);
-		Assert.assertEquals(createDate(1992, 2, 9), e.getNextRunTime(context));
+		Trigger trigger = mlm.getTrigger(context, null);
+		Assert.assertTrue(trigger instanceof CyclicTrigger);
+
+		Assert.assertEquals(createDate(1992, 2, 9), trigger.getNextRunTime(context));
 		context.setCurrentTime(createDate(1992, 2, 10));
-		Assert.assertEquals(createDate(1992, 2, 14), e.getNextRunTime(context));
+		Assert.assertEquals(createDate(1992, 2, 14), trigger.getNextRunTime(context));
+	}
+
+	@Test
+	public void testCyclicEventDuration() throws Exception {
+		TestContext context = new TestContext(createDate(1990, 0, 1));
+
+		CompiledMlm mlm = parseEvoke("event1 := EVENT{test}",
+				"every 1 day for 2 days starting 3 days after time of event1");
+		Trigger trigger = mlm.getTrigger(context, null);
+		ArdenEvent event = new ArdenEvent("test", context.getCurrentTime().value);
+
+		trigger.scheduleEvent(event);
+		Assert.assertEquals(createDate(1990, 0, 4), trigger.getNextRunTime(context));
+		Assert.assertEquals(event, trigger.getTriggeringEvent());
+		Assert.assertEquals(1000 * 60 * 60 * 24 * 3, trigger.getDelay());
+
+		context.setCurrentTime(createDateTime(1990, 0, 4, 0, 0, 1));
+		Assert.assertEquals(createDate(1990, 0, 5), trigger.getNextRunTime(context));
+		Assert.assertEquals(event, trigger.getTriggeringEvent());
+		Assert.assertEquals(1000 * 60 * 60 * 24 * 4, trigger.getDelay());
+
+		context.setCurrentTime(createDateTime(1990, 0, 5, 0, 0, 1));
+		Assert.assertEquals(createDate(1990, 0, 6), trigger.getNextRunTime(context));
+		Assert.assertEquals(event, trigger.getTriggeringEvent());
+		Assert.assertEquals(1000 * 60 * 60 * 24 * 5, trigger.getDelay());
+
+		context.setCurrentTime(createDateTime(1990, 0, 6, 0, 0, 1));
+		Assert.assertNull(trigger.getNextRunTime(context));
+
+		trigger.scheduleEvent(event);
+	}
+
+	@Test
+	public void testCyclicEventBeginningInThePast() throws Exception {
+		TestContext context = new TestContext(createDate(1990, 0, 1));
+
+		CompiledMlm mlm = parseEvoke("every 5 days for 10 years starting 5 days after 1989-03-04");
+		Trigger trigger = mlm.getTrigger(context, null);
+		Assert.assertTrue(trigger instanceof CyclicTrigger);
+
+		Assert.assertEquals(createDate(1990, 0, 3), trigger.getNextRunTime(context));
+		Assert.assertNull(trigger.getNextRunTime(context));
+
+		context.setCurrentTime(createDate(1990, 0, 4));
+		Assert.assertEquals(createDate(1990, 0, 8), trigger.getNextRunTime(context));
 	}
 	
 	@Test
-	public void testCyclicEventBeginningInThePast() throws Exception {
-		TestContext context = createTestContext();
+	public void testCyclicAnyEvents() throws Exception {
+		TestContext context = new TestContext(createDate(1990, 0, 1));
+		MedicalLogicModule mlm = parseEvoke(
+						"event1 := EVENT{test 1};"
+						+ "event2 := EVENT{test 2};"
+						+ "event3 := EVENT{test 3};",
+				"every 5 days for 10 years starting time of any of (event1, event2, event3)");
+		Trigger trigger = mlm.getTrigger(context, null);
+		Assert.assertTrue(trigger instanceof CyclicTrigger);
 		
-		CompiledMlm mlm = parseEvoke("every 5 days for 10 years starting 5 days after 1989-03-04");
-		EvokeEvent e = mlm.getEvoke(context, null);
-		
-		Assert.assertTrue(e instanceof CyclicEvokeEvent);
-		Assert.assertEquals(createDate(1990, 0, 3), e.getNextRunTime(context));
-		context.setCurrentTime(createDate(1990, 0, 4));
-		Assert.assertEquals(createDate(1990, 0, 8), e.getNextRunTime(context));
+		ArdenEvent event = new ArdenEvent("test 2", context.getCurrentTime().value);
+		trigger.scheduleEvent(event);
+
+		Assert.assertEquals(createDate(1990, 0, 1), trigger.getNextRunTime(context));
+		Assert.assertNull(trigger.getNextRunTime(context));
+
+		context.setCurrentTime(createDate(1990, 0, 3));
+		Assert.assertEquals(createDate(1990, 0, 6), trigger.getNextRunTime(context));
 	}
 }

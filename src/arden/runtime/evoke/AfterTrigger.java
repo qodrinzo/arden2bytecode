@@ -1,37 +1,32 @@
-package arden.runtime.events;
+package arden.runtime.evoke;
 
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import arden.runtime.ArdenDuration;
+import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
-import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
 
-public class AfterEvokeEvent extends EvokeEvent {
+public class AfterTrigger implements Trigger {
 
-	EvokeEvent target;
+	Trigger target;
 	ArdenDuration duration;
 	SortedSet<ArdenTime> additionalSchedules;
-	
-	public AfterEvokeEvent(ArdenDuration duration, EvokeEvent target, long primaryTime) {
-		super(primaryTime);
+
+	public AfterTrigger(ArdenDuration duration, Trigger target) {
 		this.duration = duration;
 		this.target = target;
 		this.additionalSchedules = new TreeSet<ArdenTime>(new ArdenTime.NaturalComparator());
 	}
-	
-	public AfterEvokeEvent(ArdenDuration duration, EvokeEvent target) {
-		this(duration, target, NOPRIMARYTIME);
-	}
-	
+
 	@Override
 	public ArdenTime getNextRunTime(ExecutionContext context) {
 		ArdenTime nextRunTime = target.getNextRunTime(context);
 		if (nextRunTime != null) {
 			nextRunTime = new ArdenTime(nextRunTime.add(duration));
 		}
-		
+
 		// Select oldest schedule if it is older than nextRunTime
 		if (!additionalSchedules.isEmpty()) {
 			if (additionalSchedules.comparator().compare(additionalSchedules.first(), nextRunTime) < 0) {
@@ -40,22 +35,33 @@ public class AfterEvokeEvent extends EvokeEvent {
 				additionalSchedules.remove(oldestSchedule);
 			}
 		}
-		
+
 		return nextRunTime;
 	}
 
 	@Override
-	public boolean runOnEvent(String event, ArdenTime eventTime) {
-		if (target.runOnEvent(event, eventTime)) {
-			// trigger in 'duration' after current time
-			additionalSchedules.add(new ArdenTime(eventTime.add(duration)));
-		}
+	public boolean runOnEvent(ArdenEvent event) {
 		return false;
 	}
 
 	@Override
-	public ArdenValue setTime(long newPrimaryTime) {
-		return new AfterEvokeEvent(duration, target, newPrimaryTime);
+	public void scheduleEvent(ArdenEvent event) {
+		target.scheduleEvent(event);
+		if (target.runOnEvent(event)) {
+			// trigger in 'duration' after eventtime
+			long triggerTime = new ArdenTime(event.eventTime).add(duration);
+			additionalSchedules.add(new ArdenTime(triggerTime));
+		}
 	}
-	
+
+	@Override
+	public ArdenEvent getTriggeringEvent() {
+		return target.getTriggeringEvent();
+	}
+
+	@Override
+	public long getDelay() {
+		return target.getDelay() + (long) (duration.toSeconds() * 1000);
+	}
+
 }

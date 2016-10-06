@@ -16,12 +16,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import arden.CommandLineOptions;
-import arden.EventEngine;
+import arden.EvokeEngine;
 import arden.MainClass;
 import arden.compiler.CompiledMlm;
 import arden.compiler.Compiler;
 import arden.compiler.CompilerException;
-import arden.runtime.events.EvokeEvent;
+import arden.runtime.evoke.Trigger;
 
 /**
  * <p>
@@ -30,14 +30,14 @@ import arden.runtime.events.EvokeEvent;
  * </p>
  * <p>
  * Also allows calling other MLMs in the action slot (directly or via event). If
- * an {@link EventEngine} is not set, cyclic or delayed triggers are not run and
+ * an {@link EvokeEngine} is not set, cyclic or delayed triggers are not run and
  * delayed calls are run immediately.
  * </p>
  */
 public class BaseExecutionContext extends ExecutionContext {
 	private List<URL> mlmSearchPath = new LinkedList<URL>();
 	private Map<String, ArdenRunnable> moduleList = new HashMap<String, ArdenRunnable>();
-	private EventEngine engine;
+	private EvokeEngine engine;
 
 	public BaseExecutionContext(URL[] mlmSearchPath) {
 		setURLs(mlmSearchPath);
@@ -117,7 +117,7 @@ public class BaseExecutionContext extends ExecutionContext {
 		return mlm;
 	}
 
-	public void setEngine(EventEngine engine) {
+	public void setEngine(EvokeEngine engine) {
 		this.engine = engine;
 	}
 
@@ -154,21 +154,21 @@ public class BaseExecutionContext extends ExecutionContext {
 	}
 
 	@Override
-	public void callEvent(String mapping, ArdenTime eventTime) {
+	public void callEvent(ArdenEvent event) {
 		if (engine != null) {
 			// run on engine
-			engine.callEvent(mapping, eventTime);
+			engine.callEvent(event);
 		} else {
 			// run MLMs for event now
-			System.out.println("event: " + mapping);
+			System.out.println("event: " + event.name);
 			for (Entry<String, ArdenRunnable> entry : moduleList.entrySet()) {
 				ArdenRunnable runnable = entry.getValue();
 				if (runnable instanceof MedicalLogicModule) {
 					MedicalLogicModule mlm = (MedicalLogicModule) runnable;
 
 					try {
-						EvokeEvent evokeEvent = mlm.getEvoke(this, null);
-						if (evokeEvent.runOnEvent(mapping, getCurrentTime())) {
+						Trigger trigger = mlm.getTrigger(this, null);
+						if (trigger.runOnEvent(event)) {
 							super.eventTime = eventTime;
 							mlm.run(this, null);
 						}

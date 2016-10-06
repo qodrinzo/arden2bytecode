@@ -31,6 +31,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import arden.runtime.ArdenDuration;
+import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenList;
 import arden.runtime.ArdenNull;
 import arden.runtime.ArdenString;
@@ -39,11 +40,10 @@ import arden.runtime.ArdenValue;
 import arden.runtime.DatabaseQuery;
 import arden.runtime.MedicalLogicModule;
 import arden.runtime.MemoryQuery;
-import arden.runtime.events.CyclicEvokeEvent;
-import arden.runtime.events.EmptyEvokeSlot;
-import arden.runtime.events.EvokeEvent;
-import arden.runtime.events.FixedDateEvokeEvent;
-import arden.runtime.events.MappedEvokeEvent;
+import arden.runtime.evoke.CyclicTrigger;
+import arden.runtime.evoke.EventTrigger;
+import arden.runtime.evoke.NeverTrigger;
+import arden.runtime.evoke.Trigger;
 
 public class ExampleEvokeTest extends ImplementationTest {
 
@@ -52,10 +52,11 @@ public class ExampleEvokeTest extends ImplementationTest {
 		MedicalLogicModule mlm = compile("x3.1.mlm");
 
 		TestContext context = new TestContext();
-		EvokeEvent e = mlm.getEvoke(context, null);
+		Trigger trigger = mlm.getTrigger(context, null);
 
-		Assert.assertTrue(e instanceof MappedEvokeEvent);
-		Assert.assertTrue(e.runOnEvent("storage of urine electrolytes", context.getCurrentTime()));
+		Assert.assertTrue(trigger instanceof EventTrigger);
+		ArdenEvent event = new ArdenEvent("storage of urine electrolytes", context.getCurrentTime().value);
+		Assert.assertTrue(trigger.runOnEvent(event));
 	}
 
 	@Test
@@ -63,20 +64,22 @@ public class ExampleEvokeTest extends ImplementationTest {
 		MedicalLogicModule mlm = compile("x3.2.mlm");
 
 		TestContext context = new TestContext();
-		EvokeEvent e = mlm.getEvoke(context, null);
+		Trigger trigger = mlm.getTrigger(context, null);
 
-		Assert.assertTrue(e instanceof MappedEvokeEvent);
-		Assert.assertTrue(e.runOnEvent("'06210519','06210669'", context.getCurrentTime()));
+		Assert.assertTrue(trigger instanceof EventTrigger);
+		ArdenEvent event = new ArdenEvent("'06210519','06210669'", context.getCurrentTime().value);
+		Assert.assertTrue(trigger.runOnEvent(event));
 	}
 
 	@Test
 	public void x33noAllergies() throws Exception {
 		MedicalLogicModule mlm = compile("x3.3.mlm");
 		TestContext context = new TestContext();
-		EvokeEvent e = mlm.getEvoke(context, null);
+		Trigger trigger = mlm.getTrigger(context, null);
 		
-		Assert.assertTrue(e instanceof MappedEvokeEvent);
-		Assert.assertTrue(e.runOnEvent("medication_order where class = penicillin", context.getCurrentTime()));
+		Assert.assertTrue(trigger instanceof EventTrigger);
+		ArdenEvent event = new ArdenEvent("medication_order where class = penicillin", context.getCurrentTime().value);
+		Assert.assertTrue(trigger.runOnEvent(event));
 	}
 
 	@Test
@@ -90,10 +93,11 @@ public class ExampleEvokeTest extends ImplementationTest {
 				return new MemoryQuery(new ArdenValue[] { list });
 			}
 		};
-		EvokeEvent e = mlm.getEvoke(context, null);
+		Trigger trigger = mlm.getTrigger(context, null);
 		
-		Assert.assertTrue(e instanceof MappedEvokeEvent);
-		Assert.assertTrue(e.runOnEvent("medication_order where class = penicillin", context.getCurrentTime()));
+		Assert.assertTrue(trigger instanceof EventTrigger);
+		ArdenEvent event = new ArdenEvent("medication_order where class = penicillin", context.getCurrentTime().value);
+		Assert.assertTrue(trigger.runOnEvent(event));
 	}
 
 	@Test
@@ -107,10 +111,11 @@ public class ExampleEvokeTest extends ImplementationTest {
 				return new MemoryQuery(new ArdenValue[] { list });
 			}
 		};
-		EvokeEvent e = mlm.getEvoke(context, null);
+		Trigger trigger = mlm.getTrigger(context, null);
 		
-		Assert.assertTrue(e instanceof MappedEvokeEvent);
-		Assert.assertTrue(e.runOnEvent("medication_order where class = penicillin", context.getCurrentTime()));
+		Assert.assertTrue(trigger instanceof EventTrigger);
+		ArdenEvent event = new ArdenEvent("medication_order where class = penicillin", context.getCurrentTime().value);
+		Assert.assertTrue(trigger.runOnEvent(event));
 	}
 
 	@Test
@@ -118,10 +123,11 @@ public class ExampleEvokeTest extends ImplementationTest {
 		MedicalLogicModule mlm = compile("x3.4.mlm");
 
 		TestContext context = new TestContext();
-		EvokeEvent e = mlm.getEvoke(context, null);
+		Trigger trigger = mlm.getTrigger(context, null);
 
-		Assert.assertTrue(e instanceof MappedEvokeEvent);
-		Assert.assertTrue(e.runOnEvent("medication_order where class = gentamicin", context.getCurrentTime()));
+		Assert.assertTrue(trigger instanceof EventTrigger);
+		ArdenEvent event = new ArdenEvent("medication_order where class = gentamicin", context.getCurrentTime().value);
+		Assert.assertTrue(trigger.runOnEvent(event));
 	}
 
 	@Test
@@ -129,13 +135,14 @@ public class ExampleEvokeTest extends ImplementationTest {
 		MedicalLogicModule mlm = compile("x3.5.mlm");
 		ArdenTime defaultTime = createDateTime(1980, 0, 1, 0, 0, 0); // this is the default myExecutionContext.getCurrentTime()
 		ArdenTime defaultEventDate = createDateTime(2000, 0, 1, 0, 0, 0); // this is the default myExecutionContext.getEvent()
-		EvokeEvent defaultEvokeEvent = new FixedDateEvokeEvent(defaultEventDate);
+		ArdenEvent defaultEvent = new ArdenEvent("gentamicin_order", defaultEventDate.value);
 
-		TestContext context = new TestContext(defaultEvokeEvent, defaultTime);
-		EvokeEvent e = mlm.getEvoke(context, null);
+		TestContext context = new TestContext(defaultEvent, defaultTime);
+		Trigger trigger = mlm.getTrigger(context, null);
 
-		Assert.assertTrue(e instanceof CyclicEvokeEvent);
+		Assert.assertTrue(trigger instanceof CyclicTrigger);
 		
+		trigger.scheduleEvent(defaultEvent);
 		ArdenDuration fiveDays = (ArdenDuration)ArdenDuration.create(
 				60.0 * 60 * 24 * 5, 
 				false, 
@@ -145,7 +152,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 		// default runtime should be 5 days after the event as declared in the MLM:
 		Assert.assertEquals(
 				fiveDaysLater, 
-				e.getNextRunTime(context));
+				trigger.getNextRunTime(context));
 
 		ArdenTime tenDaysLater = new ArdenTime(fiveDaysLater.add(fiveDays));
 		ArdenDuration oneSecond = (ArdenDuration)ArdenDuration.create(1, false, context.getCurrentTime().value);
@@ -154,7 +161,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 		// after the first runtime has been passed, the mlm should be re-run another 5 days later:
 		Assert.assertEquals(
 				tenDaysLater,
-				e.getNextRunTime(context)); 
+				trigger.getNextRunTime(context)); 
 	}
 
 	@Test
@@ -162,10 +169,11 @@ public class ExampleEvokeTest extends ImplementationTest {
 		MedicalLogicModule mlm = compile("x3.6.mlm");
 
 		TestContext context = new TestContext();
-		EvokeEvent e = mlm.getEvoke(context, null);
+		Trigger trigger = mlm.getTrigger(context, null);
 
-		Assert.assertTrue(e instanceof MappedEvokeEvent);
-		Assert.assertTrue(e.runOnEvent("STORAGE OF ABSOLUTE_NEUTROPHILE_COUNT", context.getCurrentTime()));
+		Assert.assertTrue(trigger instanceof EventTrigger);
+		ArdenEvent event = new ArdenEvent("STORAGE OF ABSOLUTE_NEUTROPHILE_COUNT", context.getCurrentTime().value);
+		Assert.assertTrue(trigger.runOnEvent(event));
 	}
 
 	@Test
@@ -173,9 +181,9 @@ public class ExampleEvokeTest extends ImplementationTest {
 		MedicalLogicModule mlm = compile("x3.7.mlm");
 
 		TestContext context = new TestContext();
-		EvokeEvent e = mlm.getEvoke(context, null);
+		Trigger trigger = mlm.getTrigger(context, null);
 
-		Assert.assertTrue(e instanceof EmptyEvokeSlot);		
+		Assert.assertTrue(trigger instanceof NeverTrigger);
 	}
 
 	@Test
@@ -192,9 +200,9 @@ public class ExampleEvokeTest extends ImplementationTest {
 		ArdenList patientReactions = new ArdenList(new ArdenValue[] { new ArdenString("r1"), new ArdenString("r2"),
 				new ArdenString("r3") });
 
-		EvokeEvent e = mlm.getEvoke(context, new ArdenValue[] { medOrders, medAllergens, patientAllergies,
+		Trigger trigger = mlm.getTrigger(context, new ArdenValue[] { medOrders, medAllergens, patientAllergies,
 				patientReactions });
 
-		Assert.assertTrue(e instanceof EmptyEvokeSlot);	
+		Assert.assertTrue(trigger instanceof NeverTrigger);
 	}
 }

@@ -27,8 +27,8 @@
 
 package arden.runtime;
 
-import arden.runtime.events.EvokeEvent;
-import arden.runtime.events.UndefinedEvokeEvent;
+import arden.runtime.evoke.NeverTrigger;
+import arden.runtime.evoke.Trigger;
 
 /**
  * Base class for compiled logic etc. The compiler creates derived classes. An
@@ -79,10 +79,10 @@ public abstract class MedicalLogicModuleImplementation {
 	}
 	
 	/**
-	 * Gets the event when this MLM should be invoked
+	 * Gets the trigger when this MLM should be invoked
 	 */
-	public EvokeEvent getEvokeEvent(ExecutionContext context) {
-		return new UndefinedEvokeEvent();
+	public Trigger getTrigger(ExecutionContext context) {
+		return new NeverTrigger();
 	}
 	
 	/**

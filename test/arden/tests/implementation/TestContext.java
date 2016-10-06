@@ -27,27 +27,27 @@
 
 package arden.tests.implementation;
 
+import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenString;
 import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
 import arden.runtime.DatabaseQuery;
 import arden.runtime.ExecutionContext;
-import arden.runtime.events.EvokeEvent;
 
 public class TestContext extends ExecutionContext {
 	StringBuilder b = new StringBuilder();
-	EvokeEvent defaultEvent = null;
+	ArdenEvent defaultEvent = null;
 	ArdenTime defaultTime = null;
 	
 	public TestContext() {
 		
 	}
 	
-	public TestContext(EvokeEvent defaultEvent) {
+	public TestContext(ArdenEvent defaultEvent) {
 		this.defaultEvent = defaultEvent;
 	}
 	
-	public TestContext(EvokeEvent defaultEvent, ArdenTime defaultTime) {
+	public TestContext(ArdenEvent defaultEvent, ArdenTime defaultTime) {
 		this(defaultEvent);
 		this.defaultTime = defaultTime;
 	}
@@ -72,7 +72,7 @@ public class TestContext extends ExecutionContext {
 	}
 	
 	@Override
-	public EvokeEvent getEvent(String mapping) {
+	public ArdenEvent getEvent(String mapping) {
 		if (defaultEvent != null) {
 			return defaultEvent;
 		}

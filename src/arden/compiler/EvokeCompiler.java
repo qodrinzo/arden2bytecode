@@ -31,13 +31,15 @@ import arden.compiler.node.PEventList;
 import arden.compiler.node.PEventOr;
 import arden.compiler.node.PEvokeBlock;
 import arden.compiler.node.PEvokeStatement;
+import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
-import arden.runtime.events.AnyEvokeEvent;
-import arden.runtime.events.EmptyEvokeSlot;
-import arden.runtime.events.EvokeEvent;
-import arden.runtime.events.FixedDateEvokeEvent;
+import arden.runtime.evoke.AnyTrigger;
+import arden.runtime.evoke.EventTrigger;
+import arden.runtime.evoke.FixedDateTrigger;
+import arden.runtime.evoke.NeverTrigger;
+import arden.runtime.evoke.Trigger;
 
 public class EvokeCompiler extends VisitorBase {
 	private final CompilerContext context;
@@ -110,16 +112,16 @@ public class EvokeCompiler extends VisitorBase {
 		} else if (statements.size() == 1) {
 			statements.get(0).apply(this);
 		} else {
-			throw new RuntimeCompilerException(evokeSlot.getEvoke(), "no evoke event given");
+			throw new RuntimeCompilerException(evokeSlot.getEvoke(), "no evoke statement given");
 		}
 	}
 	
 	@Override
 	public void caseAEmptyEvokeStatement(AEmptyEvokeStatement stmt) {
-		context.writer.newObject(EmptyEvokeSlot.class);
+		context.writer.newObject(NeverTrigger.class);
 		context.writer.dup();
 		try {
-			context.writer.invokeConstructor(EmptyEvokeSlot.class.getConstructor());
+			context.writer.invokeConstructor(NeverTrigger.class.getConstructor());
 		} catch (NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		} catch (SecurityException e) {
@@ -132,13 +134,13 @@ public class EvokeCompiler extends VisitorBase {
 		node.getEvokeTime().apply(this);
 	}
 	
-	public void createFixedDateEvokeEvent(long datetime) {
-		context.writer.newObject(FixedDateEvokeEvent.class);
+	public void createFixedDateTrigger(long datetime) {
+		context.writer.newObject(FixedDateTrigger.class);
 		context.writer.dup();
 		
 		context.writer.loadStaticField(context.codeGenerator.getTimeLiteral(datetime));
 		try {
-			context.writer.invokeConstructor(FixedDateEvokeEvent.class.getConstructor(ArdenTime.class));
+			context.writer.invokeConstructor(FixedDateTrigger.class.getConstructor(ArdenTime.class));
 		} catch (NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		} catch (SecurityException e) {
@@ -148,12 +150,12 @@ public class EvokeCompiler extends VisitorBase {
 	
 	@Override
 	public void caseAIdateEvokeTime(AIdateEvokeTime node) {
-		createFixedDateEvokeEvent(ParseHelpers.parseIsoDate(node.getIsoDate()));
+		createFixedDateTrigger(ParseHelpers.parseIsoDate(node.getIsoDate()));
 	}
 	
 	@Override
 	public void caseAIdtEvokeTime(AIdtEvokeTime node) {
-		createFixedDateEvokeEvent(ParseHelpers.parseIsoDateTime(node.getIsoDateTime()));
+		createFixedDateTrigger(ParseHelpers.parseIsoDateTime(node.getIsoDateTime()));
 	}
 	
 	@Override
@@ -166,10 +168,10 @@ public class EvokeCompiler extends VisitorBase {
 		List<PEventOr> orBlocks = listOrBlocks(node);
 		
 		if (orBlocks.size() > 1) {
-			context.writer.newObject(AnyEvokeEvent.class);
+			context.writer.newObject(AnyTrigger.class);
 			context.writer.dup();
 			context.writer.loadIntegerConstant(orBlocks.size());
-			context.writer.newArray(EvokeEvent.class);
+			context.writer.newArray(Trigger.class);
 			for (int i = 0; i < orBlocks.size(); i++) {
 				context.writer.dup();
 				context.writer.loadIntegerConstant(i);
@@ -177,7 +179,7 @@ public class EvokeCompiler extends VisitorBase {
 				context.writer.storeObjectToArray();
 			}
 			try {
-				context.writer.invokeConstructor(AnyEvokeEvent.class.getConstructor(EvokeEvent[].class));
+				context.writer.invokeConstructor(AnyTrigger.class.getConstructor(Trigger[].class));
 			} catch (NoSuchMethodException e) {
 				throw new RuntimeException(e);
 			} catch (SecurityException e) {
@@ -195,10 +197,10 @@ public class EvokeCompiler extends VisitorBase {
 		List<PEventAny> anyBlocks = listAnyBlocks(node);
 
 		if (anyBlocks.size() > 1) {
-			context.writer.newObject(AnyEvokeEvent.class);
+			context.writer.newObject(AnyTrigger.class);
 			context.writer.dup();
 			context.writer.loadIntegerConstant(anyBlocks.size());
-			context.writer.newArray(EvokeEvent.class);
+			context.writer.newArray(Trigger.class);
 			for (int i = 0; i < anyBlocks.size(); i++) {
 				context.writer.dup();
 				context.writer.loadIntegerConstant(i);
@@ -206,7 +208,7 @@ public class EvokeCompiler extends VisitorBase {
 				context.writer.storeObjectToArray();
 			}
 			try {
-				context.writer.invokeConstructor(AnyEvokeEvent.class.getConstructor(EvokeEvent[].class));
+				context.writer.invokeConstructor(AnyTrigger.class.getConstructor(Trigger[].class));
 			} catch (NoSuchMethodException e) {
 				throw new RuntimeException(e);
 			} catch (SecurityException e) {
@@ -235,6 +237,7 @@ public class EvokeCompiler extends VisitorBase {
 		factor.getEventFactor().apply(this);
 	}
 	
+	/** leaves ArdenEvent on stack */
 	@Override
 	public void caseAIdEventFactor(AIdEventFactor id) {
 		String name = id.getIdentifier().getText();
@@ -244,7 +247,16 @@ public class EvokeCompiler extends VisitorBase {
 		if (!(var instanceof EventVariable)) {
 			throw new RuntimeCompilerException(id.getIdentifier(), "This is not an event variable: \"" + name + "\"");
 		}
+		context.writer.newObject(EventTrigger.class);
+		context.writer.dup();
 		var.loadValue(context, id.getIdentifier());
+		try {
+			context.writer.invokeConstructor(EventTrigger.class.getConstructor(ArdenEvent.class));
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		} catch (SecurityException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override
@@ -257,22 +269,22 @@ public class EvokeCompiler extends VisitorBase {
 		node.getSimpleEvokeCycle().apply(this);
 	}
 	
-	/** leaves EvokeEvent on stack */
+	/** leaves Trigger on stack */
 	@Override
 	public void caseASuntQualifiedEvokeCycle(ASuntQualifiedEvokeCycle qualifiedcycle) {
 		qualifiedcycle.getSimpleEvokeCycle().apply(this);
 		qualifiedcycle.getExpr().apply(new ExpressionCompiler(context));
-		context.writer.invokeStatic(ExpressionCompiler.getMethod("until", EvokeEvent.class, ArdenValue.class));
+		context.writer.invokeStatic(ExpressionCompiler.getMethod("until", Trigger.class, ArdenValue.class));
 	}
 	
-	/** leaves EvokeEvent on stack */
+	/** leaves Trigger on stack */
 	@Override
 	public void caseASimpleEvokeCycle(ASimpleEvokeCycle simplecycle) {
 		simplecycle.getDurL().apply(this); // interval
 		simplecycle.getDurR().apply(this); // for
 		simplecycle.getEvokeTime().apply(this); // starting
 		context.writer.loadVariable(context.executionContextVariable);
-		context.writer.invokeStatic(ExpressionCompiler.getMethod("createEvokeCycle", ArdenValue.class, ArdenValue.class, EvokeEvent.class, ExecutionContext.class));
+		context.writer.invokeStatic(ExpressionCompiler.getMethod("createCycleTrigger", ArdenValue.class, ArdenValue.class, Trigger.class, ExecutionContext.class));
 	}
 	
 	/** leaves ArdenDuration on stack */
@@ -284,20 +296,20 @@ public class EvokeCompiler extends VisitorBase {
 		context.writer.invokeStatic(ExpressionCompiler.getMethod("createDuration", ArdenValue.class, double.class, boolean.class));
 	}
 	
-	/** leaves EvokeEvent on stack */
+	/** leaves Trigger on stack */
 	@Override
 	public void caseAEdurEvokeTime(AEdurEvokeTime duration) {
 		duration.getEvokeDuration().apply(this);
 		duration.getEvokeTime().apply(this);
-		context.writer.invokeStatic(ExpressionCompiler.getMethod("after", ArdenValue.class, EvokeEvent.class));
+		context.writer.invokeStatic(ExpressionCompiler.getMethod("after", ArdenValue.class, Trigger.class));
 	}
 	
-	/** takes and leaves EvokeEvent on the stack */
+	/** takes and leaves Trigger on the stack */
 	@Override
 	public void caseATofEvokeTime(ATofEvokeTime node) {
 		node.getEventAny().apply(this);
 		context.writer.loadVariable(context.executionContextVariable);
-		context.writer.invokeStatic(ExpressionCompiler.getMethod("timeOf", EvokeEvent.class, ExecutionContext.class));
+		context.writer.invokeStatic(ExpressionCompiler.getMethod("timeOf", Trigger.class, ExecutionContext.class));
 	}
 	
 	@Override

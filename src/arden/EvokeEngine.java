@@ -12,29 +12,37 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenRunnable;
 import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
 import arden.runtime.BaseExecutionContext;
 import arden.runtime.ExecutionContext;
 import arden.runtime.MedicalLogicModule;
-import arden.runtime.events.EvokeEvent;
+import arden.runtime.evoke.Trigger;
 
 /**
  * <p>
- * The event engine waits for events and calls and invokes MLMs when they are
- * scheduled. It manages delayed calls (e.g. in the actions slot) and periodic
- * or delayed triggers (in the evoke slot). MLMs which are waiting for execution
- * are called in the order of their priority or their urgency (action slot
- * calls).
+ * The evoke engine waits for periodic or delayed evoke triggers (in the evoke
+ * slot) and delayed calls (in the action slot) and invokes MLMs when they are
+ * scheduled. MLMs which are waiting for execution are called in the order of
+ * their priority (MLMs triggered in the evoke slot) or their urgency (action
+ * slot calls).
  * </p>
  * <p>
- * Threads can communicate with its scheduling loop via a message queue.
+ * Threads can communicate with the engines scheduling loop via a message queue.
  * Messages are {@link EventCall}s or {@link MlmCall}s. EventCalls are handled
- * first, then MlmCalls in order of their priority/urgency.
+ * first as they only add new MlmCalls to the queue, then MlmCalls are handled
+ * in order of their priority/urgency.
+ * </p>
+ * <p>
+ * MlmCalls or EventCalls may trigger other MLMs after a delay, so the engine
+ * uses each MLMs {@link Trigger#getNextRunTime(ExecutionContext)} method to
+ * check when it should run next. Delayed calls are added to the the queue after
+ * their delay has passed, via a {@link ScheduledExecutorService}.
  * </p>
  */
-public class EventEngine implements Runnable {
+public class EvokeEngine implements Runnable {
 	private Comparator<Message> priorityComparator = new Comparator<Message>() {
 		@Override
 		public int compare(Message m1, Message m2) {
@@ -49,22 +57,21 @@ public class EventEngine implements Runnable {
 	private ExecutionContext context;
 	private List<MedicalLogicModule> mlms;
 
-	public EventEngine(BaseExecutionContext context, List<MedicalLogicModule> mlms) {
+	public EvokeEngine(BaseExecutionContext context, List<MedicalLogicModule> mlms) {
 		this.mlms = mlms;
 		this.context = context;
 
 		context.setEngine(this);
-
-		// TODO schedule first MLM for execution?
 	}
 
-	public void callEvent(String mapping, ArdenTime eventTime) {
+	public void callEvent(ArdenEvent event) {
 		/*
 		 * Checking the evoke statements may require running the data slot,
 		 * which should not run concurrent to other (possibly data changing)
-		 * MLMs. Therefore add an EventCall to messages.
+		 * MLMs. Therefore add an EventCall to messages, so it is run on the
+		 * engines thread.
 		 */
-		messages.add(new EventCall(mapping, eventTime));
+		messages.add(new EventCall(event));
 	}
 
 	public void callWithDelay(ArdenRunnable mlm, ArdenValue[] arguments, int urgency, long delay) {
@@ -85,7 +92,7 @@ public class EventEngine implements Runnable {
 
 	@Override
 	public void run() {
-		// initialize schedule for fixed time constant triggers
+		// initialize schedule for fixed time triggers
 		scheduleTriggers();
 
 		// the scheduling loop
@@ -149,16 +156,16 @@ public class EventEngine implements Runnable {
 
 		// put MLMs which should run at the same time into groups sorted by time
 		for (MedicalLogicModule mlm : mlms) {
-			EvokeEvent evokeEvent;
+			Trigger trigger;
 			try {
-				evokeEvent = mlm.getEvoke(context, null);
+				trigger = mlm.getTrigger(context, null);
 			} catch (InvocationTargetException e) {
 				// print error and skip this MLM
 				e.printStackTrace();
 				continue;
 			}
 
-			ArdenTime nextRuntime = evokeEvent.getNextRunTime(context);
+			ArdenTime nextRuntime = trigger.getNextRunTime(context);
 			if (nextRuntime == null) {
 				// not scheduled
 				continue;
@@ -184,17 +191,15 @@ public class EventEngine implements Runnable {
 	}
 
 	private static interface Message extends Runnable {
-		// not necessarily the same as an MLMs priority
+		// not necessarily the same as an MLMs priority!
 		int getPriority();
 	}
 
 	private class EventCall implements Message {
-		String mapping;
-		ArdenTime eventTime;
+		ArdenEvent event;
 
-		public EventCall(String mapping, ArdenTime eventTime) {
-			this.mapping = mapping;
-			this.eventTime = eventTime;
+		public EventCall(ArdenEvent event) {
+			this.event = event;
 		}
 
 		@Override
@@ -205,18 +210,19 @@ public class EventEngine implements Runnable {
 
 		@Override
 		public void run() {
-			// add calls to all MLMs which should run for the event to messages
+			// add MlmCalls for all MLMs which should run for the event to queue
 			for (MedicalLogicModule mlm : mlms) {
-				EvokeEvent evokeEvent;
+				Trigger trigger;
 				try {
-					evokeEvent = mlm.getEvoke(context, null);
+					trigger = mlm.getTrigger(context, null);
 				} catch (InvocationTargetException e) {
 					// print error and skip this MLM
 					e.printStackTrace();
 					continue;
 				}
 
-				if (evokeEvent.runOnEvent(mapping, eventTime)) {
+				trigger.scheduleEvent(event);
+				if (trigger.runOnEvent(event)) {
 					messages.add(new MlmCall(mlm, null));
 				}
 			}
