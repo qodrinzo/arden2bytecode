@@ -217,6 +217,7 @@ Tokens
   call        = c a l l;
   ceiling     = c e i l i n g;
   characters  = c h a r a c t e r s;
+  citation    = c i t a t i o n;
   citations   = c i t a t i o n s;
   {normal -> text}citations_colon   = c i t a t i o n s ':';
   conclude    = c o n c l u d e;
@@ -252,6 +253,7 @@ Tokens
   every       = e v e r y;
   evoke       = e v o k e;
   evoke_colon = e v o k e ':';
+  excluding   = e x c l u d i n g;
   exist       = e x i s t;
   exists      = e x i s t s;
   exp         = e x p;
@@ -283,6 +285,7 @@ Tokens
   {normal-> text} institution_colon = i n s t i t u t i o n ':';
   int         = i n t;
   interface   = i n t e r f a c e;
+  intersect   = i n t e r s e c t;
   interval    = i n t e r v a l;
   is          = i s;
   it          = i t;
@@ -361,6 +364,7 @@ Tokens
   same        = s a m e;
   second      = s e c o n d;
   seconds     = s e c o n d s;
+  select      = s e l e c t;
   seqto       = s e q t o;
   sin         = s i n;
   sine        = s i n e;
@@ -393,6 +397,7 @@ Tokens
   truncate    = t r u n c a t e;
   type        = t y p e;
   type_colon  = t y p e ':';
+  union       = u n i o n;
   unique      = u n i q u e;
   until       = u n t i l;
   uppercase   = u p p e r c a s e;
