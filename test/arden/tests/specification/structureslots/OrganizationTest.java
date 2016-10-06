@@ -2,17 +2,18 @@ package arden.tests.specification.structureslots;
 
 import org.junit.Test;
 
-import arden.tests.specification.testcompiler.ArdenCodeBuilder;
+import arden.tests.specification.testcompiler.ArdenVersion;
 import arden.tests.specification.testcompiler.SpecificationTest;
+import arden.tests.specification.testcompiler.CompatibilityRule.Compatibility;
 
 public class OrganizationTest extends SpecificationTest {
-	
+
 	@Test
 	public void testStatements() throws Exception {
 		// optional semicolon for last statement in slot
 		assertValidStatement("x := 5; y := 6");
 		assertValidStatement("x := 5; y := 6;");
-		
+
 		// ;;; invalid
 		assertInvalidStatement("x := 5; y := 6;;; //");
 		assertValidStatement("x := 5; y := 6;/**/;; //");
@@ -27,42 +28,45 @@ public class OrganizationTest extends SpecificationTest {
 	@Test
 	public void testVariables() throws Exception {
 		// null if no value assigned
-		String useBeforeAssign = new ArdenCodeBuilder()
+		String useBeforeAssign = createCodeBuilder()
 				.addData("x := x;")
 				.addAction("RETURN x;")
 				.toString();
 		assertReturns(useBeforeAssign, "NULL");
 
-		String uninitialized = new ArdenCodeBuilder()
+		String uninitialized = createCodeBuilder()
 				.addData("IF FALSE THEN x := 0;")
 				.addData("ENDIF;")
 				.addAction("RETURN x;")
 				.toString();
 		assertReturns(uninitialized, "NULL");
 	}
-	
+
 	@Test
+	@Compatibility(min = ArdenVersion.V2) // mlmname
 	public void testScope() throws Exception {
 		// entire mlm
-		String slotScope = new ArdenCodeBuilder()
+		String slotScope = createCodeBuilder()
 				.addData("x := 5;")
 				.addAction("RETURN x")
 				.toString();
 		assertReturns(slotScope, "5");
-		
+
 		// not other mlms
-		String otherMlm = new ArdenCodeBuilder()
+		String otherMlm = createEmptyLogicSlotCodeBuilder()
 				.replaceSlotContent("mlmname:", "other_mlm")
 				.addData("a := 1;")
 				.addData("c := 2;")
-				.addAction("a := 3;")
+				.addLogic("a := 3;")
+				.addLogic("CONCLUDE TRUE")
 				.addAction("RETURN a;")
 				.toString();
-		String scope = new ArdenCodeBuilder()
+		String scope = createEmptyLogicSlotCodeBuilder()
 				.addMlm(otherMlm)
 				.addData("a := 4;")
-				.addAction("b := 5;")
-				.addAction("c := c;")
+				.addLogic("b := 5;")
+				.addLogic("c := c;")
+				.addLogic("CONCLUDE TRUE")
 				.addAction("RETURN (a,b,c);")
 				.toString();
 		assertReturns(scope, "(4,5,NULL)");

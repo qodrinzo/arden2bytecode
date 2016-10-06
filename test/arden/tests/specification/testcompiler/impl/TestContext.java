@@ -17,13 +17,11 @@ import arden.runtime.ArdenValue;
 import arden.runtime.DatabaseQuery;
 import arden.runtime.ExecutionContext;
 import arden.tests.specification.testcompiler.TestCompiler;
-import arden.tests.specification.testcompiler.TestCompilerResult.TestCompilerOutputText;
 
 /**
  * See the requirements at the {@link TestCompiler} interface.
  */
 public class TestContext extends ExecutionContext {
-	static final String EVENT_MAPPING = "test event";
 	static final String INTERFACE_MAPPING = "test interface";
 	static final String MESSAGE_MAPPING = "test message";
 	static final String READ_MAPPING = "select id from database";
@@ -31,14 +29,14 @@ public class TestContext extends ExecutionContext {
 	static final String DESTINATION_MAPPING = "dest";
 	
 	// TODO DatabaseQuery should automatically sort by time
-	private static ArdenValue[] values1 = new ArdenValue[] {
+	private final ArdenValue[] values1 = new ArdenValue[] {
 			ArdenNumber.create(5, new GregorianCalendar(1970,Calendar.JANUARY,1).getTimeInMillis()),
 			ArdenNumber.create(3, new GregorianCalendar(1990,Calendar.JANUARY,1).getTimeInMillis()),
 			ArdenNumber.create(2, new GregorianCalendar(1990,Calendar.JANUARY,2).getTimeInMillis()),
 			ArdenNumber.create(4, new GregorianCalendar(1990,Calendar.JANUARY,3).getTimeInMillis()),
 			ArdenNumber.create(1, new GregorianCalendar(2000,Calendar.JANUARY,1).getTimeInMillis())
 	};
-	private static ArdenValue[] values2 = new ArdenValue[] {
+	private final ArdenValue[] values2 = new ArdenValue[] {
 			new ArdenString("e", new GregorianCalendar(1970,Calendar.JANUARY,1).getTimeInMillis()),
 			new ArdenString("c", new GregorianCalendar(1990,Calendar.JANUARY,1).getTimeInMillis()),
 			new ArdenString("b", new GregorianCalendar(1990,Calendar.JANUARY,2).getTimeInMillis()),
@@ -46,7 +44,7 @@ public class TestContext extends ExecutionContext {
 			new ArdenString("a", new GregorianCalendar(2000,Calendar.JANUARY,1).getTimeInMillis())
 	};
 	
-	private List<TestCompilerOutputText> outputTexts = new LinkedList<TestCompilerOutputText>();
+	private List<String> messages = new LinkedList<String>();
 	private List<CompiledMlm> mlms;
 	private String institutionSelf;
 	enum Validation {
@@ -132,10 +130,7 @@ public class TestContext extends ExecutionContext {
 	
 	@Override
 	public ArdenEvent getEvent(String mapping) {
-		if(EVENT_MAPPING.equals(mapping)) {
-			return new ArdenEvent(mapping);
-		}
-		return super.getEvent(mapping);
+		return new ArdenEvent(mapping);
 	}
 
 	@Override
@@ -166,10 +161,11 @@ public class TestContext extends ExecutionContext {
 	public void write(ArdenValue message, String destination) {
 		// save messages
 		String stringMessage = ((ArdenString) message).value;
-		outputTexts.add(new TestCompilerOutputText(destination, stringMessage));
+		messages.add(stringMessage);
 	}
 
-	public List<TestCompilerOutputText> getOutputText() {
-		return outputTexts;
+	public List<String> getMessages() {
+		return messages;
 	}
+
 }

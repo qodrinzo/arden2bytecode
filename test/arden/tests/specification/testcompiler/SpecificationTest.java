@@ -8,65 +8,95 @@ import static org.junit.Assume.assumeTrue;
 
 import org.junit.Rule;
 
-import arden.tests.specification.testcompiler.ArdenCodeBuilder;
-import arden.tests.specification.testcompiler.CompatibilityRule;
-import arden.tests.specification.testcompiler.TestCompiler;
-import arden.tests.specification.testcompiler.TestCompilerCompiletimeException;
-import arden.tests.specification.testcompiler.TestCompilerException;
-import arden.tests.specification.testcompiler.TestCompilerMappings;
-import arden.tests.specification.testcompiler.TestCompilerResult;
-import arden.tests.specification.testcompiler.TestCompilerResult.TestCompilerOutputText;
+import arden.tests.specification.testcompiler.CompatibilityRule.Compatibility;
 
 /**
- * Base test class which all tests extend. Adds useful asserts, annotations and shared access
- * to the compiler.
+ * Base test class which all tests extend. Adds useful asserts, annotations and
+ * access to the compiler.
  */
 public abstract class SpecificationTest {
-	
+
 	/** Initialise your compiler here. It will be used by all tests. */
 	private final TestCompiler compiler = new arden.tests.specification.testcompiler.impl.TestCompilerImpl();
-	
-	// Decorator which intercepts calls to the compiler to skip unsupported tests
+	private final TestCompilerSettings settings = compiler.getSettings();
+
+	// decorator which intercepts calls to the compiler to skip unsupported tests
 	private TestCompiler runtimeCheckedCompiler = new TestCompiler() {
-		public TestCompilerResult compileAndRun(String code) throws TestCompilerException {
-			// only run tests if runtime is supported
-			assumeTrue("Compiler doesn't support runtime tests", isRuntimeSupported());
-			return compiler.compileAndRun(code);
-		}
 		@Override
-		public boolean isRuntimeSupported() {
-			return compiler.isRuntimeSupported();
-		}
-		@Override
-		public boolean isVersionSupported(ArdenVersion version) {
-			return compiler.isVersionSupported(version);
-		}
-		@Override
-		public void compile(String code) throws TestCompilerCompiletimeException {
-			compiler.compile(code);
-		}
+		public TestCompilerSettings getSettings() {
+			return compiler.getSettings();
+		};
+
 		@Override
 		public TestCompilerMappings getMappings() {
 			TestCompilerMappings mappings = compiler.getMappings();
 			// only run test if mappings are provided
 			assumeNotNull("Compiler doesn't support tests with mappings", mappings);
-			return compiler.getMappings();
+			return mappings;
 		};
+
+		@Override
+		public TestCompilerResult compileAndRun(String code) throws TestCompilerException {
+			// only run tests if runtime is supported
+			assumeTrue("Compiler doesn't support runtime tests", getSettings().isRuntimeSupported);
+			return compiler.compileAndRun(code);
+		}
+
+		@Override
+		public void compile(String code) throws TestCompilerCompiletimeException {
+			compiler.compile(code);
+		}
+
+		@Override
+		public TestCompilerDelayedMessage[] compileAndRunForEvent(String code, String eventMapping,
+				int messagesToCollect) throws TestCompilerException {
+			assumeTrue("Compiler doesn't support runtime tests", getSettings().isRuntimeSupported);
+			assumeTrue("Compiler doesn't support event tests", getSettings().runDelayTests);
+			return compiler.compileAndRunForEvent(code, eventMapping, messagesToCollect);
+		}
 	};
-	
+
+	protected TestCompilerSettings getSettings() {
+		return settings;
+	}
+
 	protected TestCompiler getCompiler() {
 		return runtimeCheckedCompiler;
 	}
-	
+
 	protected TestCompilerMappings getMappings() {
 		return runtimeCheckedCompiler.getMappings();
 	}
-	
-	// Used for backward compatibility tests with the <code>@Compatibility</code> annotation.
+
+	/**
+	 * Initializes a code builder with a
+	 * {@link ArdenCodeBuilder#ArdenCodeBuilder(ArdenVersion) template}
+	 * compatible to the highest possible version. <br>
+	 * The highest possible version is either the compiler's
+	 * {@link TestCompilerSettings#targetVersion target version} or the tests
+	 * {@link Compatibility#max() max compatible version}, whichever is lower.
+	 * 
+	 * @return the {@link ArdenCodeBuilder}
+	 */
+	protected ArdenCodeBuilder createCodeBuilder() {
+		ArdenVersion maxPossibleVersion;
+		if (settings.targetVersion.ordinal() <= compatibilityRule.getCurrentTestMaxVersion().ordinal()) {
+			maxPossibleVersion = settings.targetVersion;
+		} else {
+			maxPossibleVersion = compatibilityRule.getCurrentTestMaxVersion();
+		}
+
+		return new ArdenCodeBuilder(maxPossibleVersion);
+	}
+
+	protected ArdenCodeBuilder createEmptyLogicSlotCodeBuilder() {
+		return createCodeBuilder().clearSlotContent("logic:");
+	}
+
+	// Used for compatibility tests with the @Compatibility annotation.
 	@Rule
-	public CompatibilityRule comaptibilityRule = new CompatibilityRule(getCompiler());
-	
-	
+	public CompatibilityRule compatibilityRule = new CompatibilityRule(getSettings());
+
 	/**
 	 * Tests if the result of the evaluated expressions is equal to the expected
 	 * string (case insensitive).
@@ -74,28 +104,28 @@ public abstract class SpecificationTest {
 	protected void assertEvaluatesTo(String expression, String expected) throws TestCompilerException {
 		assertEvaluatesToWithData(null, expression, expected);
 	}
-	
+
 	protected void assertEvaluatesToWithData(String dataCode, String expression, String expected) throws TestCompilerException {
 		ArdenCodeBuilder builder;
-		if(dataCode != null) {
+		if (dataCode != null) {
 			builder = new ArdenCodeBuilder(dataCode);
 		} else {
-			builder = new ArdenCodeBuilder();
+			builder = createCodeBuilder();
 		}
 		String code = builder.addExpression(expression).toString();
 		assertReturns(code, expected);
 	}
-	
+
 	protected void assertReturns(String code, String... expected) throws TestCompilerException {
-		if(!getCompiler().isRuntimeSupported()) {
+		if (!getSettings().isRuntimeSupported) {
 			assertValid(code);
 			return;
 		}
-		
+
 		TestCompilerResult result = getCompiler().compileAndRun(code);
-		if(expected.length == 0) {
+		if (expected.length == 0) {
 			// no return values
-			if(result.returnValues.isEmpty()) {
+			if (result.returnValues.isEmpty()) {
 				// test passed
 			} else {
 				// a single "NULL" is also okay
@@ -119,48 +149,90 @@ public abstract class SpecificationTest {
 			assertArrayEquals(expected_lowercase, returnValues_lowercase);
 		}
 	}
-	
+
 	protected void assertNoReturn(String code) throws TestCompilerException {
 		assertReturns(code); // no expected values
 	}
-	
+
 	protected void assertWrites(String code, String expected) throws TestCompilerException {
-		if(!getCompiler().isRuntimeSupported()) {
+		if (!getSettings().isRuntimeSupported) {
 			assertValid(code);
 			return;
 		}
-		
+
 		TestCompilerResult result = getCompiler().compileAndRun(code);
-		TestCompilerOutputText outputText = result.outputTexts.get(0);
-		assertEquals(expected, outputText.text);
+		String message = result.messages.get(0);
+		assertEquals(expected.toLowerCase(), message.toLowerCase());
 	}
-	
+
 	protected void assertValidStatement(String statement) throws TestCompilerException {
-		String code = new ArdenCodeBuilder().addAction(statement).toString();
+		String code = createCodeBuilder().addData(statement).toString();
 		assertValid(code);
 	}
-	
+
 	protected void assertInvalidStatement(String statement) throws TestCompilerException {
-		String code = new ArdenCodeBuilder().addAction(statement).toString();
+		String code = createCodeBuilder().addData(statement).toString();
 		assertInvalid(code);
 	}
-	
+
 	protected void assertInvalidExpression(String expression) throws TestCompilerException {
-		String code = new ArdenCodeBuilder().addExpression(expression).toString();
+		String code = createCodeBuilder().addExpression(expression).toString();
 		assertInvalid(code);
 	}
-	
+
 	protected void assertValid(String code) throws TestCompilerCompiletimeException {
 		getCompiler().compile(code);
 	}
-	
+
 	protected void assertInvalid(String code) {
 		try {
 			getCompiler().compile(code);
 			fail("Expected a " + TestCompilerCompiletimeException.class.getSimpleName() + " to be thrown.");
-		} catch(TestCompilerCompiletimeException e) {
+		} catch (TestCompilerCompiletimeException e) {
 			// test passed
 		}
 	}
-	
+
+	protected void assertValidSlot(String slotname, String slotcontent) throws TestCompilerCompiletimeException {
+		String code = createCodeBuilder().replaceSlotContent(slotname, slotcontent).toString();
+		assertValid(code);
+	}
+
+	protected void assertInvalidSlot(String slotname, String slotcontent) {
+		String code = createCodeBuilder().replaceSlotContent(slotname, slotcontent).toString();
+		assertInvalid(code);
+	}
+
+	protected void assertSlotIsRequired(String slotname) {
+		String missingSlot = createCodeBuilder().removeSlot(slotname).toString();
+		assertInvalid(missingSlot);
+	}
+
+	protected void assertSlotIsOptional(String slotname) throws TestCompilerCompiletimeException {
+		String missingSlot = createCodeBuilder().removeSlot(slotname).toString();
+		assertValid(missingSlot);
+	}
+
+	protected void assertWritesAfterEvent(String code, String event, String... messages) throws TestCompilerException {
+		if (!getSettings().isRuntimeSupported || !getSettings().runDelayTests) {
+			assertValid(code);
+			return;
+		}
+		TestCompilerDelayedMessage[] delayedMessages = getCompiler().compileAndRunForEvent(code, event, messages.length);
+		for (int i = 0; i < messages.length; i++) {
+			assertEquals(messages[i].toLowerCase(), delayedMessages[i].message.toLowerCase());
+		}
+	}
+
+	protected void assertDelayedBy(String code, String event, long... delayMillis) throws TestCompilerException {
+		if (!getSettings().isRuntimeSupported || !getSettings().runDelayTests) {
+			assertValid(code);
+			return;
+		}
+		TestCompilerDelayedMessage[] messages = getCompiler().compileAndRunForEvent(code, event, delayMillis.length);
+		for (int i = 0; i < delayMillis.length; i++) {
+			assertEquals(delayMillis[i], messages[i].delayMillis, TestCompilerDelayedMessage.PRECISION_MILLIS);
+		}
+	}
+
 }

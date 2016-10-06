@@ -2,14 +2,17 @@ package arden.tests.specification.operators;
 
 import org.junit.Test;
 
-import arden.tests.specification.testcompiler.ArdenCodeBuilder;
+import arden.tests.specification.testcompiler.ArdenVersion;
+import arden.tests.specification.testcompiler.CompatibilityRule.Compatibility;
 import arden.tests.specification.testcompiler.SpecificationTest;
 
 public class StringOperatorsTest extends SpecificationTest {
-	
-	private static final String DATA = new ArdenCodeBuilder()
-			.addData("x := \"hello world\"; TIME x := 1990-01-01T00:00:00;")
-			.toString();
+
+	private String createData() {
+		return createCodeBuilder()
+				.addData("x := \"hello world\"; TIME x := 1990-01-01T00:00:00;")
+				.toString();
+	}
 
 	@Test
 	public void testConcatenation() throws Exception {
@@ -20,15 +23,17 @@ public class StringOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("3 days || \" left\"", "\"3 days left\"");
 		assertEvaluatesTo("\"on \" || 1990-03-15T13:45:01", "\"on 1990-03-15T13:45:01\"");
 		assertEvaluatesTo("\"list=\" || (1,2,3)", "\"list=(1,2,3)\"");
-		assertEvaluatesToWithData(DATA, "TIME (x || x)", "NULL");
+		assertEvaluatesToWithData(createData(), "TIME (x || x)", "NULL");
 	}
 
 	@Test
+	@Compatibility(min = ArdenVersion.V2)
 	public void testFormattedWith() throws Exception {
 		assertEvaluatesTo("(1,2,3.3) formatted with \"%2.2d::%2.2d::%2.2d\"", "\"01::02::03\"");
 		assertEvaluatesTo("10.60528 formatted with \"The result was %.2f mg\"", "\"The result was 10.61 mg\"");
 		// TODO how to check implementation independent
-		//assertEvaluatesTo("1998-01-10T17:25:00 formatted with \"The date was %.2t\"", "\"The date was Jan 10 1998\"");
+		// assertEvaluatesTo("1998-01-10T17:25:00 formatted with \"The date was
+		// %.2t\"", "\"The date was Jan 10 1998\"");
 		assertEvaluatesTo("1998-01-10T17:25:00 formatted with \"The year was %.0t\"", "\"The year was 1998\"");
 		assertEvaluatesTo("(\"ten\", \"twenty\", \"thirty\") formatted with \"%s, %s, %s or more\"", "\"ten, twenty, thirty or more\"");
 		assertEvaluatesTo("1 formatted with \"-%2.2d%%-\"", "\"-01%-\"");
@@ -52,10 +57,11 @@ public class StringOperatorsTest extends SpecificationTest {
 	}
 
 	@Test
+	@Compatibility(min = ArdenVersion.V2)
 	public void testString() throws Exception {
 		assertEvaluatesTo("STRING (\"a\",\"bc\")", "\"abc\"");
 		assertEvaluatesTo("STRING ()", "\"\"");
-		assertEvaluatesToWithData(DATA, "TIME STRING x", "NULL");
+		assertEvaluatesToWithData(createData(), "TIME STRING x", "NULL");
 		assertEvaluatesTo("STRING ()", "\"\"");
 		assertEvaluatesTo("STRING REVERSE EXTRACT CHARACTERS \"abcde\"", "\"edcba\"");
 	}
@@ -67,20 +73,22 @@ public class StringOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("\"abnormal values\" MATCHES PATTERN \"%value_\"", "TRUE");
 		assertEvaluatesTo("(\"stunned myocardium\", \"myocardial infarction\") MATCHES PATTERN \"%myocardium\"", "(TRUE,FALSE)");
 		assertEvaluatesTo("\"5%\" MATCHES PATTERN \"_\\%\"", "TRUE");
-		assertEvaluatesToWithData(DATA, "TIME (x MATCHES PATTERN \"%hello%\")", "NULL");
+		assertEvaluatesToWithData(createData(), "TIME (x MATCHES PATTERN \"%hello%\")", "NULL");
 	}
 
 	@Test
+	@Compatibility(min = ArdenVersion.V2_1)
 	public void testLength() throws Exception {
 		assertEvaluatesTo("LENGTH OF \" Example String \"", "16");
 		assertEvaluatesTo("LENGTH \"\"", "0");
 		assertEvaluatesTo("LENGTH ()", "NULL");
 		assertEvaluatesTo("LENGTH OF NULL", "NULL");
 		assertEvaluatesTo("LENGTH OF (\"Negative\", \"Pos\", 2)", "(8,3,NULL)");
-		assertEvaluatesToWithData(DATA, "TIME LENGTH x", "NULL");
+		assertEvaluatesToWithData(createData(), "TIME LENGTH x", "NULL");
 	}
 
 	@Test
+	@Compatibility(min = ArdenVersion.V2_1)
 	public void testCase() throws Exception {
 		assertEvaluatesTo("UPPERCASE \"Example String\"", "\"EXAMPLE STRING\"");
 		assertEvaluatesTo("UPPERCASE \"\"", "\"\"");
@@ -88,10 +96,11 @@ public class StringOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("UPPERCASE ()", "NULL");
 		assertEvaluatesTo("LOWERCASE 12.8", "NULL");
 		assertEvaluatesTo("UPPERCASE (\"5-Hiaa\", \"Pos\", 2)", "(\"5-HIAA\",\"POS\",NULL)");
-		assertEvaluatesToWithData(DATA, "TIME (UPPERCASE x)", "1990-01-01T00:00:00");
+		assertEvaluatesToWithData(createData(), "TIME (UPPERCASE x)", "1990-01-01T00:00:00");
 	}
 
 	@Test
+	@Compatibility(min = ArdenVersion.V2_1)
 	public void testTrim() throws Exception {
 		assertEvaluatesTo("TRIM \" example \"", "\"example\"");
 		assertEvaluatesTo("TRIM \"\"", "\"\"");
@@ -99,10 +108,11 @@ public class StringOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("TRIM LEFT \" result: \"", "\"result: \"");
 		assertEvaluatesTo("TRIM RIGHT \" result: \"", "\" result:\"");
 		assertEvaluatesTo("TRIM (\" 5 N\", \"2 E \", 2)", "(\"5 N\",\"2 E\",NULL)");
-		assertEvaluatesToWithData(DATA, "TIME (TRIM x)", "1990-01-01T00:00:00");
+		assertEvaluatesToWithData(createData(), "TIME (TRIM x)", "1990-01-01T00:00:00");
 	}
 
 	@Test
+	@Compatibility(min = ArdenVersion.V2_1)
 	public void testFind() throws Exception {
 		assertEvaluatesTo("FIND \"E\" IN STRING \"Example Here\"", "1");
 		assertEvaluatesTo("FIND \"e\" IN STRING \"Example Here\"", "7");
@@ -116,10 +126,11 @@ public class StringOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("FIND \"e\" IN STRING \"Example Here\" STARTING AT \"x\"", "NULL");
 		assertEvaluatesTo("FIND \"e\" IN STRING \"Example Here\" STARTING AT 99", "0");
 		assertEvaluatesTo("FIND \"e\" IN STRING \"Example Here\" STARTING AT (10,11)", "(10,12)");
-		assertEvaluatesToWithData(DATA, "TIME (FIND \"e\" IN STRING x)", "NULL");
+		assertEvaluatesToWithData(createData(), "TIME (FIND \"e\" IN STRING x)", "NULL");
 	}
 
 	@Test
+	@Compatibility(min = ArdenVersion.V2_1)
 	public void testSubstring() throws Exception {
 		assertEvaluatesTo("SUBSTRING 2 CHARACTERS FROM \"abcdefg\"", "\"ab\"");
 		assertEvaluatesTo("SUBSTRING 100 CHARACTERS FROM \"abcdefg\"", "\"abcdefg\"");
@@ -134,9 +145,69 @@ public class StringOperatorsTest extends SpecificationTest {
 		assertEvaluatesTo("SUBSTRING -1 CHARACTERS STARTING AT 4 FROM \"abcdefg\"", "\"d\"");
 		assertEvaluatesTo("SUBSTRING -3 CHARACTERS STARTING AT 4 FROM \"abcdefg\"", "\"bcd\"");
 		assertEvaluatesTo("SUBSTRING 1 CHARACTERS FROM \"abcdefg\"", "\"a\"");
-		assertEvaluatesTo("SUBSTRING -1 CHARACTERS STARTING AT LENGTH OF \"abcdefg\" FROM \"abcdefg\"", "\"g\"");
+		assertEvaluatesTo("SUBSTRING -1 CHARACTERS STARTING AT (LENGTH OF \"abcdefg\") FROM \"abcdefg\"", "\"g\"");
 		assertEvaluatesTo("SUBSTRING 3 CHARACTERS FROM (\"Positive\",\"Negative\",2)", "(\"Pos\",\"Neg\",NULL)");
-		assertEvaluatesToWithData(DATA, "TIME (SUBSTRING 3 CHARACTERS FROM x)", "1990-01-01T00:00:00");
+		assertEvaluatesToWithData(createData(), "TIME (SUBSTRING 3 CHARACTERS FROM x)", "1990-01-01T00:00:00");
+	}
+
+	@Test
+	@Compatibility(min = ArdenVersion.V2_6)
+	public void testLocalized() throws Exception {
+		String localized = createCodeBuilder()
+				.addData("msg := LOCALIZED 'msg';")
+				.addAction("RETURN msg;")
+				.addTextConstant("en", "msg", "default value")
+				.toString();
+		assertReturns(localized, "\"default value\"");
+
+		String localizedBy = createCodeBuilder()
+				.addData("msg := LOCALIZED 'msg' BY \"de\";")
+				.addAction("RETURN msg;")
+				.addTextConstant("en", "msg", "default value")
+				.appendLanguageSlot("de")
+				.addTextConstant("de", "msg", "test wert")
+				.toString();
+		assertReturns(localizedBy, "\"test wert\"");
+
+		String identifier = createCodeBuilder()
+				.addData("language_code := \"de\";")
+				.addData("msg := LOCALIZED 'msg' BY language_code;")
+				.addAction("RETURN msg;")
+				.addTextConstant("en", "msg", "default value")
+				.appendLanguageSlot("de")
+				.addTextConstant("de", "msg", "test wert")
+				.toString();
+		assertReturns(identifier, "\"test wert\"");
+
+		String wrongType = createCodeBuilder()
+				.addData("wrong_type := 123;")
+				.addData("msg := LOCALIZED 'msg' BY wrong_type;")
+				.addAction("RETURN msg;")
+				.addTextConstant("en", "msg", "default value")
+				.toString();
+		assertReturns(wrongType, "\"default value\"");
+
+		String expression = createCodeBuilder()
+				.addData("msg := LOCALIZED 'msg' BY \"e\" || \"n\";")
+				.addAction("RETURN msg;")
+				.addTextConstant("en", "msg", "default value")
+				.toString();
+		assertInvalid(expression);
+
+		String notDefinedForLanguage = createCodeBuilder()
+				.addData("msg := LOCALIZED 'msg' BY \"de\";")
+				.addAction("RETURN msg;")
+				.addTextConstant("en", "msg", "default value")
+				.appendLanguageSlot("de")
+				.toString();
+		assertReturns(notDefinedForLanguage, "NULL");
+
+		String noLanguageSlot = createCodeBuilder()
+				.addData("msg := LOCALIZED 'msg' BY \"de\";")
+				.addAction("RETURN msg;")
+				.addTextConstant("en", "msg", "default value")
+				.toString();
+		assertReturns(noLanguageSlot, "\"default value\"");
 	}
 
 }
