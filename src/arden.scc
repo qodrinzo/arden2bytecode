@@ -189,7 +189,8 @@ Tokens
 
   //-- Keywords ------------------------------------------------------------------
   abs         = a b s;
-  action      = a c t i o n ':';
+  action      = a c t i o n;
+  action_colon = a c t i o n ':';
   after       = a f t e r;
   ago         = a g o;
   alert       = a l e r t;
@@ -199,13 +200,15 @@ Tokens
   arccos      = a r c c o s;
   arcsin      = a r c s i n;
   arctan      = a r c t a n;
-  {normal -> arden}arden       = a r d e n ':';
+  arden       = a r d e n;
+  {normal -> arden} arden_colon = a r d e n ':';
   are         = a r e;
   argument    = a r g u m e n t;
   as          = a s;
   at          = a t;
   attribute   = a t t r i b u t e;
-  {normal -> text}author      = a u t h o r ':';
+  author      = a u t h o r;
+  {normal -> text} author_colon = a u t h o r ':';
   average     = a v e r a g e;
   avg         = a v g;
   be          = b e;
@@ -214,7 +217,9 @@ Tokens
   call        = c a l l;
   ceiling     = c e i l i n g;
   characters  = c h a r a c t e r s;
-  {normal -> text}citations   = c i t a t i o n s ':';
+  citation    = c i t a t i o n;
+  citations   = c i t a t i o n s;
+  {normal -> text}citations_colon   = c i t a t i o n s ':';
   conclude    = c o n c l u d e;
   cos         = c o s;
   cosine      = c o s i n e;
@@ -223,9 +228,10 @@ Tokens
   currenttime = c u r r e n t t i m e;
   data        = d a t a;
   data_colon  = d a t a ':';
-  data_driven = d a t a us d r i v e n;
-  dataadashdriven =  d a t a dash d r i v e n;
-  date        = d a t e ':';
+  data_us_driven = d a t a us d r i v e n;
+  data_dash_driven =  d a t a dash d r i v e n;
+  date        = d a t e;
+  date_colon  = d a t e ':';
   day         = d a y;
   days        = d a y s;
   decrease    = d e c r e a s e;
@@ -238,21 +244,26 @@ Tokens
   elseif      = e l s e i f;
   enddo       = e n d d o;
   endif       = e n d i f;
-  end         = e n d ':';
+  end         = e n d;
+  end_colon   = e n d ':';
   eq          = e q;
   equal       = e q u a l;
   event       = e v e n t;
   eventtime   = e v e n t t i m e;
   every       = e v e r y;
-  evoke       = e v o k e ':';
+  evoke       = e v o k e;
+  evoke_colon = e v o k e ':';
+  excluding   = e x c l u d i n g;
   exist       = e x i s t;
   exists      = e x i s t s;
   exp         = e x p;
   expired     = e x p i r e d;
-  {normal -> text}explanation = e x p l a n a t i o n ':';
+  explanation = e x p l a n a t i o n;
+  {normal -> text} explanation_colon = e x p l a n a t i o n ':';
   extract     = e x t r a c t;
   false       = f a l s e;
-  {normal->mlmname}filename    = f i l e n a m e ':';
+  filename    = f i l e n a m e;
+  {normal->mlmname} filename_colon = f i l e n a m e ':';
   find  = f i n d;
   first       = f i r s t;
   floor       = f l o o r;
@@ -270,15 +281,18 @@ Tokens
   include     = i n c l u d e;
   increase    = i n c r e a s e;
   index       = i n d e x;
-
   institution = i n s t i t u t i o n;
+  {normal-> text} institution_colon = i n s t i t u t i o n ':';
   int         = i n t;
   interface   = i n t e r f a c e;
+  intersect   = i n t e r s e c t;
   interval    = i n t e r v a l;
   is          = i s;
   it          = i t;
-  {normal -> text}keywords    = k e y w o r d s ':';
-  knowledge   = k n o w l e d g e ':';
+  keywords    = k e y w o r d s;
+  {normal -> text} keywords_colon = k e y w o r d s ':';
+  knowledge   = k n o w l e d g e;
+  knowledge_colon = k n o w l e d g e ':';
   last        = l a s t;
   latest      = l a t e s t;
   le          = l e;
@@ -286,15 +300,19 @@ Tokens
   length      = l e n g t h;
   less        = l e s s;
   let         = l e t;
-  library     = l i b r a r y ':';
-  {normal -> text} links       = l i n k s ':';
+  library     = l i b r a r y;
+  library_colon = l i b r a r y ':';
+  links       = l i n k s;
+  {normal -> text} links_colon = l i n k s ':';
   list        = l i s t;
   log         = l o g;
   log10       = l o g '1' '0';
-  logic       = l o g i c ':';
+  logic       = l o g i c;
+  logic_colon = l o g i c ':';
   lowercase   = l o w e r c a s e;
   lt          = l t;
-  maintenance = m a i n t e n a n c e ':';
+  maintenance = m a i n t e n a n c e;
+  maintenance_colon = m a i n t e n a n c e ':';
   matches     = m a t c h e s;
   max         = m a x;
   maximum     = m a x i m u m;
@@ -306,7 +324,8 @@ Tokens
   minute      = m i n u t e;
   minutes     = m i n u t e s;
   mlm         = m l m;
-  {normal -> mlmname}mlmname     = m l m n a m e ':';
+  mlmname     = m l m n a m e;
+  {normal -> mlmname} mlmname_colon = m l m n a m e ':';
   mlm_self    = m l m us s e l f;
   month       = m o n t h;
   months      = m o n t h s;
@@ -330,9 +349,11 @@ Tokens
   percent     = p e r c e n t;
   preceding   = p r e c e d i n g;
   present     = p r e s e n t;
-  priority    = p r i o r i t y ':';
+  priority    = p r i o r i t y;
+  priority_colon = p r i o r i t y ':';
   production  = p r o d u c t i o n;
-  {normal->text}purpose     = p u r p o s e ':';
+  purpose     = p u r p o s e;
+  {normal->text} purpose_colon = p u r p o s e ':';
   read        = r e a d;
   refute      = r e f u t e;
   research    = r e s e a r c h;
@@ -343,12 +364,14 @@ Tokens
   same        = s a m e;
   second      = s e c o n d;
   seconds     = s e c o n d s;
+  select      = s e l e c t;
   seqto       = s e q t o;
   sin         = s i n;
   sine        = s i n e;
   slope       = s l o p e;
   sort        = s o r t;
-  {normal-> text}specialist  = s p e c i a l i s t ':';
+  specialist  = s p e c i a l i s t;
+  {normal-> text} specialist_colon  = s p e c i a l i s t ':';
   sqrt        = s q r t;
   starting    = s t a r t i n g;
   stddev      = s t d d e v;
@@ -365,20 +388,26 @@ Tokens
   then        = t h e n;
   they        = t h e y;
   time        = t i m e;
-  {normal -> text}title       = t i t l e ':';
+  title       = t i t l e;
+  {normal -> text} title_colon = t i t l e ':';
   to          = t o;
   triggertime = t r i g g e r t i m e;
-  trim  = t r i m;
+  trim        = t r i m;
   true        = t r u e;
   truncate    = t r u n c a t e;
-  type        = t y p e ':';
+  type        = t y p e;
+  type_colon  = t y p e ':';
+  union       = u n i o n;
   unique      = u n i q u e;
   until       = u n t i l;
   uppercase   = u p p e r c a s e;
-  urgency     = u r g e n c y ':';
-  validation  = v a l i d a t i o n ':';
+  urgency     = u r g e n c y;
+  urgency_colon = u r g e n c y ':';
+  validation  = v a l i d a t i o n;
+  validation_colon = v a l i d a t i o n ':';
   variance    = v a r i a n c e;
   version     = v e r s i o n;
+  {normal-> text} version_colon = v e r s i o n ':';
   was         = w a s;
   week        = w e e k;
   weeks       = w e e k s;
@@ -458,10 +487,10 @@ mlm =
                 maintenance_category
                 library_category
                 knowledge_category
-                end;
+                end_colon;
 
 maintenance_category =
-                maintenance maintenance_body;
+                maintenance_colon maintenance_body;
 
 maintenance_body =
                 title_slot
@@ -475,7 +504,7 @@ maintenance_body =
                 validation_slot;
 
 library_category =
-                library library_body;
+                library_colon library_body;
 
 library_body =
                 purpose_slot
@@ -485,7 +514,7 @@ library_body =
                 links_slot?;
 
 knowledge_category =
-                knowledge knowledge_body;
+                knowledge_colon knowledge_body;
 
 knowledge_body =
                 type_slot
@@ -500,11 +529,11 @@ knowledge_body =
 /****** maintenance slots ******/
 
 title_slot =
-                title text? semicolons;
+                title_colon text? semicolons;
 
 mlmname_slot =
-      {mname}   mlmname mlmname_text semicolons
-    | {fname}   filename mlmname_text semicolons;
+      {mname}   mlmname_colon mlmname_text semicolons
+    | {fname}   filename_colon mlmname_text semicolons;
 
 
 /* the "FILENAME:" form is only valid */
@@ -512,38 +541,38 @@ mlmname_slot =
 /* of arden_version_slot            */
 
 arden_version_slot =
-      {vrsn}    arden version version_number semicolons
+      {vrsn}    arden_colon version version_number semicolons
     | {empty};    /* the empty version is only valid    */
                   /* combination with the "FILENAME"    */
                   /* form of < mlmname_slot >           */
 
 version_slot =
-                version colon text? semicolons;
+                version_colon text? semicolons;
 
 institution_slot =
-                institution colon text? semicolons;
+                institution_colon text? semicolons;
 
 /* text limited to 80 characters */
 
 author_slot =
-                author text? semicolons;
+                author_colon text? semicolons;
 
 /* see 6.1.6 for details */
 
 specialist_slot =
-                specialist text? semicolons;
+                specialist_colon text? semicolons;
 
 /* see 6.1.7 for details */
 
 date_slot =
-                date mlm_date semicolons;
+                date_colon mlm_date semicolons;
 
 mlm_date =
-      {date}    iso_date
+      {date}   iso_date
     | {dtime}  iso_date_time;
 
 validation_slot =
-                validation validation_code semicolons;
+                validation_colon validation_code semicolons;
 
 validation_code =
       {prod}    production
@@ -554,53 +583,53 @@ validation_code =
 /****** library slots ******/
 
 purpose_slot =
-                purpose text? semicolons;
+                purpose_colon text? semicolons;
 
 explanation_slot =
-                explanation text? semicolons;
+                explanation_colon text? semicolons;
 
 keywords_slot =
-                keywords text? semicolons;
+                keywords_colon text? semicolons;
 
 /* May require special processing to handle both list and text versions */
 
 citations_slot =
-                citations text? semicolons;
+                citations_colon text? semicolons;
 
 links_slot =
-                links text? semicolons;
+                links_colon text? semicolons;
 
 /****** knowledge slots ******/
 
 type_slot =
-                type type_code semicolons;
+                type_colon type_code semicolons;
 
 /* This is a separate definition to allow for future expansion */
 
 type_code =
-      {data}    data_driven
-    | {driven}  dataadashdriven; /* deprecated -- supported for backwards */
-                                 /* compatibility */
+      {data}    data_us_driven
+    | {driven}  data_dash_driven; /* deprecated -- supported for backwards */
+                                  /* compatibility */
 
 data_slot =
                 data_colon data_block semicolons;
 
 priority_slot =
       {empty}
-    | {pri}     priority number_literal semicolons;
+    | {pri}     priority_colon number_literal semicolons;
 
 evoke_slot =
-                evoke evoke_block semicolons;
+                evoke_colon evoke_block semicolons;
 
 logic_slot =
-                logic logic_block semicolons;
+                logic_colon logic_block semicolons;
 
 action_slot =
-                action action_block semicolons;
+                action_colon action_block semicolons;
 
 urgency_slot =
       {empty}
-    | {urg}     urgency urgency_val semicolons;
+    | {urg}     urgency_colon urgency_val semicolons;
 
 urgency_val =
       {num}     number_literal
