@@ -39,6 +39,7 @@ final class InMemoryClassLoader extends ClassLoader {
 	Class<?> loadedClass;
 
 	public InMemoryClassLoader(String className, byte[] data) {
+		super(Thread.currentThread().getContextClassLoader());
 		this.className = className;
 		this.data = data;
 	}
