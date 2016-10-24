@@ -65,6 +65,8 @@ import arden.compiler.parser.ParserException;
 import arden.runtime.ArdenValue;
 import arden.runtime.LibraryMetadata;
 import arden.runtime.MaintenanceMetadata;
+import arden.runtime.MaintenanceMetadata.ArdenVersion;
+import arden.runtime.MaintenanceMetadata.Validation;
 import arden.runtime.MedicalLogicModule;
 import arden.runtime.RuntimeHelpers;
 import arden.runtime.evoke.Trigger;
@@ -183,12 +185,15 @@ public final class Compiler {
 	private void compileMaintenance(CodeGenerator codeGen, MaintenanceMetadata maintenance) throws NoSuchMethodException, SecurityException {		
 		FieldReference maintenanceField = codeGen.createStaticFinalField(MaintenanceMetadata.class);
 		MethodWriter init = codeGen.getStaticInitializer();
-		// format = new MaintenanceMetadata(String title, String mlmName, String ardenVersion, String version, String institution, String author, String specialist, Date date, String validation)
+		// format = new MaintenanceMetadata(String title, String mlmName, ArdenVersion ardenVersion, String version, String institution, String author, String specialist, Date date, Validation validation)
 		init.newObject(MaintenanceMetadata.class);
 		init.dup();
 		init.loadStringConstant(maintenance.getTitle());
 		init.loadStringConstant(maintenance.getMlmName());
-		init.loadStringConstant(maintenance.getArdenVersion());
+		
+		init.loadStringConstant(maintenance.getArdenVersion().name());
+		init.invokeStatic(ArdenVersion.class.getMethod("valueOf", String.class));
+		
 		init.loadStringConstant(maintenance.getVersion());
 		init.loadStringConstant(maintenance.getInstitution());
 		init.loadStringConstant(maintenance.getAuthor());
@@ -199,9 +204,10 @@ public final class Compiler {
 		init.loadLongConstant(maintenance.getDate().getTime());
 		init.invokeConstructor(Date.class.getConstructor(new Class<?>[]{Long.TYPE}));
 		
-		init.loadStringConstant(maintenance.getValidation());
+		init.loadStringConstant(maintenance.getValidation().name());
+		init.invokeStatic(Validation.class.getMethod("valueOf", String.class));
 		
-		init.invokeConstructor(MaintenanceMetadata.class.getConstructor(new Class<?>[]{String.class, String.class, String.class, String.class, String.class, String.class, String.class, Date.class, String.class}));
+		init.invokeConstructor(MaintenanceMetadata.class.getConstructor(new Class<?>[]{String.class, String.class, ArdenVersion.class, String.class, String.class, String.class, String.class, Date.class, Validation.class}));
 		init.storeStaticField(maintenanceField);
 		
 		CompilerContext context = codeGen.createMaintenance();
