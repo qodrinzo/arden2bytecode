@@ -16,6 +16,7 @@ import arden.runtime.ArdenString;
 import arden.runtime.ArdenValue;
 import arden.runtime.DatabaseQuery;
 import arden.runtime.ExecutionContext;
+import arden.runtime.MaintenanceMetadata.Validation;
 import arden.tests.specification.testcompiler.TestCompiler;
 
 /**
@@ -47,9 +48,6 @@ public class TestContext extends ExecutionContext {
 	private List<String> messages = new LinkedList<String>();
 	private List<CompiledMlm> mlms;
 	private String institutionSelf;
-	enum Validation {
-		EXPIRED, TESTING, RESEARCH, PRODUCTION
-	}
 	
 	public TestContext(List<CompiledMlm> mlms, String institutionSelf) {
 		this.mlms = mlms;
@@ -102,8 +100,8 @@ public class TestContext extends ExecutionContext {
 	}
 
 	private CompiledMlm findBetterValidation(CompiledMlm mlm1, CompiledMlm mlm2) {
-		Validation v1 = Validation.valueOf(mlm1.getMaintenance().getValidation().trim().toUpperCase());
-		Validation v2 = Validation.valueOf(mlm2.getMaintenance().getValidation().trim().toUpperCase());
+		Validation v1 = mlm1.getMaintenance().getValidation();
+		Validation v2 = mlm2.getMaintenance().getValidation();
 		return v1.compareTo(v2) > 0 ? mlm1 : mlm2;
 	}
 
