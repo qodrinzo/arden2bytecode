@@ -9,11 +9,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import arden.CommandLineOptions;
 import arden.EvokeEngine;
@@ -21,6 +21,7 @@ import arden.MainClass;
 import arden.compiler.CompiledMlm;
 import arden.compiler.Compiler;
 import arden.compiler.CompilerException;
+import arden.runtime.MaintenanceMetadata.Validation;
 import arden.runtime.evoke.Trigger;
 
 /**
@@ -36,7 +37,7 @@ import arden.runtime.evoke.Trigger;
  */
 public class BaseExecutionContext extends ExecutionContext {
 	private List<URL> mlmSearchPath = new LinkedList<URL>();
-	private Map<String, ArdenRunnable> moduleList = new HashMap<String, ArdenRunnable>();
+	private Map<URL, MedicalLogicModule> initializedMlms = new HashMap<URL, MedicalLogicModule>();
 	private EvokeEngine engine;
 
 	public BaseExecutionContext(URL[] mlmSearchPath) {
@@ -76,34 +77,42 @@ public class BaseExecutionContext extends ExecutionContext {
 			throw new RuntimeException("Malformed module name: " + name);
 		}
 
-		ArdenRunnable fromlist = moduleList.get(name.toLowerCase());
-		if (fromlist != null) {
-			return fromlist;
-		}
-
+		name = name.toLowerCase().trim();
 		URLClassLoader loader = new URLClassLoader(mlmSearchPath.toArray(new URL[] {}));
-		InputStream in = loader.getResourceAsStream(name + ".class");
-		if (in != null) {
-			try {
-				ArdenRunnable module = new CompiledMlm(in, name);
-				moduleList.put(name.toLowerCase(), module);
-				return module;
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			} finally {
-				try {
-					loader.close();
-				} catch (IOException e) {
-					throw new RuntimeException(e);
+
+		try {
+			// look for matching .class files
+			Enumeration<URL> mlmClassUrls = loader.getResources(name + ".class");
+			while (mlmClassUrls.hasMoreElements()) {
+				URL url = mlmClassUrls.nextElement();
+				if (initializedMlms.containsKey(url)) {
+					// already loaded
+					continue;
+				}
+
+				InputStream in = url.openStream();
+				if (in != null) {
+					MedicalLogicModule module = new CompiledMlm(in, name);
+					cacheModule(url, module);
 				}
 			}
 
-		}
-		in = loader.getResourceAsStream(name + MainClass.MLM_FILE_EXTENSION);
-		Compiler compiler = new Compiler();
-		MedicalLogicModule mlm;
-		try {
-			mlm = compiler.compile(new InputStreamReader(in, "UTF-8")).get(0);
+			// look for matching .mlm files
+			Enumeration<URL> mlmUrls = loader.getResources(name + MainClass.MLM_FILE_EXTENSION);
+			while (mlmUrls.hasMoreElements()) {
+				URL url = mlmUrls.nextElement();
+				if (initializedMlms.containsKey(url)) {
+					// already loaded
+					continue;
+				}
+
+				InputStream in = url.openStream();
+
+				Compiler compiler = new Compiler();
+				MedicalLogicModule mlm;
+				mlm = compiler.compile(new InputStreamReader(in, "UTF-8")).get(0);
+				cacheModule(url, mlm);
+			}
 		} catch (CompilerException | IOException e) {
 			throw new RuntimeException(e);
 		} finally {
@@ -113,8 +122,36 @@ public class BaseExecutionContext extends ExecutionContext {
 				throw new RuntimeException(e);
 			}
 		}
-		moduleList.put(name.toLowerCase(), mlm);
-		return mlm;
+
+		MedicalLogicModule[] mlms = initializedMlms.values().toArray(new MedicalLogicModule[initializedMlms.size()]);
+		MedicalLogicModule foundMlm = ExecutionContextHelpers.findModule(name, institution, mlms, null);
+		if (foundMlm == null) {
+			throw new RuntimeException("MLM not found");
+		}
+		return foundMlm;
+	}
+
+	private void cacheModule(URL url, MedicalLogicModule mlm) {
+		// reuse already initialized MLM (e.g. already loaded from .class file
+		// instead of .mlm file)
+		for (MedicalLogicModule initializedMlm : initializedMlms.values()) {
+			MaintenanceMetadata m1 = initializedMlm.getMaintenance();
+			String m1Name = m1.getMlmName().toLowerCase().trim();
+			String m1Institution = m1.getInstitution().toLowerCase().trim();
+			Validation m1Validation = m1.getValidation();
+			String m1Version = m1.getVersion();
+			MaintenanceMetadata m2 = mlm.getMaintenance();
+			String m2Name = m2.getMlmName().toLowerCase().trim();
+			String m2Institution = m2.getInstitution().toLowerCase().trim();
+			Validation m2Validation = m2.getValidation();
+			String m2Version = m2.getVersion();
+			if (m1Name.equals(m2Name) && m1Institution.equals(m2Institution) && m1Validation == m2Validation
+					&& m1Version.equals(m2Version)) {
+				initializedMlms.put(url, initializedMlm);
+				return;
+			}
+		}
+		initializedMlms.put(url, mlm);
 	}
 
 	public void setEngine(EvokeEngine engine) {
@@ -161,24 +198,18 @@ public class BaseExecutionContext extends ExecutionContext {
 		} else {
 			// run MLMs for event now
 			System.out.println("event: " + event.name);
-			for (Entry<String, ArdenRunnable> entry : moduleList.entrySet()) {
-				ArdenRunnable runnable = entry.getValue();
-				if (runnable instanceof MedicalLogicModule) {
-					MedicalLogicModule mlm = (MedicalLogicModule) runnable;
-
-					try {
-						Trigger trigger = mlm.getTrigger(this, null);
-						if (trigger.runOnEvent(event)) {
-							super.eventTime = eventTime;
-							mlm.run(this, null);
-						}
-					} catch (InvocationTargetException e) {
-						System.err.println("Could not run MLM:");
-						e.printStackTrace();
+			// FIXME also runs MLM on classpath, not only the selected MLMs
+			for (MedicalLogicModule mlm : initializedMlms.values()) {
+				try {
+					Trigger trigger = mlm.getTrigger(this, null);
+					if (trigger.runOnEvent(event)) {
+						super.eventTime = eventTime;
+						mlm.run(this, null);
 					}
-
+				} catch (InvocationTargetException e) {
+					System.err.println("Could not run MLM:");
+					e.printStackTrace();
 				}
-
 			}
 		}
 	}
