@@ -7,10 +7,10 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-import arden.compiler.CompiledMlm;
 import arden.compiler.CompilerException;
 import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenValue;
+import arden.runtime.MedicalLogicModule;
 import arden.tests.specification.testcompiler.ArdenVersion;
 import arden.tests.specification.testcompiler.TestCompiler;
 import arden.tests.specification.testcompiler.TestCompilerCompiletimeException;
@@ -60,9 +60,9 @@ public class TestCompilerImpl implements TestCompiler {
 	@Override
 	public TestCompilerResult compileAndRun(String code) throws TestCompilerException {
 		// compile
-		List<CompiledMlm> compiledMlms;
+		List<MedicalLogicModule> compiledMlms = new ArrayList<>();
 		try {
-			compiledMlms = compiler.compile(new StringReader(code));
+			compiledMlms.addAll(compiler.compile(new StringReader(code)));
 		} catch (CompilerException e) {
 			throw new TestCompilerCompiletimeException(e);
 		} catch (IOException e) {
@@ -70,8 +70,8 @@ public class TestCompilerImpl implements TestCompiler {
 		}
 
 		// run and save return values
-		CompiledMlm firstMlm = compiledMlms.get(0);
-		TestContext context = new TestContext(compiledMlms, firstMlm.getMaintenance().getInstitution());
+		MedicalLogicModule firstMlm = compiledMlms.get(0);
+		TestContext context = new TestContext(compiledMlms);
 		TestCompilerResult result = new TestCompilerResult();
 
 		ArdenValue[] returnValues;
@@ -97,9 +97,9 @@ public class TestCompilerImpl implements TestCompiler {
 	public TestCompilerDelayedMessage[] compileAndRunForEvent(String code, String eventMapping, int messagesToCollect)
 			throws TestCompilerException {
 		// compile
-		List<CompiledMlm> compiledMlms = new ArrayList<>();
+		List<MedicalLogicModule> compiledMlms = new ArrayList<>();
 		try {
-			compiledMlms = compiler.compile(new StringReader(code));
+			compiledMlms.addAll(compiler.compile(new StringReader(code)));
 		} catch (CompilerException e) {
 			throw new TestCompilerCompiletimeException(e);
 		} catch (IOException e) {
@@ -112,8 +112,8 @@ public class TestCompilerImpl implements TestCompiler {
 		ArdenEvent event = new ArdenEvent(eventMapping, calendar.getTimeInMillis());
 
 		// collect messages
-		CompiledMlm firstMlm = compiledMlms.get(0);
-		TestEngine engine = new TestEngine(compiledMlms, firstMlm.getMaintenance().getInstitution());
+		MedicalLogicModule firstMlm = compiledMlms.get(0);
+		TestEngine engine = new TestEngine(compiledMlms, firstMlm);
 		List<TestCompilerDelayedMessage> messages = new ArrayList<>();
 		try {
 			engine.callEvent(event);

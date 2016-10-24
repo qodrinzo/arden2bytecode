@@ -1,13 +1,11 @@
 package arden.tests.specification.testcompiler.impl;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
-import arden.compiler.CompiledMlm;
 import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenList;
 import arden.runtime.ArdenNumber;
@@ -16,7 +14,8 @@ import arden.runtime.ArdenString;
 import arden.runtime.ArdenValue;
 import arden.runtime.DatabaseQuery;
 import arden.runtime.ExecutionContext;
-import arden.runtime.MaintenanceMetadata.Validation;
+import arden.runtime.ExecutionContextHelpers;
+import arden.runtime.MedicalLogicModule;
 import arden.tests.specification.testcompiler.TestCompiler;
 
 /**
@@ -46,12 +45,10 @@ public class TestContext extends ExecutionContext {
 	};
 	
 	private List<String> messages = new LinkedList<String>();
-	private List<CompiledMlm> mlms;
-	private String institutionSelf;
+	private List<MedicalLogicModule> mlms;
 	
-	public TestContext(List<CompiledMlm> mlms, String institutionSelf) {
+	public TestContext(List<MedicalLogicModule> mlms) {
 		this.mlms = mlms;
-		this.institutionSelf = institutionSelf;
 	}
 	
 	@Override
@@ -66,46 +63,14 @@ public class TestContext extends ExecutionContext {
 	
 	@Override
 	public ArdenRunnable findModule(String name, String institution) {
-		// TODO use mlm search algorithm from BaseExecutionContext
-		institution = institution == null ? "" : institution.trim();
-		name = name.trim();
-		boolean skipValidation = !institution.isEmpty();
-		
-		// find mlms with matching institution and name
-		List<CompiledMlm> rightNameAndInstitution = new ArrayList<CompiledMlm>();
-		if (institution.isEmpty()) {
-			institution = this.institutionSelf;
+		MedicalLogicModule[] mlmArray = mlms.toArray(new MedicalLogicModule[mlms.size()]);
+		MedicalLogicModule foundModule = ExecutionContextHelpers.findModule(name, institution, mlmArray, null);
+		if (foundModule == null) {
+			throw new RuntimeException("MLM <" + name + "> from institution <" + institution + "> not found");
 		}
-		for (CompiledMlm mlm : mlms) {
-			String curMlmname = mlm.getMaintenance().getMlmName().trim();
-			String curInstitution = mlm.getMaintenance().getInstitution().trim();
-			if(curInstitution.equals(institution) && curMlmname.equals(name)) {
-				rightNameAndInstitution.add(mlm);
-			}
-		}
-		
-		if(rightNameAndInstitution.isEmpty()) {
-			throw new IllegalArgumentException("Module \""+name+" not found");
-		}
-		if(rightNameAndInstitution.size() == 1 || skipValidation) {
-			return rightNameAndInstitution.get(0);
-		} 
-
-		// compare by validation
-		CompiledMlm bestMatch = rightNameAndInstitution.get(0);
-		for (CompiledMlm mlm : rightNameAndInstitution) {
-			bestMatch = findBetterValidation(bestMatch, mlm);
-		}
-		return bestMatch;
+		return foundModule; 
 	}
 
-	private CompiledMlm findBetterValidation(CompiledMlm mlm1, CompiledMlm mlm2) {
-		Validation v1 = mlm1.getMaintenance().getValidation();
-		Validation v2 = mlm2.getMaintenance().getValidation();
-		return v1.compareTo(v2) > 0 ? mlm1 : mlm2;
-	}
-
-	
 	@Override
 	public ArdenRunnable findInterface(String mapping) {
 		if(INTERFACE_MAPPING.equals(mapping)) {

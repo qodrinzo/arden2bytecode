@@ -10,7 +10,6 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.TreeMap;
 
-import arden.compiler.CompiledMlm;
 import arden.runtime.ArdenDuration;
 import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenRunnable;
@@ -20,6 +19,7 @@ import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
 import arden.runtime.MedicalLogicModule;
 import arden.runtime.evoke.Trigger;
+import arden.tests.specification.testcompiler.TestCompiler;
 import arden.tests.specification.testcompiler.TestCompilerDelayedMessage;
 
 /**
@@ -42,8 +42,8 @@ public class TestEngine extends TestContext {
 	private ArdenTime startTime;
 	private ArdenTime currentTime;
 
-	public TestEngine(List<CompiledMlm> mlms, String institutionSelf) {
-		super(mlms, institutionSelf);
+	public TestEngine(List<MedicalLogicModule> mlms, MedicalLogicModule callingMlm) {
+		super(mlms);
 		this.mlms.addAll(mlms);
 	}
 
