@@ -53,15 +53,15 @@ public class TestEngine extends TestContext {
 
 		// check if MLMs are directly triggered
 		for (MedicalLogicModule mlm : mlms) {
-			Trigger trigger;
 			try {
-				trigger = mlm.getTrigger(this, null);
+				for (Trigger trigger : mlm.getTriggers(this, null)) {
+					trigger.scheduleEvent(event);
+					if (trigger.runOnEvent(event)) {
+						scheduledCalls.add(currentTime, new MlmCall(mlm, this, null));
+					}
+				}
 			} catch (InvocationTargetException e) {
 				throw new RuntimeException(e);
-			}
-			trigger.scheduleEvent(event);
-			if (trigger.runOnEvent(event)) {
-				scheduledCalls.add(currentTime, new MlmCall(mlm, this, null));
 			}
 		}
 
@@ -142,22 +142,19 @@ public class TestEngine extends TestContext {
 
 		// put MLMs which should run at the same time into groups sorted by time
 		for (MedicalLogicModule mlm : mlms) {
-			Trigger trigger;
 			try {
-				trigger = mlm.getTrigger(this, null);
+				for (Trigger trigger : mlm.getTriggers(this, null)) {
+					ArdenTime nextRuntime = trigger.getNextRunTime(this);
+					if (nextRuntime == null) {
+						// not scheduled
+						continue;
+					}
+
+					schedule.add(nextRuntime, new MlmCall(mlm, this, null));
+				}
 			} catch (InvocationTargetException e) {
-				// print error and skip this MLM
-				e.printStackTrace();
-				continue;
+				throw new RuntimeException(e);
 			}
-
-			ArdenTime nextRuntime = trigger.getNextRunTime(this);
-			if (nextRuntime == null) {
-				// not scheduled
-				continue;
-			}
-
-			schedule.add(nextRuntime, new MlmCall(mlm, this, null));
 		}
 
 		return schedule;
