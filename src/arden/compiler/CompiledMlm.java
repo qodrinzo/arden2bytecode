@@ -66,7 +66,7 @@ public final class CompiledMlm implements MedicalLogicModule {
 	Class<? extends MedicalLogicModuleImplementation> clazz = null;
 	private MedicalLogicModuleImplementation uninitializedInstance = null;	
 	private MedicalLogicModuleImplementation initializedInstance = null;
-	private Trigger trigger = null;
+	private Trigger[] triggers = null;
 	private String mlmname;
 
 	public CompiledMlm(byte[] data, String mlmname) {
@@ -240,15 +240,15 @@ public final class CompiledMlm implements MedicalLogicModule {
 	 * data set in the constructor, the data section of the MLM is run.
 	 */
 	@Override
-	public Trigger getTrigger(ExecutionContext context, ArdenValue[] arguments) throws InvocationTargetException {
-		if (trigger == null) {
+	public Trigger[] getTriggers(ExecutionContext context, ArdenValue[] arguments) throws InvocationTargetException {
+		if (triggers == null) {
 			MedicalLogicModuleImplementation instance = initializedInstance;
 			if (instance == null) {
 				instance = createInstance(context, arguments);
 			}
-			trigger = instance.getTrigger(context);
+			triggers = instance.getTriggers(context);
 		}
-		return trigger;
+		return triggers;
 	}
 
 	public ArdenValue getValue(String name) {

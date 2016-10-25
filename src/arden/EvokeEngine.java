@@ -67,8 +67,10 @@ public class EvokeEngine implements Runnable {
 	public MedicalLogicModule[] findModules(ArdenEvent event) throws InvocationTargetException {
 		List<MedicalLogicModule> foundModules = new ArrayList<>();
 		for (MedicalLogicModule mlm : mlms) {
-			if (mlm.getTrigger(context, null).runOnEvent(event)) {
-				foundModules.add(mlm);
+			for (Trigger trigger : mlm.getTriggers(context, null)) {
+				if (trigger.runOnEvent(event)) {
+					foundModules.add(mlm);
+				}
 			}
 		}
 		return foundModules.toArray(new MedicalLogicModule[foundModules.size()]);
@@ -178,27 +180,29 @@ public class EvokeEngine implements Runnable {
 
 		// put MLMs which should run at the same time into groups sorted by time
 		for (MedicalLogicModule mlm : mlms) {
-			Trigger trigger;
+			Trigger[] triggers;
 			try {
-				trigger = mlm.getTrigger(context, null);
+				triggers = mlm.getTriggers(context, null);
 			} catch (InvocationTargetException e) {
 				// print error and skip this MLM
 				e.printStackTrace();
 				continue;
 			}
+			for (Trigger trigger : triggers) {
 
-			ArdenTime nextRuntime = trigger.getNextRunTime(context);
-			if (nextRuntime == null) {
-				// not scheduled
-				continue;
-			}
+				ArdenTime nextRuntime = trigger.getNextRunTime(context);
+				if (nextRuntime == null) {
+					// not scheduled
+					continue;
+				}
 
-			List<MlmCall> scheduleGroup = schedule.get(nextRuntime);
-			if (scheduleGroup == null) {
-				scheduleGroup = new ArrayList<MlmCall>();
-				schedule.put(nextRuntime, scheduleGroup);
+				List<MlmCall> scheduleGroup = schedule.get(nextRuntime);
+				if (scheduleGroup == null) {
+					scheduleGroup = new ArrayList<MlmCall>();
+					schedule.put(nextRuntime, scheduleGroup);
+				}
+				scheduleGroup.add(new MlmCall(mlm, null));
 			}
-			scheduleGroup.add(new MlmCall(mlm, null));
 		}
 
 		return schedule;
@@ -234,18 +238,20 @@ public class EvokeEngine implements Runnable {
 		public void run() {
 			// add MlmCalls for all MLMs which should run for the event to queue
 			for (MedicalLogicModule mlm : mlms) {
-				Trigger trigger;
+				Trigger[] triggers;
 				try {
-					trigger = mlm.getTrigger(context, null);
+					triggers = mlm.getTriggers(context, null);
 				} catch (InvocationTargetException e) {
 					// print error and skip this MLM
 					e.printStackTrace();
 					continue;
 				}
 
-				trigger.scheduleEvent(event);
-				if (trigger.runOnEvent(event)) {
-					messages.add(new MlmCall(mlm, null));
+				for (Trigger trigger : triggers) {
+					trigger.scheduleEvent(event);
+					if (trigger.runOnEvent(event)) {
+						messages.add(new MlmCall(mlm, null));
+					}
 				}
 			}
 		}
