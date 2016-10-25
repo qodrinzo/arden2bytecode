@@ -315,11 +315,6 @@ final class ActionCompiler extends VisitorBase {
 
 	private void performCall(TCall call, TIdentifier ident, PExpr arguments) {
 		Variable var = context.codeGenerator.getVariableOrShowError(ident);
-		if (currentCallDelay != null) {
-			var.callWithDelay(context, call, arguments, currentCallDelay);
-		} else {
-			var.call(context, call, arguments);
-			context.writer.pop(); // remove unused return value from stack
-		}
+		var.callWithDelay(context, call, arguments, currentCallDelay);
 	}
 }
