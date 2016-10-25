@@ -29,6 +29,7 @@ package arden.compiler;
 
 import java.lang.reflect.Method;
 
+import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenRunnable;
 import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
@@ -37,8 +38,8 @@ import arden.runtime.ExecutionContext;
 final class ExecutionContextMethods {
 	public static final Method createQuery;
 	public static final Method write, getMessage;
-	public static final Method findModule, findInterface;
-	public static final Method callWithDelay;
+	public static final Method findModule, findModules, findInterface;
+	public static final Method callWithDelay, callEventWithDelay;
 	public static final Method getEventTime, getTriggerTime, getCurrentTime;
 	public static final Method getEvent;
 
@@ -47,14 +48,17 @@ final class ExecutionContextMethods {
 			createQuery = ExecutionContext.class.getMethod("createQuery", String.class);
 			write = ExecutionContext.class.getMethod("write", ArdenValue.class, String.class);
 			getMessage = ExecutionContext.class.getMethod("getMessage", String.class);
+			getEvent = ExecutionContext.class.getMethod("getEvent", String.class);
 			findModule = ExecutionContext.class.getMethod("findModule", String.class, String.class);
+			findModules = ExecutionContext.class.getMethod("findModules", ArdenEvent.class);
 			findInterface = ExecutionContext.class.getMethod("findInterface", String.class);
 			callWithDelay = ExecutionContext.class.getMethod("callWithDelay", ArdenRunnable.class, ArdenValue[].class,
+					ArdenValue.class);
+			callEventWithDelay = ExecutionContext.class.getMethod("callEventWithDelay", ArdenEvent.class,
 					ArdenValue.class);
 			getEventTime = ExecutionContext.class.getMethod("getEventTime");
 			getTriggerTime = ExecutionContext.class.getMethod("getTriggerTime");
 			getCurrentTime = ExecutionContext.class.getMethod("getCurrentTime");
-			getEvent = ExecutionContext.class.getMethod("getEvent", String.class);
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);
 		} catch (NoSuchMethodException e) {

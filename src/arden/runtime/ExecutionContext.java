@@ -89,6 +89,19 @@ public abstract class ExecutionContext {
 	}
 
 	/**
+	 * Retrieves all MLMs that are normally evoked by an event.
+	 * 
+	 * @param event
+	 *            The event.
+	 * @param institution
+	 *            The institution of the requested MLM.
+	 * @return The requested MLMs.
+	 */
+	public ArdenRunnable[] findModules(ArdenEvent event) {
+		throw new RuntimeException("findModule not implemented");
+	}
+
+	/**
 	 * Retrieves an interface implementation.
 	 * 
 	 * @param mapping
@@ -116,15 +129,15 @@ public abstract class ExecutionContext {
 	}
 
 	/**
-	 * Calls an event.
+	 * Calls an event using a delay.
 	 * 
-	 * @param mapping
-	 *            The mapping used for the event
-	 * @param eventTime
-	 *            The time that the event occurred
+	 * @param event
+	 *            The event that should be called.
+	 * @param delay
+	 *            The delay for calling the event (as ArdenDuration).
 	 */
-	public void callEvent(ArdenEvent event) {
-		throw new RuntimeException("callEvent not implemented");
+	public void callEventWithDelay(ArdenEvent event, ArdenValue delay) {
+		throw new RuntimeException("callEventWithDelay not implemented");
 	}
 
 	protected ArdenTime eventTime = new ArdenTime(new Date());

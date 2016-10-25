@@ -22,7 +22,6 @@ import arden.compiler.CompiledMlm;
 import arden.compiler.Compiler;
 import arden.compiler.CompilerException;
 import arden.runtime.MaintenanceMetadata.Validation;
-import arden.runtime.evoke.Trigger;
 
 /**
  * <p>
@@ -131,9 +130,25 @@ public class BaseExecutionContext extends ExecutionContext {
 		return foundMlm;
 	}
 
+	@Override
+	public ArdenRunnable[] findModules(ArdenEvent event) {
+		if (engine != null) {
+			try {
+				return engine.findModules(event);
+			} catch (InvocationTargetException e) {
+				throw new RuntimeException("Could not load MLMs for event" + event.name);
+			}
+		} else {
+			// TODO How to find MLMs for an event without initializing every MLM in the classpath?
+			return super.findModules(event);
+		}
+	}
+
 	private void cacheModule(URL url, MedicalLogicModule mlm) {
-		// reuse already initialized MLM (e.g. already loaded from .class file
-		// instead of .mlm file)
+		/*
+		 * Reuse already initialized MLM (e.g. already loaded from .class file
+		 * instead of .mlm file).
+		 */
 		for (MedicalLogicModule initializedMlm : initializedMlms.values()) {
 			MaintenanceMetadata m1 = initializedMlm.getMaintenance();
 			String m1Name = m1.getMlmName().toLowerCase().trim();
@@ -161,14 +176,6 @@ public class BaseExecutionContext extends ExecutionContext {
 	@Override
 	public void callWithDelay(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay) {
 		if (engine != null) {
-			// get delay
-			if (!(delay instanceof ArdenDuration)) {
-				System.err.println(delay.getClass().getSimpleName());
-				throw new RuntimeException("Delay must be a duration");
-			}
-			ArdenDuration delayDuration = (ArdenDuration) delay;
-			long delayMillis = Math.round(delayDuration.toSeconds() * 1000);
-
 			// use urgency as priority
 			int urgency = 50;
 			if (mlm instanceof MedicalLogicModule) {
@@ -177,7 +184,7 @@ public class BaseExecutionContext extends ExecutionContext {
 			}
 
 			// run on engine
-			engine.callWithDelay(mlm, arguments, urgency, delayMillis);
+			engine.callWithDelay(mlm, arguments, urgency, delayToMillis(delay));
 		} else {
 			// print delay and run now
 			System.out.println("delay (skipped): " + delay.toString());
@@ -191,26 +198,33 @@ public class BaseExecutionContext extends ExecutionContext {
 	}
 
 	@Override
-	public void callEvent(ArdenEvent event) {
+	public void callEventWithDelay(ArdenEvent event, ArdenValue delay) {
 		if (engine != null) {
 			// run on engine
-			engine.callEvent(event);
+			engine.callEvent(event, delayToMillis(delay));
 		} else {
 			// run MLMs for event now
+			ArdenRunnable[] mlms = findModules(event);
+			System.out.println("delay (skipped): " + delay.toString());
 			System.out.println("event: " + event.name);
-			// FIXME also runs MLM on classpath, not only the selected MLMs
-			for (MedicalLogicModule mlm : initializedMlms.values()) {
+
+			for (ArdenRunnable mlm : mlms) {
 				try {
-					Trigger trigger = mlm.getTrigger(this, null);
-					if (trigger.runOnEvent(event)) {
-						super.eventTime = eventTime;
-						mlm.run(this, null);
-					}
+					mlm.run(this, null);
 				} catch (InvocationTargetException e) {
 					System.err.println("Could not run MLM:");
 					e.printStackTrace();
 				}
 			}
 		}
+	}
+
+	private long delayToMillis(ArdenValue delay) {
+		// get delay
+		if (!(delay instanceof ArdenDuration)) {
+			throw new RuntimeException("Delay must be a duration");
+		}
+		ArdenDuration delayDuration = (ArdenDuration) delay;
+		return Math.round(delayDuration.toSeconds() * 1000);
 	}
 }
