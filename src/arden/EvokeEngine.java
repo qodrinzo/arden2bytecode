@@ -75,14 +75,25 @@ public class EvokeEngine implements Runnable {
 	}
 
 	public void callEvent(ArdenEvent event, long delay) {
-		// TODO use delay
 		/*
 		 * Checking the evoke statements may require running the data slot,
 		 * which should not run concurrent to other (possibly data changing)
 		 * MLMs. Therefore add an EventCall to messages, so it is run on the
 		 * engines thread.
 		 */
-		messages.add(new EventCall(event));
+		final EventCall call = new EventCall(event);
+		if (delay <= 0) {
+			// run event as soon as possible
+			messages.add(call);
+		} else {
+			// add the event call after the delay has passed
+			delayer.schedule(new Runnable() {
+				@Override
+				public void run() {
+					messages.add(call);
+				}
+			}, delay, TimeUnit.MILLISECONDS);
+		}
 	}
 
 	public void callWithDelay(ArdenRunnable mlm, ArdenValue[] arguments, int urgency, long delay) {
