@@ -30,9 +30,12 @@ package arden.runtime;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 
 /**
@@ -56,7 +59,26 @@ public final class RuntimeHelpers {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
+	public static ArdenValue[] callEvent(ArdenEvent event, ExecutionContext context, ArdenValue[] arguments) {
+		List<ArdenValue> returnValues = new ArrayList<>();
+		for (ArdenRunnable mlm : context.findModules(event)) {
+			try {
+				ArdenValue[] values = mlm.run(context, arguments);
+				// ignore single NULL
+				if (!(values.length == 1 && values[0] instanceof ArdenNull)) {
+					Collections.addAll(returnValues, values);
+				}
+			} catch (InvocationTargetException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		// list is returned
+		ArdenValue[] values = returnValues.toArray(new ArdenValue[returnValues.size()]);
+		return new ArdenValue[] { new ArdenList(values) };
+	}
+
 	public static final double DEFAULT_URGENCY = 50;
 	
 	public static final double DEFAULT_PRIORITY = 50; 
