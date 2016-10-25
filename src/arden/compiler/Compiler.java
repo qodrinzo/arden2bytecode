@@ -152,7 +152,7 @@ public final class Compiler {
 		if (isDebuggingEnabled)
 			codeGen.enableDebugging(sourceFileName);
 		
-		compileData(codeGen, knowledge.getDataSlot());
+		compileData(codeGen, knowledge.getDataSlot(), metadata.maintenance.getInstitution());
 		compileLogic(codeGen, knowledge.getLogicSlot());
 		compileAction(codeGen, knowledge.getActionSlot());
 		compileEvoke(codeGen, knowledge.getEvokeSlot());
@@ -274,10 +274,10 @@ public final class Compiler {
 		context.writer.returnObjectFromFunction();
 	}
 	
-	private void compileData(CodeGenerator codeGen, PDataSlot dataSlot) {
+	private void compileData(CodeGenerator codeGen, PDataSlot dataSlot, String institutionSelf) {
 		int lineNumber = ((ADataSlot) dataSlot).getDataColon().getLine();
 		CompilerContext context = codeGen.createConstructor(lineNumber);
-		dataSlot.apply(new DataCompiler(context));
+		dataSlot.apply(new DataCompiler(context, institutionSelf));
 		context.writer.returnFromProcedure();
 	}
 
