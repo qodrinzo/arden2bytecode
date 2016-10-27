@@ -59,6 +59,53 @@ public abstract class ExecutionContext {
 		return new ArdenString(mapping);
 	}
 
+	/**
+	 * Gets an object that represents a message, as part of a
+	 * <code>MESSAGE AS</code> statement.
+	 * 
+	 * @param mapping
+	 *            The contents of the statement's mapping clause.
+	 * 
+	 * @param type
+	 *            The type that the returned object should have.
+	 * 
+	 * @return An {@link ArdenObject} of the given {@link ObjectType}.
+	 */
+	public ArdenObject getMessageAs(String mapping, ObjectType type) {
+		return new ArdenObject(type);
+	}
+
+	/**
+	 * Gets a value that represents a destination, as part of the
+	 * <code>DESTINATION</code> statement.
+	 * 
+	 * @param mapping
+	 *            The contents of the statement's mapping clause.
+	 * 
+	 * @return A (possibly custom) subclass of {@link ArdenValue} that
+	 *         represents the destination. This value is used as a parameter in
+	 *         the {@link #write(ArdenValue, ArdenValue)} method.
+	 */
+	public ArdenValue getDestination(String mapping) {
+		return new ArdenString(mapping);
+	}
+
+	/**
+	 * Gets an object that represents a destination, as part of a
+	 * <code>DESTINATION AS</code> statement.
+	 * 
+	 * @param mapping
+	 *            The contents of the statement's mapping clause.
+	 * 
+	 * @param type
+	 *            The type that the returned object should have.
+	 * 
+	 * @return An {@link ArdenObject} of the given {@link ObjectType}.
+	 */
+	public ArdenObject getDestinationAs(String mapping, ObjectType type) {
+		return new ArdenObject(type);
+	}
+
 	/** Gets an event defined with the EVENT{mapping} statement */
 	public ArdenEvent getEvent(String mapping) {
 		return new ArdenEvent(mapping);
@@ -72,7 +119,7 @@ public abstract class ExecutionContext {
 	 * @param destination
 	 *            The mapping clause describing the message destination.
 	 */
-	public void write(ArdenValue message, String destination) {
+	public void write(ArdenValue message, ArdenValue destination) {
 	}
 
 	/**

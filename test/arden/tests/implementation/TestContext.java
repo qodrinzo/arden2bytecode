@@ -62,7 +62,7 @@ public class TestContext extends ExecutionContext {
 	}
 
 	@Override
-	public void write(ArdenValue message, String destination) {
+	public void write(ArdenValue message, ArdenValue destination) {
 		b.append(((ArdenString) message).value);
 		b.append("\n");
 	}

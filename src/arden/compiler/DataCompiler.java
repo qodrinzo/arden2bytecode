@@ -289,22 +289,31 @@ final class DataCompiler extends VisitorBase {
 			@Override
 			public void caseAMmapDataAssignPhrase(AMmapDataAssignPhrase node) {
 				// {mmap} message mapping_factor
-				final String mappingString = ParseHelpers.getStringForMapping(node.getMappingFactor());
-				lhs.assign(context, new Switchable() {
-					@Override
-					public void apply(Switch sw) {
-						context.writer.loadVariable(context.executionContextVariable);
-						context.writer.loadStringConstant(mappingString);
-						context.writer.invokeInstance(ExecutionContextMethods.getMessage);
-					}
-				});
+				MessageVariable v = MessageVariable.getMessageVariable(context.codeGenerator, lhs);
+				context.writer.loadThis();
+				context.writer.loadVariable(context.executionContextVariable);
+				String mappingString = ParseHelpers.getStringForMapping(node.getMappingFactor());
+				context.writer.loadStringConstant(mappingString);
+				context.writer.invokeInstance(ExecutionContextMethods.getMessage);
+				context.writer.storeInstanceField(v.field);
 			}
 
 			@Override
 			public void caseAMasmapDataAssignPhrase(AMasmapDataAssignPhrase node) {
 				// {masmap} message as identifier mapping_factor?
-				// TODO Auto-generated method stub
-				super.caseAMasmapDataAssignPhrase(node);
+				MessageVariable v = MessageVariable.getMessageVariable(context.codeGenerator, lhs);
+				context.writer.loadThis();
+				context.writer.loadVariable(context.executionContextVariable);
+				String mappingString = ParseHelpers.getStringForMapping(node.getMappingFactor());
+				context.writer.loadStringConstant(mappingString);
+
+				Variable typeVariable = context.codeGenerator.getVariableOrShowError(node.getIdentifier());
+				if (!(typeVariable instanceof ObjectTypeVariable))
+					throw new RuntimeCompilerException(lhs.getPosition(), "The variable must contain an object declaration");
+				context.writer.loadStaticField(((ObjectTypeVariable) typeVariable).field);
+				
+				context.writer.invokeInstance(ExecutionContextMethods.getMessageAs);
+				context.writer.storeInstanceField(v.field);
 			}
 
 			@Override
@@ -312,15 +321,29 @@ final class DataCompiler extends VisitorBase {
 				// {dmap} destination mapping_factor
 				DestinationVariable v = DestinationVariable.getDestinationVariable(context.codeGenerator, lhs);
 				context.writer.loadThis();
-				context.writer.loadStringConstant(ParseHelpers.getStringForMapping(node.getMappingFactor()));
+				context.writer.loadVariable(context.executionContextVariable);
+				String mappingString = ParseHelpers.getStringForMapping(node.getMappingFactor());
+				context.writer.loadStringConstant(mappingString);
+				context.writer.invokeInstance(ExecutionContextMethods.getDestination);
 				context.writer.storeInstanceField(v.field);
 			}
 
 			@Override
 			public void caseADasmapDataAssignPhrase(ADasmapDataAssignPhrase node) {
 				// {dasmap} destination as identifier mapping_factor?
-				// TODO Auto-generated method stub
-				super.caseADasmapDataAssignPhrase(node);
+				DestinationVariable v = DestinationVariable.getDestinationVariable(context.codeGenerator, lhs);
+				context.writer.loadThis();
+				context.writer.loadVariable(context.executionContextVariable);
+				String mappingString = ParseHelpers.getStringForMapping(node.getMappingFactor());
+				context.writer.loadStringConstant(mappingString);
+
+				Variable typeVariable = context.codeGenerator.getVariableOrShowError(node.getIdentifier());
+				if (!(typeVariable instanceof ObjectTypeVariable))
+					throw new RuntimeCompilerException(lhs.getPosition(), "The variable must contain an object declaration");
+				context.writer.loadStaticField(((ObjectTypeVariable) typeVariable).field);
+				
+				context.writer.invokeInstance(ExecutionContextMethods.getDestinationAs);
+				context.writer.storeInstanceField(v.field);
 			}
 
 			@Override

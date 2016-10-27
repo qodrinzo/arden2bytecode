@@ -31,38 +31,44 @@ import java.lang.reflect.Modifier;
 
 import arden.codegenerator.FieldReference;
 import arden.compiler.node.TIdentifier;
+import arden.compiler.node.Token;
 import arden.runtime.ArdenValue;
 
 /**
  * An instance field of type {@link ArdenValue} is stored in the MLM
  * implementation class. It is set in the data block where the
- * <code>DESTINATION</code> or <code>DESTINATION AS</code> statement occurs and
- * used for <code>WRITE AT</code> statements.
+ * <code>MESSAGE</code> or <code>MESSAGE AS</code> statement occurs and used for
+ * <code>WRITE AT</code> statements.
  */
-final class DestinationVariable extends Variable {
+final class MessageVariable extends Variable {
 	final FieldReference field;
 
-	private DestinationVariable(TIdentifier name, FieldReference field) {
+	private MessageVariable(TIdentifier name, FieldReference field) {
 		super(name);
 		this.field = field;
 	}
 
 	/**
-	 * Gets the DestinationVariable for the LHSR, or creates it on demand.
+	 * Gets the MessageVariable for the LHSR, or creates it on demand.
 	 */
-	public static DestinationVariable getDestinationVariable(CodeGenerator codeGen, LeftHandSideResult lhs) {
+	public static MessageVariable getMessageVariable(CodeGenerator codeGen, LeftHandSideResult lhs) {
 		if (!(lhs instanceof LeftHandSideIdentifier))
-			throw new RuntimeCompilerException(lhs.getPosition(), "DESTINATION variables must be simple identifiers");
+			throw new RuntimeCompilerException(lhs.getPosition(), "MESSAGE variables must be simple identifiers");
 		TIdentifier ident = ((LeftHandSideIdentifier) lhs).identifier;
 		Variable variable = codeGen.getVariable(ident.getText());
-		if (variable instanceof DestinationVariable) {
-			return (DestinationVariable) variable;
+		if (variable instanceof MessageVariable) {
+			return (MessageVariable) variable;
 		} else {
 			FieldReference mlmField = codeGen.createField(ident.getText(), ArdenValue.class, Modifier.PRIVATE);
-			DestinationVariable dv = new DestinationVariable(ident, mlmField);
+			MessageVariable dv = new MessageVariable(ident, mlmField);
 			codeGen.addVariable(dv);
 			return dv;
 		}
 	}
 	
+	@Override
+	public void loadValue(CompilerContext context, Token errorPosition) {
+		context.writer.loadThis();
+		context.writer.loadInstanceField(field);
+	}
 }
