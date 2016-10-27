@@ -227,7 +227,7 @@ final class DataCompiler extends VisitorBase {
 				// {readas} read as identifier read_phrase
 				final Variable v = context.codeGenerator.getVariableOrShowError(node.getIdentifier());
 				if (!(v instanceof ObjectTypeVariable))
-					throw new RuntimeCompilerException(lhs.getPosition(), "EVENT variables must be simple identifiers");
+					throw new RuntimeCompilerException(lhs.getPosition(), "The variable must contain an object declaration");
 				lhs.assign(context, new Switchable() {
 					@Override
 					public void apply(Switch sw) {
