@@ -720,7 +720,7 @@ public final class ExpressionHelpers {
 				bestIndex = i;
 			}
 		}
-		return ArdenNumber.create(bestIndex + 1, arr[bestIndex].primaryTime);
+		return ArdenNumber.create(bestIndex + 1, ArdenValue.NOPRIMARYTIME);
 	}
 
 	/** implements the [] (element) operator */
