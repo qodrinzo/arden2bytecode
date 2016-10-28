@@ -57,9 +57,9 @@ public interface MedicalLogicModule extends ArdenRunnable {
 	/** Gets the urgency value of this module. */
 	double getUrgency();
 	
-	/** Gets a trigger telling when to run this MLM 
+	/** Gets the triggers telling when to run this MLM
 	 * @throws InvocationTargetException */
-	Trigger getTrigger(ExecutionContext context, ArdenValue[] arguments) throws InvocationTargetException;
+	Trigger[] getTriggers(ExecutionContext context, ArdenValue[] arguments) throws InvocationTargetException;
 	
 	/**
 	 * Gets the value of a variable declared in a Medical Logic Module

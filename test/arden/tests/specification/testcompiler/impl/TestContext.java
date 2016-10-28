@@ -17,6 +17,7 @@ import arden.runtime.DatabaseQuery;
 import arden.runtime.ExecutionContext;
 import arden.runtime.ExecutionContextHelpers;
 import arden.runtime.MedicalLogicModule;
+import arden.runtime.evoke.Trigger;
 import arden.tests.specification.testcompiler.TestCompiler;
 
 /**
@@ -65,8 +66,10 @@ public class TestContext extends ExecutionContext {
 		List<MedicalLogicModule> foundModules = new ArrayList<>();
 		for (MedicalLogicModule mlm : mlms) {
 			try {
-				if (mlm.getTrigger(this, null).runOnEvent(event)) {
-					foundModules.add(mlm);
+				for (Trigger trigger : mlm.getTriggers(this, null)) {
+					if (trigger.runOnEvent(event)) {
+						foundModules.add(mlm);
+					}
 				}
 			} catch (InvocationTargetException e) {
 				throw new RuntimeException("Could not load MLM " + mlm.getName() + " for event " + event.name);

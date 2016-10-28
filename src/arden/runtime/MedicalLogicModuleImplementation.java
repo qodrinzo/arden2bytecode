@@ -27,7 +27,6 @@
 
 package arden.runtime;
 
-import arden.runtime.evoke.NeverTrigger;
 import arden.runtime.evoke.Trigger;
 
 /**
@@ -81,8 +80,8 @@ public abstract class MedicalLogicModuleImplementation {
 	/**
 	 * Gets the trigger when this MLM should be invoked
 	 */
-	public Trigger getTrigger(ExecutionContext context) {
-		return new NeverTrigger();
+	public Trigger[] getTriggers(ExecutionContext context) {
+		return new Trigger[]{};
 	}
 	
 	/**

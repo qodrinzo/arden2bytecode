@@ -42,7 +42,6 @@ import arden.runtime.MedicalLogicModule;
 import arden.runtime.MemoryQuery;
 import arden.runtime.evoke.CyclicTrigger;
 import arden.runtime.evoke.EventTrigger;
-import arden.runtime.evoke.NeverTrigger;
 import arden.runtime.evoke.Trigger;
 
 public class ExampleEvokeTest extends ImplementationTest {
@@ -52,7 +51,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 		MedicalLogicModule mlm = compile("x3.1.mlm");
 
 		TestContext context = new TestContext();
-		Trigger trigger = mlm.getTrigger(context, null);
+		Trigger trigger = mlm.getTriggers(context, null)[0];
 
 		Assert.assertTrue(trigger instanceof EventTrigger);
 		ArdenEvent event = new ArdenEvent("storage of urine electrolytes", context.getCurrentTime().value);
@@ -64,7 +63,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 		MedicalLogicModule mlm = compile("x3.2.mlm");
 
 		TestContext context = new TestContext();
-		Trigger trigger = mlm.getTrigger(context, null);
+		Trigger trigger = mlm.getTriggers(context, null)[0];
 
 		Assert.assertTrue(trigger instanceof EventTrigger);
 		ArdenEvent event = new ArdenEvent("'06210519','06210669'", context.getCurrentTime().value);
@@ -75,7 +74,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 	public void x33noAllergies() throws Exception {
 		MedicalLogicModule mlm = compile("x3.3.mlm");
 		TestContext context = new TestContext();
-		Trigger trigger = mlm.getTrigger(context, null);
+		Trigger trigger = mlm.getTriggers(context, null)[0];
 		
 		Assert.assertTrue(trigger instanceof EventTrigger);
 		ArdenEvent event = new ArdenEvent("medication_order where class = penicillin", context.getCurrentTime().value);
@@ -93,7 +92,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 				return new MemoryQuery(new ArdenValue[] { list });
 			}
 		};
-		Trigger trigger = mlm.getTrigger(context, null);
+		Trigger trigger = mlm.getTriggers(context, null)[0];
 		
 		Assert.assertTrue(trigger instanceof EventTrigger);
 		ArdenEvent event = new ArdenEvent("medication_order where class = penicillin", context.getCurrentTime().value);
@@ -111,7 +110,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 				return new MemoryQuery(new ArdenValue[] { list });
 			}
 		};
-		Trigger trigger = mlm.getTrigger(context, null);
+		Trigger trigger = mlm.getTriggers(context, null)[0];
 		
 		Assert.assertTrue(trigger instanceof EventTrigger);
 		ArdenEvent event = new ArdenEvent("medication_order where class = penicillin", context.getCurrentTime().value);
@@ -123,7 +122,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 		MedicalLogicModule mlm = compile("x3.4.mlm");
 
 		TestContext context = new TestContext();
-		Trigger trigger = mlm.getTrigger(context, null);
+		Trigger trigger = mlm.getTriggers(context, null)[0];
 
 		Assert.assertTrue(trigger instanceof EventTrigger);
 		ArdenEvent event = new ArdenEvent("medication_order where class = gentamicin", context.getCurrentTime().value);
@@ -138,7 +137,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 		ArdenEvent defaultEvent = new ArdenEvent("gentamicin_order", defaultEventDate.value);
 
 		TestContext context = new TestContext(defaultEvent, defaultTime);
-		Trigger trigger = mlm.getTrigger(context, null);
+		Trigger trigger = mlm.getTriggers(context, null)[0];
 
 		Assert.assertTrue(trigger instanceof CyclicTrigger);
 		
@@ -169,7 +168,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 		MedicalLogicModule mlm = compile("x3.6.mlm");
 
 		TestContext context = new TestContext();
-		Trigger trigger = mlm.getTrigger(context, null);
+		Trigger trigger = mlm.getTriggers(context, null)[0];
 
 		Assert.assertTrue(trigger instanceof EventTrigger);
 		ArdenEvent event = new ArdenEvent("STORAGE OF ABSOLUTE_NEUTROPHILE_COUNT", context.getCurrentTime().value);
@@ -181,9 +180,9 @@ public class ExampleEvokeTest extends ImplementationTest {
 		MedicalLogicModule mlm = compile("x3.7.mlm");
 
 		TestContext context = new TestContext();
-		Trigger trigger = mlm.getTrigger(context, null);
+		Trigger[] triggers = mlm.getTriggers(context, null);
 
-		Assert.assertTrue(trigger instanceof NeverTrigger);
+		Assert.assertTrue(triggers.length == 0);
 	}
 
 	@Test
@@ -200,9 +199,9 @@ public class ExampleEvokeTest extends ImplementationTest {
 		ArdenList patientReactions = new ArdenList(new ArdenValue[] { new ArdenString("r1"), new ArdenString("r2"),
 				new ArdenString("r3") });
 
-		Trigger trigger = mlm.getTrigger(context, new ArdenValue[] { medOrders, medAllergens, patientAllergies,
+		Trigger[] triggers = mlm.getTriggers(context, new ArdenValue[] { medOrders, medAllergens, patientAllergies,
 				patientReactions });
 
-		Assert.assertTrue(trigger instanceof NeverTrigger);
+		Assert.assertTrue(triggers.length == 0);
 	}
 }

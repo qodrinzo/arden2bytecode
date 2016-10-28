@@ -247,33 +247,33 @@ public final class Compiler {
 		context.writer.loadDoubleConstant(priority);
 		context.writer.returnDoubleFromFunction();
 	}
-	
-	private void compileEvoke(CodeGenerator codeGen, PEvokeSlot evokeSlot) {
-		CompilerContext context = codeGen.createTrigger();
 
-		// event is a keyword, thus there cannot be another field named 'event'
-		FieldReference triggerField = context.codeGenerator.createField("event", Trigger.class, Modifier.PRIVATE);
-		
+	private void compileEvoke(CodeGenerator codeGen, PEvokeSlot evokeSlot) {
+		CompilerContext context = codeGen.createTriggers();
+
+		// evoke is a keyword, thus there cannot be another 'evoke' field
+		FieldReference triggerField = context.codeGenerator.createField("evoke", Trigger[].class, Modifier.PRIVATE);
+
 		Label isNull = new Label();
-		
+
 		context.writer.loadThis();
 		context.writer.loadInstanceField(triggerField);
 		context.writer.jumpIfNull(isNull);
+
 		context.writer.loadThis();
 		context.writer.loadInstanceField(triggerField);
 		context.writer.returnObjectFromFunction();
-		
-		context.writer.mark(isNull);		
-		evokeSlot.apply(new EvokeCompiler(context)); 
-		
-		// the evoke compiler is supposed to leave a Trigger subclass instance on the stack		
+
+		context.writer.mark(isNull);
+		evokeSlot.apply(new EvokeCompiler(context));
+		// the evoke compiler is supposed to leave a Trigger array on the stack
 		context.writer.dup();
 		context.writer.loadThis();
 		context.writer.swap();
 		context.writer.storeInstanceField(triggerField);
 		context.writer.returnObjectFromFunction();
 	}
-	
+
 	private void compileData(CodeGenerator codeGen, PDataSlot dataSlot, String institutionSelf) {
 		int lineNumber = ((ADataSlot) dataSlot).getDataColon().getLine();
 		CompilerContext context = codeGen.createConstructor(lineNumber);

@@ -266,12 +266,12 @@ final class CodeGenerator {
 		return new CompilerContext(this, w, 0);
 	}
 	
-	public CompilerContext createTrigger() {
+	public CompilerContext createTriggers() {
 		MethodWriter w = classFileWriter.createMethod(
-				"getTrigger", 
+				"getTriggers",
 				Modifier.PUBLIC, 
 				new Class<?>[] { ExecutionContext.class }, 
-				Trigger.class);
+				Trigger[].class);
 		if (isDebuggingEnabled)
 			w.enableLineNumberTable();
 		return new CompilerContext(this, w, 1);
