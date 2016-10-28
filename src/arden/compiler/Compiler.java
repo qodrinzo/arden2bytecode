@@ -136,22 +136,25 @@ public final class Compiler {
 	}
 
 	private CompiledMlm doCompileMlm(AMlm mlm) {
-		MetadataCompiler metadata = new MetadataCompiler();
-		mlm.getMaintenanceCategory().apply(metadata);
-		mlm.getLibraryCategory().apply(metadata);
+		// use this to print the generated AST
+		// mlm.apply(new PrintTreeVisitor(System.out));
 
+		// compile metadata
+		MetadataCompiler metadata = new MetadataCompiler();
 		AKnowledgeCategory knowledgeCategory = (AKnowledgeCategory) mlm.getKnowledgeCategory();
 		AKnowledgeBody knowledge = (AKnowledgeBody) knowledgeCategory.getKnowledgeBody();
+		mlm.getMaintenanceCategory().apply(metadata);
+		mlm.getLibraryCategory().apply(metadata);
 		knowledge.getPrioritySlot().apply(metadata);
 
-		// System.out.println(knowledge.toString());
-		// knowledge.apply(new PrintTreeVisitor(System.out));
+		// check for errors
+		mlm.apply(new ErrorAnalysis());
 
-		CodeGenerator codeGen = new CodeGenerator(metadata.maintenance.getMlmName(), knowledgeCategory.getKnowledgeColon()
-				.getLine());
+		// compile knowledge category
+		CodeGenerator codeGen = new CodeGenerator(metadata.maintenance.getMlmName(),
+				knowledgeCategory.getKnowledgeColon().getLine());
 		if (isDebuggingEnabled)
 			codeGen.enableDebugging(sourceFileName);
-		
 		compileData(codeGen, knowledge.getDataSlot(), metadata.maintenance.getInstitution());
 		compileLogic(codeGen, knowledge.getLogicSlot());
 		compileAction(codeGen, knowledge.getActionSlot());
@@ -167,8 +170,10 @@ public final class Compiler {
 			throw new RuntimeException(e);
 		}
 
+		// create method to access the MLMs variables
 		codeGen.createGetValue();
-			
+
+		// save bytecode to a CompiledMlm wrapper
 		byte[] data;
 		try {
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
