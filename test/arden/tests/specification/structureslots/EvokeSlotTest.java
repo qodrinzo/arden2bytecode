@@ -208,12 +208,16 @@ public class EvokeSlotTest extends SpecificationTest {
 	public void testCombinedDelay() throws Exception {
 		String startEvent = getMappings().createEventMapping();
 		String callEvent = getMappings().createEventMapping();
-		String othermlm = createCodeBuilder().replaceSlotContent("mlmname:", "other_mlm")
+		String othermlm = createCodeBuilder()
+				.replaceSlotContent("mlmname:", "other_mlm")
+				.addData("call_event := EVENT {" + callEvent + "};")
 				.addEvoke(".5 SECONDS AFTER TIME OF call_event") // 2. delay
-				.addAction("WRITE \"success\";").toString();
+				.addAction("WRITE \"success\";")
+				.toString();
 		String combinedDelay = createCodeBuilder().addMlm(othermlm)
 				.addData("start_event := EVENT {" + startEvent + "};")
-				.addData("call_event := EVENT {" + callEvent + "};").addEvoke("start_event")
+				.addData("call_event := EVENT {" + callEvent + "};")
+				.addEvoke("start_event")
 				.addAction("CALL call_event DELAY 0.5 SECONDS;") // 1. delay
 				.toString();
 		assertDelayedBy(combinedDelay, startEvent, 1000);
