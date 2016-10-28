@@ -58,7 +58,6 @@ Languages features not implemented:
     * 11.2.5.2 Message As statement
     * 11.2.5.6 Destination As statement
     * 11.2.15 Include Statement
-    * 13 Evoke Slot
     * Some string formatting specificiers are not implemented.
     * Citation/links slots are not syntax checked.
     * The compiler does not check that no languages features newer than the specified 'Arden Version' are used.
