@@ -129,7 +129,7 @@ public class TestContext extends ExecutionContext {
 	}
 
 	@Override
-	public void write(ArdenValue message, String destination) {
+	public void write(ArdenValue message, ArdenValue destination) {
 		// save messages
 		String stringMessage = ((ArdenString) message).value;
 		messages.add(stringMessage);

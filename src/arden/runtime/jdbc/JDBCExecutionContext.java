@@ -82,19 +82,19 @@ public class JDBCExecutionContext extends StdIOExecutionContext {
 		}
 	}
 	
-	public void write(ArdenValue message, String destination) {
-		if ("database".equalsIgnoreCase(destination) || "query".equalsIgnoreCase(destination)) {
+	@Override
+	public void write(ArdenValue message, ArdenValue destination) {
+		String destString = ArdenString.getStringFromValue(destination);
+		if (destString != null && ("database".equalsIgnoreCase(destString) || "query".equalsIgnoreCase(destString))) {
 			String msgString = ArdenString.getStringFromValue(message);
-			
 			// execute query:
 			new JDBCQuery(msgString, connection).execute();
-		} else if ("email".equalsIgnoreCase(destination)) {
-			// TODO: implement email sending
 		} else {
 			super.write(message, destination);
 		}
 	}
 	
+	@Override
 	public DatabaseQuery createQuery(String mapping) {		
 		return new JDBCQuery(mapping, connection);
 	}	

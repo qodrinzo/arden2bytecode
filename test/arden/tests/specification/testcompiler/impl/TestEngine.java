@@ -85,7 +85,7 @@ public class TestEngine extends TestContext {
 	}
 
 	@Override
-	public void write(ArdenValue message, String destination) {
+	public void write(ArdenValue message, ArdenValue destination) {
 		// save messages
 		String stringMessage;
 		if (message instanceof ArdenString) {
@@ -130,6 +130,11 @@ public class TestEngine extends TestContext {
 		}
 
 		return messages.remove();
+	}
+	
+	@Override
+	public ArdenEvent getEvent(String mapping) {
+		return new ArdenEvent(mapping, getCurrentTime().value);
 	}
 
 	@Override

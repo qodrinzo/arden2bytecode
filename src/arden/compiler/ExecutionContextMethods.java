@@ -33,29 +33,36 @@ import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenRunnable;
 import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
+import arden.runtime.ObjectType;
 
 /** Contains references to the methods from the ExecutionContext class */
 final class ExecutionContextMethods {
 	public static final Method createQuery;
-	public static final Method write, getMessage;
+	public static final Method getMessage, getMessageAs, getDestination, getDestinationAs, getEvent;
 	public static final Method findModule, findModules, findInterface;
-	public static final Method callWithDelay, callEventWithDelay;
+	public static final Method write, callWithDelay, callEventWithDelay;
 	public static final Method getEventTime, getTriggerTime, getCurrentTime;
-	public static final Method getEvent;
 
 	static {
 		try {
 			createQuery = ExecutionContext.class.getMethod("createQuery", String.class);
-			write = ExecutionContext.class.getMethod("write", ArdenValue.class, String.class);
+
 			getMessage = ExecutionContext.class.getMethod("getMessage", String.class);
+			getMessageAs = ExecutionContext.class.getMethod("getMessageAs", String.class, ObjectType.class);
+			getDestination = ExecutionContext.class.getMethod("getDestination", String.class);
+			getDestinationAs = ExecutionContext.class.getMethod("getDestinationAs", String.class, ObjectType.class);
 			getEvent = ExecutionContext.class.getMethod("getEvent", String.class);
+
 			findModule = ExecutionContext.class.getMethod("findModule", String.class, String.class);
 			findModules = ExecutionContext.class.getMethod("findModules", ArdenEvent.class);
 			findInterface = ExecutionContext.class.getMethod("findInterface", String.class);
+
+			write = ExecutionContext.class.getMethod("write", ArdenValue.class, ArdenValue.class);
 			callWithDelay = ExecutionContext.class.getMethod("callWithDelay", ArdenRunnable.class, ArdenValue[].class,
 					ArdenValue.class);
 			callEventWithDelay = ExecutionContext.class.getMethod("callEventWithDelay", ArdenEvent.class,
 					ArdenValue.class);
+
 			getEventTime = ExecutionContext.class.getMethod("getEventTime");
 			getTriggerTime = ExecutionContext.class.getMethod("getTriggerTime");
 			getCurrentTime = ExecutionContext.class.getMethod("getCurrentTime");
