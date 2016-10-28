@@ -27,7 +27,7 @@ public class EvokeSlotTest extends SpecificationTest {
 				.addLogic("CONCLUDE TRUE;")
 				.addAction("RETURN result;")
 				.toString();
-		assertReturns(eventtime, "TRUE");
+		assertReturns(eventtime, "(,TRUE)");
 	}
 
 	@Test(timeout = 5000)
