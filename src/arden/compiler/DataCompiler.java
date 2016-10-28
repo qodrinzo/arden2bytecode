@@ -31,7 +31,51 @@ import java.util.ArrayList;
 import java.util.List;
 
 import arden.codegenerator.Label;
-import arden.compiler.node.*;
+import arden.compiler.node.AArgDataAssignPhrase;
+import arden.compiler.node.AAssDataStatement;
+import arden.compiler.node.ABlockDataBlock;
+import arden.compiler.node.ACphrDataAssignPhrase;
+import arden.compiler.node.ADasmapDataAssignPhrase;
+import arden.compiler.node.ADataIfThenElse2;
+import arden.compiler.node.ADataSlot;
+import arden.compiler.node.ADmapDataAssignPhrase;
+import arden.compiler.node.AElseDataElseif;
+import arden.compiler.node.AElseifDataElseif;
+import arden.compiler.node.AEmapDataAssignPhrase;
+import arden.compiler.node.AEmptyDataStatement;
+import arden.compiler.node.AEndDataElseif;
+import arden.compiler.node.AExprDataAssignPhrase;
+import arden.compiler.node.AForDataStatement;
+import arden.compiler.node.AFuncDataBlock;
+import arden.compiler.node.AIdCallPhrase;
+import arden.compiler.node.AIdexCallPhrase;
+import arden.compiler.node.AIfDataStatement;
+import arden.compiler.node.AImapDataAssignPhrase;
+import arden.compiler.node.AIphrDataAssignment;
+import arden.compiler.node.ALaargDataAssignment;
+import arden.compiler.node.ALlbargDataAssignment;
+import arden.compiler.node.ALlphrDataAssignment;
+import arden.compiler.node.ALphrDataAssignment;
+import arden.compiler.node.AMasmapDataAssignPhrase;
+import arden.compiler.node.AMlmDataAssignPhrase;
+import arden.compiler.node.AMlmiDataAssignPhrase;
+import arden.compiler.node.AMlmsDataAssignPhrase;
+import arden.compiler.node.AMmapDataAssignPhrase;
+import arden.compiler.node.ANewobjDataAssignPhrase;
+import arden.compiler.node.ANullExprFactorAtom;
+import arden.compiler.node.AObjectDataAssignPhrase;
+import arden.compiler.node.AReadDataAssignPhrase;
+import arden.compiler.node.AReadasDataAssignPhrase;
+import arden.compiler.node.ATexprDataAssignment;
+import arden.compiler.node.AWhileDataStatement;
+import arden.compiler.node.PCallPhrase;
+import arden.compiler.node.PExpr;
+import arden.compiler.node.PReadPhrase;
+import arden.compiler.node.Switch;
+import arden.compiler.node.Switchable;
+import arden.compiler.node.TIdentifier;
+import arden.compiler.node.TStringLiteral;
+import arden.compiler.node.TTerm;
 import arden.runtime.ArdenValue;
 import arden.runtime.DatabaseQuery;
 import arden.runtime.ObjectType;
@@ -46,9 +90,15 @@ import arden.runtime.ObjectType;
  */
 final class DataCompiler extends VisitorBase {
 	private final CompilerContext context;
+	private final String institutionSelf;
 
-	public DataCompiler(CompilerContext context) {
+	public DataCompiler(CompilerContext context, String institutionSelf) {
 		this.context = context;
+		this.institutionSelf = institutionSelf;
+	}
+	
+	public DataCompiler(CompilerContext context) {
+		this(context, null);
 	}
 
 	// data_slot = data data_block semicolons;
@@ -350,7 +400,7 @@ final class DataCompiler extends VisitorBase {
 			if (institution != null) {
 				context.writer.loadStringConstant(ParseHelpers.getLiteralStringValue(institution));
 			} else {
-				context.writer.loadNull();
+				context.writer.loadStringConstant(institutionSelf);
 			}
 			context.writer.invokeInstance(ExecutionContextMethods.findModule);
 		}
