@@ -29,9 +29,9 @@ import arden.tests.specification.testcompiler.TestCompilerDelayedMessage;
  * tests don't block.
  */
 public class TestEngine extends TestContext {
-	private static Comparator<MlmCall> priorityComparator = new Comparator<MlmCall>() {
+	private static Comparator<Call> priorityComparator = new Comparator<Call>() {
 		@Override
-		public int compare(MlmCall m1, MlmCall m2) {
+		public int compare(Call m1, Call m2) {
 			// highest priority first
 			return (int) (m2.getPriority() - m1.getPriority());
 		}
@@ -78,6 +78,13 @@ public class TestEngine extends TestContext {
 	}
 
 	@Override
+	public void callEventWithDelay(ArdenEvent event, ArdenValue delayValue) {
+		ArdenDuration delayDuration = (ArdenDuration) delayValue;
+		ArdenTime nextRuntime = new ArdenTime(currentTime.add(delayDuration));
+		scheduledCalls.add(nextRuntime, new EventCall(event, this));
+	}
+
+	@Override
 	public void write(ArdenValue message, String destination) {
 		// save messages
 		String stringMessage;
@@ -98,13 +105,13 @@ public class TestEngine extends TestContext {
 	public TestCompilerDelayedMessage getNextDelayedMessage() throws InvocationTargetException {
 		while (messages.isEmpty()) {
 			// get the next MLM
-			Entry<ArdenTime, Queue<MlmCall>> nextEntry = scheduledCalls.firstEntry();
+			Entry<ArdenTime, Queue<Call>> nextEntry = scheduledCalls.firstEntry();
 			if (nextEntry == null) {
 				throw new IllegalStateException("There are no more messages");
 			}
 			ArdenTime nextRunTime = nextEntry.getKey();
-			Queue<MlmCall> queueCalls = nextEntry.getValue();
-			MlmCall nextMlm = queueCalls.poll(); // highest priority
+			Queue<Call> queueCalls = nextEntry.getValue();
+			Call nextCall = queueCalls.poll(); // highest priority
 			if (queueCalls.isEmpty()) {
 				// remove empty list
 				scheduledCalls.pollFirstEntry();
@@ -112,9 +119,10 @@ public class TestEngine extends TestContext {
 
 			// run the next MLM
 			if (nextRunTime.value >= currentTime.value) {
-				currentTime = new ArdenTime(nextRunTime.value+1); // skip delay
+				// skip delay
+				currentTime = new ArdenTime(nextRunTime.value + 1);
 			}
-			nextMlm.run();
+			nextCall.run();
 
 			// schedule MLMs which may now be triggered
 			Schedule additionalSchedule = createSchedule(mlms);
@@ -156,16 +164,16 @@ public class TestEngine extends TestContext {
 	}
 
 	@SuppressWarnings("serial")
-	private static class Schedule extends TreeMap<ArdenTime, Queue<MlmCall>> {
+	private static class Schedule extends TreeMap<ArdenTime, Queue<Call>> {
 		public Schedule() {
 			// sort by time
 			super(new ArdenTime.NaturalComparator());
 		}
 
 		public void add(Schedule additionalSchedule) {
-			for (Entry<ArdenTime, Queue<MlmCall>> entry : additionalSchedule.entrySet()) {
+			for (Entry<ArdenTime, Queue<Call>> entry : additionalSchedule.entrySet()) {
 				ArdenTime time = entry.getKey();
-				Queue<MlmCall> scheduleGroup = get(time);
+				Queue<Call> scheduleGroup = get(time);
 				if (scheduleGroup == null) {
 					put(time, entry.getValue());
 				} else {
@@ -174,35 +182,43 @@ public class TestEngine extends TestContext {
 			}
 		}
 
-		public void add(ArdenTime nextRunTime, MlmCall mlm) {
-			Queue<MlmCall> scheduleGroup = get(nextRunTime);
+		public void add(ArdenTime nextRunTime, Call mlm) {
+			Queue<Call> scheduleGroup = get(nextRunTime);
 			if (scheduleGroup == null) {
-				scheduleGroup = new PriorityQueue<MlmCall>(3, priorityComparator);
+				scheduleGroup = new PriorityQueue<Call>(3, priorityComparator);
 				put(nextRunTime, scheduleGroup);
 			}
 			scheduleGroup.add(mlm);
 		}
 	}
 
-	private static class MlmCall implements Runnable {
+	private static abstract class Call implements Runnable {
+		// not necessarily the same as an MLMs priority!
+		final int priority;
+
+		Call(int priority) {
+			this.priority = priority;
+		}
+
+		int getPriority() {
+			return priority;
+		}
+	}
+
+	private static class MlmCall extends Call {
 		final MedicalLogicModule mlm;
 		final ArdenValue[] args;
-		final int priority;
 		final ExecutionContext context;
 
 		public MlmCall(MedicalLogicModule mlm, ExecutionContext context, ArdenValue[] args, int priority) {
+			super(priority);
 			this.mlm = mlm;
 			this.args = args;
-			this.priority = priority;
 			this.context = context;
 		}
 
 		public MlmCall(MedicalLogicModule mlm, ExecutionContext context, ArdenValue[] args) {
 			this(mlm, context, args, (int) Math.round(mlm.getPriority()));
-		}
-
-		public int getPriority() {
-			return priority;
 		}
 
 		@Override
@@ -211,6 +227,25 @@ public class TestEngine extends TestContext {
 				mlm.run(context, args);
 			} catch (InvocationTargetException e) {
 				throw new RuntimeException(e);
+			}
+		}
+	}
+
+	private class EventCall extends Call {
+		final ArdenEvent event;
+		final ExecutionContext context;
+
+		public EventCall(ArdenEvent event, ExecutionContext context) {
+			super(Integer.MAX_VALUE); // always handle events before calls
+			this.event = event;
+			this.context = context;
+		}
+
+		@Override
+		public void run() {
+			for (ArdenRunnable mlm : context.findModules(event)) {
+				MlmCall call = new MlmCall((MedicalLogicModule) mlm, context, null);
+				scheduledCalls.add(context.getCurrentTime(), call);
 			}
 		}
 	}

@@ -33,6 +33,7 @@ import arden.codegenerator.FieldReference;
 import arden.compiler.node.PExpr;
 import arden.compiler.node.TIdentifier;
 import arden.compiler.node.Token;
+import arden.runtime.ArdenDuration;
 import arden.runtime.ArdenRunnable;
 import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
@@ -96,7 +97,15 @@ final class CallableVariable extends Variable {
 		} else {
 			context.writer.loadNull();
 		}
-		delay.apply(new ExpressionCompiler(context));
+		if (delay != null) {
+			delay.apply(new ExpressionCompiler(context));
+		} else {
+			try {
+				context.writer.loadStaticField(ArdenDuration.class.getField("ZERO"));
+			} catch (NoSuchFieldException | SecurityException e) {
+				throw new RuntimeCompilerException(errorPosition, "Could not create zero delay");
+			}
+		}
 		context.writer.invokeInstance(ExecutionContextMethods.callWithDelay);
 	}
 }

@@ -8,6 +8,7 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import arden.runtime.ArdenDuration;
 import arden.runtime.ArdenEvent;
 import arden.runtime.ExecutionContext;
 
@@ -91,7 +92,7 @@ public class EventServer implements Runnable {
 					}
 					// send event to context
 					ArdenEvent event = new ArdenEvent(eventName, context.getCurrentTime().value);
-					context.callEvent(event);
+					context.callEventWithDelay(event, ArdenDuration.ZERO);
 				}
 				scanner.close();
 			} catch (IOException e) {

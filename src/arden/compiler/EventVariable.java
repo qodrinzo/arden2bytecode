@@ -30,10 +30,16 @@ package arden.compiler;
 import java.lang.reflect.Modifier;
 
 import arden.codegenerator.FieldReference;
+import arden.compiler.node.PExpr;
 import arden.compiler.node.TIdentifier;
+import arden.compiler.node.Token;
+import arden.runtime.ArdenDuration;
 import arden.runtime.ArdenEvent;
+import arden.runtime.ArdenValue;
+import arden.runtime.ExecutionContext;
 
 final class EventVariable extends DataVariable {
+
 	private EventVariable(TIdentifier name, FieldReference field) {
 		super(name, field);
 	}
@@ -51,5 +57,38 @@ final class EventVariable extends DataVariable {
 			codeGen.addVariable(ev);
 			return ev;
 		}
+	}
+
+	@Override
+	public void call(CompilerContext context, Token errorPosition, PExpr arguments) {
+		context.writer.sequencePoint(errorPosition.getLine());
+		context.writer.loadThis();
+		context.writer.loadInstanceField(field);
+		context.writer.loadVariable(context.executionContextVariable);
+		if (arguments != null) {
+			new ExpressionCompiler(context).buildArrayForCommaSeparatedExpression(arguments);
+		} else {
+			context.writer.loadNull();
+		}
+		context.writer.invokeStatic(
+				Compiler.getRuntimeHelper("callEvent", ArdenEvent.class, ExecutionContext.class, ArdenValue[].class));
+	}
+
+	@Override
+	public void callWithDelay(CompilerContext context, Token errorPosition, PExpr arguments, PExpr delay) {
+		context.writer.sequencePoint(errorPosition.getLine());
+		context.writer.loadVariable(context.executionContextVariable);
+		context.writer.loadThis();
+		context.writer.loadInstanceField(field);
+		if (delay != null) {
+			delay.apply(new ExpressionCompiler(context));
+		} else {
+			try {
+				context.writer.loadStaticField(ArdenDuration.class.getField("ZERO"));
+			} catch (NoSuchFieldException | SecurityException e) {
+				throw new RuntimeCompilerException(errorPosition, "Could not create zero delay");
+			}
+		}
+		context.writer.invokeInstance(ExecutionContextMethods.callEventWithDelay);
 	}
 }

@@ -64,7 +64,18 @@ public class EvokeEngine implements Runnable {
 		context.setEngine(this);
 	}
 
-	public void callEvent(ArdenEvent event) {
+	public MedicalLogicModule[] findModules(ArdenEvent event) throws InvocationTargetException {
+		List<MedicalLogicModule> foundModules = new ArrayList<>();
+		for (MedicalLogicModule mlm : mlms) {
+			if (mlm.getTrigger(context, null).runOnEvent(event)) {
+				foundModules.add(mlm);
+			}
+		}
+		return foundModules.toArray(new MedicalLogicModule[foundModules.size()]);
+	}
+
+	public void callEvent(ArdenEvent event, long delay) {
+		// TODO use delay
 		/*
 		 * Checking the evoke statements may require running the data slot,
 		 * which should not run concurrent to other (possibly data changing)
