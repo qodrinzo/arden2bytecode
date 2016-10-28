@@ -16,6 +16,8 @@ import arden.runtime.ArdenValue;
 import arden.runtime.DatabaseQuery;
 import arden.runtime.LibraryMetadata;
 import arden.runtime.MaintenanceMetadata;
+import arden.runtime.MaintenanceMetadata.ArdenVersion;
+import arden.runtime.MaintenanceMetadata.Validation;
 import arden.runtime.MedicalLogicModule;
 import arden.runtime.MemoryQuery;
 import arden.runtime.RuntimeHelpers;
@@ -172,12 +174,12 @@ public class LoadMlmFromBytecodeTest extends ImplementationTest {
 		MaintenanceMetadata m = compiledMlm.getMaintenance();
 		Assert.assertEquals("Fractional excretion of sodium", m.getTitle());
 		Assert.assertEquals("fractional_na", m.getMlmName());
-		Assert.assertEquals("2", m.getArdenVersion());
+		Assert.assertEquals(ArdenVersion.V2, m.getArdenVersion());
 		Assert.assertEquals("1.00", m.getVersion());
 		Assert.assertEquals("Columbia-Presbyterian Medical Center", m.getInstitution());
 		Assert.assertEquals("George Hripcsak, M.D.(hripcsak@cucis.cis.columbia.edu)", m.getAuthor());
 		Assert.assertNull(m.getSpecialist());
-		Assert.assertEquals("testing", m.getValidation());
+		Assert.assertEquals(Validation.TESTING, m.getValidation());
 
 		LibraryMetadata l = compiledMlm.getLibrary();
 		Assert.assertEquals(3, l.getKeywords().size());
@@ -197,12 +199,12 @@ public class LoadMlmFromBytecodeTest extends ImplementationTest {
 		MaintenanceMetadata m = compiledMlm.getMaintenance();
 		Assert.assertEquals("Check for penicillin allergy", m.getTitle());
 		Assert.assertEquals("pen_allergy", m.getMlmName());
-		Assert.assertEquals("1", m.getArdenVersion());
+		Assert.assertEquals(ArdenVersion.V1, m.getArdenVersion());
 		Assert.assertEquals("1.00", m.getVersion());
 		Assert.assertEquals("Columbia-Presbyterian Medical Center", m.getInstitution());
 		Assert.assertEquals("George Hripcsak, M.D.", m.getAuthor());
 		Assert.assertNull(m.getSpecialist());
-		Assert.assertEquals("testing", m.getValidation());
+		Assert.assertEquals(Validation.TESTING, m.getValidation());
 
 		LibraryMetadata l = compiledMlm.getLibrary();
 		Assert.assertEquals(2, l.getKeywords().size());
