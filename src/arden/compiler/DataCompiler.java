@@ -488,18 +488,22 @@ final class DataCompiler extends VisitorBase {
 		for (int i = 0; i < idents.size(); i++) {
 			final int identNumber = i;
 			// for each identifier, emit:
-			// var_i = (i < phraseResult.Length)
+			// var_i = (phraseResult != null && i < phraseResult.Length)
 			// ? phraseResult.Length[i] : ArdenNull.Instance;
 			idents.get(i).assign(context, new Switchable() {
 				@Override
 				public void apply(Switch sw) {
 					Label trueLabel = new Label();
+					Label falseLabel = new Label();
 					Label endLabel = new Label();
+					context.writer.loadVariable(phraseResultVar);
+					context.writer.jumpIfNull(falseLabel);
 					context.writer.loadIntegerConstant(identNumber);
 					context.writer.loadVariable(phraseResultVar);
 					context.writer.arrayLength();
 					context.writer.jumpIfLessThan(trueLabel);
 					// false part
+					context.writer.markForwardJumpsOnly(falseLabel);
 					new ANullExprFactorAtom().apply(sw);
 					context.writer.jump(endLabel);
 					// true part
