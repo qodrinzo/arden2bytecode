@@ -101,7 +101,7 @@ public class TestContext extends ExecutionContext {
 
 	@Override
 	public ArdenEvent getEvent(String mapping) {
-		return new ArdenEvent(mapping);
+		return new ArdenEvent(mapping, super.getEventTime().value);
 	}
 
 	@Override
