@@ -161,7 +161,7 @@ public abstract class ExecutionContext {
 	 * 
 	 * @return The requested MLM.
 	 */
-	public ArdenRunnable findModule(String name, String institution) {
+	public MedicalLogicModule findModule(String name, String institution) {
 		throw new RuntimeException("findModule not implemented");
 	}
 
@@ -174,7 +174,7 @@ public abstract class ExecutionContext {
 	 * 
 	 * @return The requested MLMs.
 	 */
-	public ArdenRunnable[] findModules(ArdenEvent event) {
+	public MedicalLogicModule[] findModules(ArdenEvent event) {
 		throw new RuntimeException("findModules not implemented");
 	}
 

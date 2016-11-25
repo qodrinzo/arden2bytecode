@@ -71,7 +71,7 @@ public class BaseExecutionContext extends ExecutionContext {
 	}
 
 	@Override
-	public ArdenRunnable findModule(String name, String institution) {
+	public MedicalLogicModule findModule(String name, String institution) {
 		if (!name.matches("[a-zA-Z0-9\\-_]+")) {
 			throw new RuntimeException("Malformed module name: " + name);
 		}
@@ -131,7 +131,7 @@ public class BaseExecutionContext extends ExecutionContext {
 	}
 
 	@Override
-	public ArdenRunnable[] findModules(ArdenEvent event) {
+	public MedicalLogicModule[] findModules(ArdenEvent event) {
 		if (engine != null) {
 			try {
 				return engine.findModules(event);

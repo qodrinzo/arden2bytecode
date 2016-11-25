@@ -52,7 +52,7 @@ public class TestContext extends ExecutionContext {
 	}
 
 	@Override
-	public ArdenRunnable findModule(String name, String institution) {
+	public MedicalLogicModule findModule(String name, String institution) {
 		MedicalLogicModule[] mlmArray = mlms.toArray(new MedicalLogicModule[mlms.size()]);
 		MedicalLogicModule foundModule = ExecutionContextHelpers.findModule(name, institution, mlmArray, null);
 		if (foundModule == null) {
@@ -62,7 +62,7 @@ public class TestContext extends ExecutionContext {
 	}
 
 	@Override
-	public ArdenRunnable[] findModules(ArdenEvent event) {
+	public MedicalLogicModule[] findModules(ArdenEvent event) {
 		List<MedicalLogicModule> foundModules = new ArrayList<>();
 		for (MedicalLogicModule mlm : mlms) {
 			try {

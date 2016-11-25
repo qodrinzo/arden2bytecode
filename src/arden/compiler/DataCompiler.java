@@ -265,13 +265,13 @@ final class DataCompiler extends VisitorBase {
 			@Override
 			public void caseAImapDataAssignPhrase(AImapDataAssignPhrase node) {
 				// {imap} interface mapping_factor
-				CallableVariable var = CallableVariable.getCallableVariable(context.codeGenerator, lhs);
+				CallableVariable var = InterfaceVariable.getVariable(context.codeGenerator, lhs);
 				context.writer.sequencePoint(lhs.getPosition().getLine());
 				context.writer.loadThis();
 				context.writer.loadVariable(context.executionContextVariable);
 				context.writer.loadStringConstant(ParseHelpers.getStringForMapping(node.getMappingFactor()));
 				context.writer.invokeInstance(ExecutionContextMethods.findInterface);
-				context.writer.storeInstanceField(var.mlmField);
+				context.writer.storeInstanceField(var.runnableField);
 			}
 
 			@Override
@@ -412,7 +412,7 @@ final class DataCompiler extends VisitorBase {
 
 	/** Creates an MLM variable. */
 	private void createMlmVariable(LeftHandSideResult lhs, TTerm name, TStringLiteral institution) {
-		CallableVariable var = CallableVariable.getCallableVariable(context.codeGenerator, lhs);
+		CallableVariable var = MedicalLogicModuleVariable.getVariable(context.codeGenerator, lhs);
 		context.writer.sequencePoint(lhs.getPosition().getLine());
 		context.writer.loadThis();
 		if (name == null) {
@@ -427,7 +427,7 @@ final class DataCompiler extends VisitorBase {
 			}
 			context.writer.invokeInstance(ExecutionContextMethods.findModule);
 		}
-		context.writer.storeInstanceField(var.mlmField);
+		context.writer.storeInstanceField(var.runnableField);
 	}
 
 	/** Assigns the argument to the variable. */
