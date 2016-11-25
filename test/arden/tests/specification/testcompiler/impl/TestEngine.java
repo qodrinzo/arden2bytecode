@@ -54,7 +54,7 @@ public class TestEngine extends TestContext {
 		// check if MLMs are directly triggered
 		for (MedicalLogicModule mlm : mlms) {
 			try {
-				for (Trigger trigger : mlm.getTriggers(this, null)) {
+				for (Trigger trigger : mlm.getTriggers(this)) {
 					trigger.scheduleEvent(event);
 					if (trigger.runOnEvent(event)) {
 						scheduledCalls.add(currentTime, new MlmCall(mlm, this, null));
@@ -148,7 +148,7 @@ public class TestEngine extends TestContext {
 		// put MLMs which should run at the same time into groups sorted by time
 		for (MedicalLogicModule mlm : mlms) {
 			try {
-				for (Trigger trigger : mlm.getTriggers(this, null)) {
+				for (Trigger trigger : mlm.getTriggers(this)) {
 					ArdenTime nextRuntime = trigger.getNextRunTime(this);
 					if (nextRuntime == null) {
 						// not scheduled

@@ -79,7 +79,7 @@ public class EvokeTest extends ImplementationTest {
 
 		MedicalLogicModule mlm = parseEvoke("3 days after 1992-01-01T00:00:00");
 
-		Trigger trigger = mlm.getTriggers(context, null)[0];
+		Trigger trigger = mlm.getTriggers(context)[0];
 		Assert.assertEquals(createDate(1992, 0, 4), trigger.getNextRunTime(context));
 		Assert.assertNull(trigger.getTriggeringEvent());
 	}
@@ -89,7 +89,7 @@ public class EvokeTest extends ImplementationTest {
 		TestContext context = new TestContext();
 
 		MedicalLogicModule mlm = parseEvoke("penicillin_storage := EVENT{penicillin storage}", "penicillin_storage");
-		Trigger trigger = mlm.getTriggers(context, null)[0];
+		Trigger trigger = mlm.getTriggers(context)[0];
 
 		ArdenEvent event = new ArdenEvent("penicillin storage");
 		Assert.assertTrue(trigger.runOnEvent(event));
@@ -102,7 +102,7 @@ public class EvokeTest extends ImplementationTest {
 		TestContext context = new TestContext();
 
 		CompiledMlm mlm = parseEvoke("event1 := EVENT{penicillin storage}", "3 days after time of event1");
-		Trigger trigger = mlm.getTriggers(context, null)[0];
+		Trigger trigger = mlm.getTriggers(context)[0];
 		ArdenEvent event = new ArdenEvent("penicillin storage", createDate(1992, 0, 1).value);
 
 		Assert.assertFalse(trigger.runOnEvent(event));
@@ -117,7 +117,7 @@ public class EvokeTest extends ImplementationTest {
 		TestContext context = new TestContext();
 
 		CompiledMlm mlm = parseEvoke("event1 := EVENT{penicillin storage}", "3 days after 2 days after time of event1");
-		Trigger trigger = mlm.getTriggers(context, null)[0];
+		Trigger trigger = mlm.getTriggers(context)[0];
 		ArdenEvent event = new ArdenEvent("penicillin storage", createDate(1992, 0, 1).value);
 
 		Assert.assertFalse(trigger.runOnEvent(event));
@@ -133,7 +133,7 @@ public class EvokeTest extends ImplementationTest {
 		TestContext context = new TestContext();
 
 		MedicalLogicModule mlm = parseEvoke("1992-03-04");
-		Trigger trigger = mlm.getTriggers(context, null)[0];
+		Trigger trigger = mlm.getTriggers(context)[0];
 
 		Assert.assertEquals(createDate(1992, 2, 4), trigger.getNextRunTime(context));
 	}
@@ -143,7 +143,7 @@ public class EvokeTest extends ImplementationTest {
 		TestContext context = new TestContext();
 
 		MedicalLogicModule mlm = parseEvoke("1992-01-03T14:23:17.0");
-		Trigger trigger = mlm.getTriggers(context, null)[0];
+		Trigger trigger = mlm.getTriggers(context)[0];
 
 		Assert.assertEquals(createDateTime(1992, 0, 3, 14, 23, 17), trigger.getNextRunTime(context));
 
@@ -159,7 +159,7 @@ public class EvokeTest extends ImplementationTest {
 						+ "cephalosporin_storage := EVENT{cephalosporin storage};"
 						+ "aminoglycoside_storage := EVENT{aminoglycoside storage};",
 				"penicillin_storage OR cephalosporin_storage OR aminoglycoside_storage");
-		Trigger trigger = mlm.getTriggers(context, null)[0];
+		Trigger trigger = mlm.getTriggers(context)[0];
 
 		Assert.assertFalse(trigger.runOnEvent(new ArdenEvent("other storage")));
 		Assert.assertTrue(trigger.runOnEvent(new ArdenEvent("aminoglycoside storage")));
@@ -180,7 +180,7 @@ public class EvokeTest extends ImplementationTest {
 						+ "cephalosporin_storage := EVENT{cephalosporin storage};"
 						+ "aminoglycoside_storage := EVENT{aminoglycoside storage};",
 				"ANY OF (penicillin_storage, cephalosporin_storage, aminoglycoside_storage)");
-		Trigger trigger = mlm.getTriggers(context, null)[0];
+		Trigger trigger = mlm.getTriggers(context)[0];
 
 		Assert.assertFalse(trigger.runOnEvent(new ArdenEvent("other storage")));
 		Assert.assertTrue(trigger.runOnEvent(new ArdenEvent("aminoglycoside storage")));
@@ -200,7 +200,7 @@ public class EvokeTest extends ImplementationTest {
 				"cephalosporin_storage := EVENT{cephalosporin storage};"
 						+ "aminoglycoside_storage := EVENT{aminoglycoside storage};",
 				"ANY OF (cephalosporin_storage, aminoglycoside_storage)");
-		Trigger trigger = mlm.getTriggers(context, null)[0];
+		Trigger trigger = mlm.getTriggers(context)[0];
 
 		Assert.assertFalse(trigger.runOnEvent(new ArdenEvent("other storage")));
 		Assert.assertTrue(trigger.runOnEvent(new ArdenEvent("cephalosporin storage")));
@@ -216,7 +216,7 @@ public class EvokeTest extends ImplementationTest {
 		TestContext context = new TestContext(createDate(1990, 0, 1));
 
 		CompiledMlm mlm = parseEvoke("event1 := EVENT{test}", "3 days after time of event1");
-		Trigger trigger = mlm.getTriggers(context, null)[0];
+		Trigger trigger = mlm.getTriggers(context)[0];
 
 		Assert.assertTrue(trigger instanceof AfterTrigger);
 		Assert.assertEquals(null, trigger.getNextRunTime(context));
@@ -236,7 +236,7 @@ public class EvokeTest extends ImplementationTest {
 		TestContext context = new TestContext(createDate(1990, 0, 1));
 
 		CompiledMlm mlm = parseEvoke("every 5 days for 10 years starting 5 days after 1992-03-04");
-		Trigger trigger = mlm.getTriggers(context, null)[0];
+		Trigger trigger = mlm.getTriggers(context)[0];
 		Assert.assertTrue(trigger instanceof CyclicTrigger);
 
 		Assert.assertEquals(createDate(1992, 2, 9), trigger.getNextRunTime(context));
@@ -250,7 +250,7 @@ public class EvokeTest extends ImplementationTest {
 
 		CompiledMlm mlm = parseEvoke("event1 := EVENT{test}",
 				"every 1 day for 2 days starting 3 days after time of event1");
-		Trigger trigger = mlm.getTriggers(context, null)[0];
+		Trigger trigger = mlm.getTriggers(context)[0];
 		ArdenEvent event = new ArdenEvent("test", context.getCurrentTime().value);
 
 		trigger.scheduleEvent(event);
@@ -279,7 +279,7 @@ public class EvokeTest extends ImplementationTest {
 		TestContext context = new TestContext(createDate(1990, 0, 1));
 
 		CompiledMlm mlm = parseEvoke("every 5 days for 10 years starting 5 days after 1989-03-04");
-		Trigger trigger = mlm.getTriggers(context, null)[0];
+		Trigger trigger = mlm.getTriggers(context)[0];
 		Assert.assertTrue(trigger instanceof CyclicTrigger);
 
 		Assert.assertEquals(createDate(1990, 0, 3), trigger.getNextRunTime(context));
@@ -297,7 +297,7 @@ public class EvokeTest extends ImplementationTest {
 						+ "event2 := EVENT{test 2};"
 						+ "event3 := EVENT{test 3};",
 				"every 5 days for 10 years starting time of any of (event1, event2, event3)");
-		Trigger trigger = mlm.getTriggers(context, null)[0];
+		Trigger trigger = mlm.getTriggers(context)[0];
 		Assert.assertTrue(trigger instanceof CyclicTrigger);
 		
 		ArdenEvent event = new ArdenEvent("test 2", context.getCurrentTime().value);

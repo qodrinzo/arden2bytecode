@@ -66,7 +66,7 @@ public class TestContext extends ExecutionContext {
 		List<MedicalLogicModule> foundModules = new ArrayList<>();
 		for (MedicalLogicModule mlm : mlms) {
 			try {
-				for (Trigger trigger : mlm.getTriggers(this, null)) {
+				for (Trigger trigger : mlm.getTriggers(this)) {
 					if (trigger.runOnEvent(event)) {
 						foundModules.add(mlm);
 					}

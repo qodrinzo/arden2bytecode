@@ -240,11 +240,11 @@ public final class CompiledMlm implements MedicalLogicModule {
 	 * data set in the constructor, the data section of the MLM is run.
 	 */
 	@Override
-	public Trigger[] getTriggers(ExecutionContext context, ArdenValue[] arguments) throws InvocationTargetException {
+	public Trigger[] getTriggers(ExecutionContext context) throws InvocationTargetException {
 		if (triggers == null) {
 			MedicalLogicModuleImplementation instance = initializedInstance;
 			if (instance == null) {
-				instance = createInstance(context, arguments);
+				instance = createInstance(context, null);
 			}
 			triggers = instance.getTriggers(context);
 		}

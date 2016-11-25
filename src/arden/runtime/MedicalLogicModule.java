@@ -31,7 +31,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import arden.runtime.evoke.Trigger;
 
-
 /**
  * Represents a compiled medical logic module.
  * 
@@ -56,15 +55,26 @@ public interface MedicalLogicModule extends ArdenRunnable {
 
 	/** Gets the urgency value of this module. */
 	double getUrgency();
-	
-	/** Gets the triggers telling when to run this MLM
-	 * @throws InvocationTargetException */
-	Trigger[] getTriggers(ExecutionContext context, ArdenValue[] arguments) throws InvocationTargetException;
-	
+
 	/**
-	 * Gets the value of a variable declared in a Medical Logic Module
-	 * @param name Name of the value in the MLM
-	 * @return the variable value or null if the MLM has not been run yet or the value does not exist, or ArdenNull if the variable is not yet initialized
+	 * Gets the triggers telling when to run this MLM. Requires running the data
+	 * slot to get event definitions.
+	 * 
+	 * @param context
+	 *            The execution context, which creates event definitions.
+	 * 
+	 * @throws InvocationTargetException
+	 */
+	Trigger[] getTriggers(ExecutionContext context) throws InvocationTargetException;
+
+	/**
+	 * Gets the value of a variable declared in a Medical Logic Module.
+	 * 
+	 * @param name
+	 *            Name of the value in the MLM.
+	 * @return The variable value or null if the MLM has not been run yet or the
+	 *         value does not exist. ArdenNull if the variable is not yet
+	 *         initialized.
 	 */
 	ArdenValue getValue(String name);
 }

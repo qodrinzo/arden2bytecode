@@ -67,7 +67,7 @@ public class EvokeEngine implements Runnable {
 	public MedicalLogicModule[] findModules(ArdenEvent event) throws InvocationTargetException {
 		List<MedicalLogicModule> foundModules = new ArrayList<>();
 		for (MedicalLogicModule mlm : mlms) {
-			for (Trigger trigger : mlm.getTriggers(context, null)) {
+			for (Trigger trigger : mlm.getTriggers(context)) {
 				if (trigger.runOnEvent(event)) {
 					foundModules.add(mlm);
 				}
@@ -182,7 +182,7 @@ public class EvokeEngine implements Runnable {
 		for (MedicalLogicModule mlm : mlms) {
 			Trigger[] triggers;
 			try {
-				triggers = mlm.getTriggers(context, null);
+				triggers = mlm.getTriggers(context);
 			} catch (InvocationTargetException e) {
 				// print error and skip this MLM
 				e.printStackTrace();
@@ -240,7 +240,7 @@ public class EvokeEngine implements Runnable {
 			for (MedicalLogicModule mlm : mlms) {
 				Trigger[] triggers;
 				try {
-					triggers = mlm.getTriggers(context, null);
+					triggers = mlm.getTriggers(context);
 				} catch (InvocationTargetException e) {
 					// print error and skip this MLM
 					e.printStackTrace();
