@@ -89,6 +89,6 @@ final class EventVariable extends DataVariable {
 				throw new RuntimeCompilerException(errorPosition, "Could not create zero delay");
 			}
 		}
-		context.writer.invokeInstance(ExecutionContextMethods.callEventWithDelay);
+		context.writer.invokeInstance(ExecutionContextMethods.callEvent);
 	}
 }

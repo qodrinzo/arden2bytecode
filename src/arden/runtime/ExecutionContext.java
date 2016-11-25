@@ -207,8 +207,8 @@ public abstract class ExecutionContext {
 	 * @param delay
 	 *            The delay for calling the MLM (as ArdenDuration).
 	 */
-	public void callWithDelay(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay) {
-		throw new RuntimeException("callWithDelay not implemented");
+	public void call(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay) {
+		throw new RuntimeException("MLM call not implemented");
 	}
 
 	/**
@@ -221,8 +221,8 @@ public abstract class ExecutionContext {
 	 * @param delay
 	 *            The delay for calling the event (as ArdenDuration).
 	 */
-	public void callEventWithDelay(ArdenEvent event, ArdenValue delay) {
-		throw new RuntimeException("callEventWithDelay not implemented");
+	public void call(ArdenEvent event, ArdenValue delay) {
+		throw new RuntimeException("Event call not implemented");
 	}
 
 	protected ArdenTime eventTime = new ArdenTime(new Date());

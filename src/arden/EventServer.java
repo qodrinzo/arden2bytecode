@@ -92,7 +92,7 @@ public class EventServer implements Runnable {
 					}
 					// send event to context
 					ArdenEvent event = new ArdenEvent(eventName, context.getCurrentTime().value);
-					context.callEventWithDelay(event, ArdenDuration.ZERO);
+					context.call(event, ArdenDuration.ZERO);
 				}
 				scanner.close();
 			} catch (IOException e) {

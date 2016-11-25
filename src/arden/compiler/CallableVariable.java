@@ -106,6 +106,6 @@ final class CallableVariable extends Variable {
 				throw new RuntimeCompilerException(errorPosition, "Could not create zero delay");
 			}
 		}
-		context.writer.invokeInstance(ExecutionContextMethods.callWithDelay);
+		context.writer.invokeInstance(ExecutionContextMethods.call);
 	}
 }

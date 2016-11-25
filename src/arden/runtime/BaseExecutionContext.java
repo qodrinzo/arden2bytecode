@@ -174,7 +174,7 @@ public class BaseExecutionContext extends ExecutionContext {
 	}
 
 	@Override
-	public void callWithDelay(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay) {
+	public void call(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay) {
 		if (engine != null) {
 			// use urgency as priority
 			int urgency = 50;
@@ -198,7 +198,7 @@ public class BaseExecutionContext extends ExecutionContext {
 	}
 
 	@Override
-	public void callEventWithDelay(ArdenEvent event, ArdenValue delay) {
+	public void call(ArdenEvent event, ArdenValue delay) {
 		if (engine != null) {
 			// run on engine
 			engine.callEvent(event, delayToMillis(delay));
