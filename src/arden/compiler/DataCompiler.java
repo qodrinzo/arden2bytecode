@@ -277,7 +277,7 @@ final class DataCompiler extends VisitorBase {
 			@Override
 			public void caseAEmapDataAssignPhrase(AEmapDataAssignPhrase node) {
 				// {emap} event mapping_factor
-				EventVariable e = EventVariable.getEventVariable(context.codeGenerator, lhs);
+				EventVariable e = EventVariable.getVariable(context.codeGenerator, lhs);
 				context.writer.sequencePoint(lhs.getPosition().getLine());
 				context.writer.loadThis();
 				context.writer.loadVariable(context.executionContextVariable);
@@ -289,7 +289,7 @@ final class DataCompiler extends VisitorBase {
 			@Override
 			public void caseAMmapDataAssignPhrase(AMmapDataAssignPhrase node) {
 				// {mmap} message mapping_factor
-				MessageVariable v = MessageVariable.getMessageVariable(context.codeGenerator, lhs);
+				MessageVariable v = MessageVariable.getVariable(context.codeGenerator, lhs);
 				context.writer.loadThis();
 				context.writer.loadVariable(context.executionContextVariable);
 				String mappingString = ParseHelpers.getStringForMapping(node.getMappingFactor());
@@ -301,7 +301,7 @@ final class DataCompiler extends VisitorBase {
 			@Override
 			public void caseAMasmapDataAssignPhrase(AMasmapDataAssignPhrase node) {
 				// {masmap} message as identifier mapping_factor?
-				MessageVariable v = MessageVariable.getMessageVariable(context.codeGenerator, lhs);
+				MessageVariable v = MessageVariable.getVariable(context.codeGenerator, lhs);
 				context.writer.loadThis();
 				context.writer.loadVariable(context.executionContextVariable);
 				String mappingString = ParseHelpers.getStringForMapping(node.getMappingFactor());

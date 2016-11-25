@@ -51,7 +51,7 @@ final class MessageVariable extends Variable {
 	/**
 	 * Gets the MessageVariable for the LHSR, or creates it on demand.
 	 */
-	public static MessageVariable getMessageVariable(CodeGenerator codeGen, LeftHandSideResult lhs) {
+	public static MessageVariable getVariable(CodeGenerator codeGen, LeftHandSideResult lhs) {
 		if (!(lhs instanceof LeftHandSideIdentifier))
 			throw new RuntimeCompilerException(lhs.getPosition(), "MESSAGE variables must be simple identifiers");
 		TIdentifier ident = ((LeftHandSideIdentifier) lhs).identifier;
