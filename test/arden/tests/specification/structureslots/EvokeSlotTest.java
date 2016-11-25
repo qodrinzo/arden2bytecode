@@ -18,7 +18,7 @@ public class EvokeSlotTest extends SpecificationTest {
 				.replaceSlotContent("mlmname:", "other_mlm")
 				.addData("test_event := EVENT {" + event + "};")
 				.addEvoke("test_event;")
-				.addAction("RETURN (TIME OF test_event = eventtime);")
+				.addAction("RETURN (TIME OF test_event = EVENTTIME);")
 				.toString();
 		String eventtime = createEmptyLogicSlotCodeBuilder()
 				.addMlm(othermlm)
