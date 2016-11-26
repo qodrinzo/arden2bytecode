@@ -380,4 +380,12 @@ public final class RuntimeHelpers {
 			return (ArdenEvent) event.setTime(ArdenValue.NOPRIMARYTIME);
 		}
 	}
+
+	public static ArdenEvent flagEvokingEvent(ArdenEvent event, Trigger trigger) {
+		ArdenEvent triggeringEvent = trigger.getTriggeringEvent();
+		if (triggeringEvent != null && event.equals(triggeringEvent)) {
+			return triggeringEvent.setEvokingEvent(true);
+		}
+		return event;
+	}
 }

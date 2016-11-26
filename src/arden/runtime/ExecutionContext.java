@@ -127,8 +127,7 @@ public abstract class ExecutionContext {
 	 *            The contents of the statement's mapping clause.
 	 * 
 	 * @return An {@link ArdenEvent}. If it is the event, that triggered the
-	 *         MLM, it should flagged as such with
-	 *         {@link ArdenEvent#setEvokingEvent(boolean)}.
+	 *         MLM, it will automatically flagged as such.
 	 */
 	public ArdenEvent getEvent(String mapping) {
 		return new ArdenEvent(mapping);
