@@ -176,15 +176,17 @@ public class BaseExecutionContext extends ExecutionContext {
 	}
 
 	@Override
-	public void call(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay, Trigger trigger, double urgency) {
+	public void call(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay, Trigger callerTrigger, double urgency) {
+		long delayMillis = ExecutionContextHelpers.delayToMillis(delay);
+		Trigger calleeTrigger = ExecutionContextHelpers.combine(callerTrigger, delayMillis);
 		if (engine != null) {
 			// run on engine
-			engine.callWithDelay(mlm, arguments, (int) urgency, ExecutionContextHelpers.delayToMillis(delay));
+			engine.call(mlm, arguments, delayMillis, calleeTrigger, (int) urgency);
 		} else {
 			// print delay and run now
 			System.out.println("delay (skipped): " + delay.toString());
 			try {
-				mlm.run(this, arguments, new CallTrigger(0));
+				mlm.run(this, arguments, calleeTrigger);
 			} catch (InvocationTargetException e) {
 				System.err.println("Could not run MLM:");
 				e.printStackTrace();
@@ -194,18 +196,20 @@ public class BaseExecutionContext extends ExecutionContext {
 
 	@Override
 	public void call(ArdenEvent event, ArdenValue delay, double urgency) {
+		long delayMillis = ExecutionContextHelpers.delayToMillis(delay);
+		ArdenEvent eventAfterDelay = ExecutionContextHelpers.combine(event, delayMillis);
 		if (engine != null) {
 			// run on engine
-			engine.callEvent(event, ExecutionContextHelpers.delayToMillis(delay));
+			engine.call(eventAfterDelay, delayMillis, (int) urgency);
 		} else {
 			// run MLMs for event now
-			ArdenRunnable[] mlms = findModules(event);
+			ArdenRunnable[] mlms = findModules(eventAfterDelay);
 			System.out.println("delay (skipped): " + delay.toString());
-			System.out.println("event: " + event.name);
+			System.out.println("event: " + eventAfterDelay.name);
 
 			for (ArdenRunnable mlm : mlms) {
 				try {
-					mlm.run(this, null, new CallTrigger(event, 0));
+					mlm.run(this, null, new CallTrigger(eventAfterDelay, 0));
 				} catch (InvocationTargetException e) {
 					System.err.println("Could not run MLM:");
 					e.printStackTrace();

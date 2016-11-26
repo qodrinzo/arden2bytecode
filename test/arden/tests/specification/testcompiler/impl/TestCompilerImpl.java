@@ -8,7 +8,9 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import arden.compiler.CompilerException;
+import arden.runtime.ArdenDuration;
 import arden.runtime.ArdenEvent;
+import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
 import arden.runtime.MedicalLogicModule;
 import arden.runtime.evoke.CallTrigger;
@@ -109,15 +111,16 @@ public class TestCompilerImpl implements TestCompiler {
 
 		// create constant time for deterministic tests
 		Calendar calendar = new GregorianCalendar();
-		calendar.set(2010, 1, 2, 3, 4, 5);
+		calendar.clear();
+		ArdenTime startTime = new ArdenTime(calendar.getTimeInMillis());
 		ArdenEvent event = new ArdenEvent(eventMapping, calendar.getTimeInMillis());
+		
+		TestEngine engine = new TestEngine(compiledMlms, startTime);
+		engine.call(event, ArdenDuration.ZERO, 50);
 
 		// collect messages
-		MedicalLogicModule firstMlm = compiledMlms.get(0);
-		TestEngine engine = new TestEngine(compiledMlms, firstMlm);
 		List<TestCompilerDelayedMessage> messages = new ArrayList<>();
 		try {
-			engine.callEvent(event);
 			while (messages.size() < messagesToCollect) {
 				messages.add(engine.getNextDelayedMessage());
 			}

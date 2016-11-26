@@ -12,6 +12,10 @@ public final class CallTrigger implements Trigger {
 		this.event = event;
 		this.delay = delay;
 	}
+	
+	public CallTrigger(ArdenEvent event) {
+		this(event, 0);
+	}
 
 	public CallTrigger(long delay) {
 		this(null, delay);

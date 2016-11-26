@@ -5,6 +5,8 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 import arden.runtime.MaintenanceMetadata.Validation;
+import arden.runtime.evoke.CallTrigger;
+import arden.runtime.evoke.Trigger;
 
 public class ExecutionContextHelpers {
 
@@ -72,6 +74,19 @@ public class ExecutionContextHelpers {
 			return matches.peek();
 		}
 		return null;
+	}
+
+	public static Trigger combine(Trigger callingMlmsTrigger, long delay) {
+		ArdenEvent event = callingMlmsTrigger.getTriggeringEvent();
+		long combinedDelay = callingMlmsTrigger.getDelay() + delay;
+		return new CallTrigger(event, combinedDelay);
+	}
+
+	public static ArdenEvent combine(ArdenEvent event, long delay) {
+		if (event.eventTime == ArdenValue.NOPRIMARYTIME) {
+			throw new IllegalArgumentException("Event must have a valid EVENTTIME");
+		}
+		return new ArdenEvent(event.name, event.primaryTime, event.eventTime + delay);
 	}
 
 	public static long delayToMillis(ArdenValue delay) {
