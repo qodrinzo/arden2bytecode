@@ -275,28 +275,13 @@ public class EvokeTest extends ImplementationTest {
 	}
 
 	@Test
-	public void testCyclicEventBeginningInThePast() throws Exception {
-		TestContext context = new TestContext(createDate(1990, 0, 1));
-
-		CompiledMlm mlm = parseEvoke("every 5 days for 10 years starting 5 days after 1989-03-04");
-		Trigger trigger = mlm.getTriggers(context)[0];
-		Assert.assertTrue(trigger instanceof CyclicTrigger);
-
-		Assert.assertEquals(createDate(1990, 0, 3), trigger.getNextRunTime(context));
-		Assert.assertNull(trigger.getNextRunTime(context));
-
-		context.setCurrentTime(createDate(1990, 0, 4));
-		Assert.assertEquals(createDate(1990, 0, 8), trigger.getNextRunTime(context));
-	}
-	
-	@Test
 	public void testCyclicAnyEvents() throws Exception {
 		TestContext context = new TestContext(createDate(1990, 0, 1));
 		MedicalLogicModule mlm = parseEvoke(
 						"event1 := EVENT{test 1};"
 						+ "event2 := EVENT{test 2};"
 						+ "event3 := EVENT{test 3};",
-				"every 5 days for 10 years starting time of any of (event1, event2, event3)");
+				"every 5 days for 10 days starting time of any of (event1, event2, event3)");
 		Trigger trigger = mlm.getTriggers(context)[0];
 		Assert.assertTrue(trigger instanceof CyclicTrigger);
 		
@@ -304,9 +289,8 @@ public class EvokeTest extends ImplementationTest {
 		trigger.scheduleEvent(event);
 
 		Assert.assertEquals(createDate(1990, 0, 1), trigger.getNextRunTime(context));
-		Assert.assertNull(trigger.getNextRunTime(context));
-
-		context.setCurrentTime(createDate(1990, 0, 3));
 		Assert.assertEquals(createDate(1990, 0, 6), trigger.getNextRunTime(context));
+		Assert.assertEquals(createDate(1990, 0, 11), trigger.getNextRunTime(context));
+		Assert.assertNull(trigger.getNextRunTime(context));
 	}
 }

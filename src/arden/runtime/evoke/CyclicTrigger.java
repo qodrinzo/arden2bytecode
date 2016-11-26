@@ -24,8 +24,6 @@ public final class CyclicTrigger implements Trigger {
 
 	@Override
 	public ArdenTime getNextRunTime(ExecutionContext context) {
-		ArdenTime current = context.getCurrentTime();
-
 		// Check if the starting trigger has happened
 		ArdenTime startTime = starting.getNextRunTime(context);
 		if (startTime != null) {
@@ -34,23 +32,10 @@ public final class CyclicTrigger implements Trigger {
 			scheduledCycles.add(cycle);
 		}
 
-		ScheduledCycle closestCycle = null;
+		ScheduledCycle oldestCycle = null;
 		Iterator<ScheduledCycle> iterator = scheduledCycles.iterator();
 		while (iterator.hasNext()) {
 			ScheduledCycle cycle = iterator.next();
-
-			// Calculate next run time
-			boolean sameTimeButNotStartTime = current.compareTo(cycle.next) == 0 && current.compareTo(cycle.start) != 0;
-			while (cycle.next.compareTo(cycle.end) <= 0 && ( // cycle has not
-																// ended
-			current.compareTo(cycle.next) > 0 // cycles next value lies in the
-												// past
-					|| sameTimeButNotStartTime)) { // or value is same, but not
-													// the start (start is
-													// inclusive)
-				cycle.next = new ArdenTime(cycle.next.add(interval));
-				cycle.nextReturned = false;
-			}
 
 			if (cycle.next.compareTo(cycle.end) > 0) {
 				// Cycle is already finished.
@@ -58,27 +43,23 @@ public final class CyclicTrigger implements Trigger {
 				continue;
 			}
 
-			if (cycle.nextReturned) {
-				// This run time was already returned
-				continue;
-			}
-
-			// Calculate cycle, which runtime is closest to the current time
-			if (closestCycle == null) {
-				closestCycle = cycle;
-			} else if (cycle.next.compareTo(closestCycle.next) < 0) {
-				closestCycle = cycle;
+			// Calculate cycle, which should be returned
+			if (oldestCycle == null) {
+				oldestCycle = cycle;
+			} else if (cycle.next.compareTo(oldestCycle.next) < 0) {
+				oldestCycle = cycle;
 			}
 		}
 
-		if (closestCycle == null) {
+		if (oldestCycle == null) {
 			return null;
 		}
 
-		closestCycle.nextReturned = true;
-		currentDelay = closestCycle.next.value - closestCycle.start.value;
-		return closestCycle.next;
+		currentDelay = oldestCycle.next.value - oldestCycle.start.value;
+		ArdenTime nextRunTime = oldestCycle.next;
 
+		oldestCycle.next = new ArdenTime(oldestCycle.next.add(interval));
+		return nextRunTime;
 	}
 
 	@Override
@@ -112,7 +93,6 @@ public final class CyclicTrigger implements Trigger {
 		ArdenTime start;
 		ArdenTime next;
 		ArdenTime end;
-		boolean nextReturned = false;
 
 		public ScheduledCycle(ArdenTime start, ArdenTime end) {
 			this.start = start;

@@ -18,15 +18,14 @@ public interface Trigger {
 	 * 
 	 * <pre>
 	 * {@code
-	 * EVERY 5 MINUTES FOR 1 HOUR STARTING TIME OF an_event
+	 * EVERY 10 MINUTES FOR 1 HOUR STARTING TIME OF an_event;
 	 * }
 	 * </pre>
 	 * 
 	 * will return <code>null</code> until <code>an_event</code> has happened.
-	 * Immediately after the event it will return the time of the event. It will
-	 * then return <code>null</code> until 5 minutes have passed. Then it will
-	 * return the time of the event + 5 minutes. After that it will return
-	 * <code>null</code> again until another 5 minutes have passed, etc.
+	 * After the event it will return the time of the event. Then it will return
+	 * the time of the event + 10 minutes, etc. On the 8th call it will return
+	 * <code>null</code> again, as the cycle has finished.
 	 * </p>
 	 * 
 	 * @return The next run time or null if there is no next run time.
