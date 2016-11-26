@@ -60,7 +60,7 @@ final class ExecutionContextMethods {
 			write = ExecutionContext.class.getMethod("write", ArdenValue.class, ArdenValue.class, double.class);
 			call = ExecutionContext.class.getMethod("call", ArdenRunnable.class, ArdenValue[].class, ArdenValue.class,
 					double.class);
-			callEvent = ExecutionContext.class.getMethod("call", ArdenEvent.class, ArdenValue.class);
+			callEvent = ExecutionContext.class.getMethod("call", ArdenEvent.class, ArdenValue.class, double.class);
 
 			getEventTime = ExecutionContext.class.getMethod("getEventTime");
 			getTriggerTime = ExecutionContext.class.getMethod("getTriggerTime");

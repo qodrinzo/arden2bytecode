@@ -227,7 +227,7 @@ public abstract class ExecutionContext {
 	 * @param delay
 	 *            The delay for calling the event (as ArdenDuration).
 	 */
-	public void call(ArdenEvent event, ArdenValue delay) {
+	public void call(ArdenEvent event, ArdenValue delay, double urgency) {
 		throw new RuntimeException("Event call not implemented");
 	}
 

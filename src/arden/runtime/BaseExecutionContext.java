@@ -191,7 +191,7 @@ public class BaseExecutionContext extends ExecutionContext {
 	}
 
 	@Override
-	public void call(ArdenEvent event, ArdenValue delay) {
+	public void call(ArdenEvent event, ArdenValue delay, double urgency) {
 		if (engine != null) {
 			// run on engine
 			engine.callEvent(event, ExecutionContextHelpers.delayToMillis(delay));

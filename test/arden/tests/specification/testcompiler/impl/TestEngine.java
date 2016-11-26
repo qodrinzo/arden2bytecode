@@ -78,7 +78,7 @@ public class TestEngine extends TestContext {
 	}
 
 	@Override
-	public void call(ArdenEvent event, ArdenValue delayValue) {
+	public void call(ArdenEvent event, ArdenValue delayValue, double urgency) {
 		ArdenDuration delayDuration = (ArdenDuration) delayValue;
 		ArdenTime nextRuntime = new ArdenTime(currentTime.add(delayDuration));
 		scheduledCalls.add(nextRuntime, new EventCall(event, this));
