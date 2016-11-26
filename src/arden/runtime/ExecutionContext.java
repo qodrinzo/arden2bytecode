@@ -146,8 +146,11 @@ public abstract class ExecutionContext {
 	 *            returned from {@link #getDestination(String)} or
 	 *            {@link #getDestinationAs(String, ObjectType)}. May be null, if
 	 *            the default destination should be used.
+	 * 
+	 * @param urgency
+	 *            The urgency from the MLMs urgency slot.
 	 */
-	public void write(ArdenValue message, ArdenValue destination) {
+	public void write(ArdenValue message, ArdenValue destination, double urgency) {
 	}
 
 	/**

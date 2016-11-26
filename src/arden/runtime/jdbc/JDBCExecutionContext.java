@@ -83,14 +83,14 @@ public class JDBCExecutionContext extends StdIOExecutionContext {
 	}
 	
 	@Override
-	public void write(ArdenValue message, ArdenValue destination) {
+	public void write(ArdenValue message, ArdenValue destination, double urgency) {
 		String destString = ArdenString.getStringFromValue(destination);
 		if (destString != null && ("database".equalsIgnoreCase(destString) || "query".equalsIgnoreCase(destString))) {
 			String msgString = ArdenString.getStringFromValue(message);
 			// execute query:
 			new JDBCQuery(msgString, connection).execute();
 		} else {
-			super.write(message, destination);
+			super.write(message, destination, urgency);
 		}
 	}
 	

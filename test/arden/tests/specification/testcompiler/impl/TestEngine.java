@@ -85,7 +85,7 @@ public class TestEngine extends TestContext {
 	}
 
 	@Override
-	public void write(ArdenValue message, ArdenValue destination) {
+	public void write(ArdenValue message, ArdenValue destination, double urgency) {
 		// save messages
 		String stringMessage;
 		if (message instanceof ArdenString) {

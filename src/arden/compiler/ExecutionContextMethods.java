@@ -57,7 +57,7 @@ final class ExecutionContextMethods {
 			findModules = ExecutionContext.class.getMethod("findModules", ArdenEvent.class);
 			findInterface = ExecutionContext.class.getMethod("findInterface", String.class);
 
-			write = ExecutionContext.class.getMethod("write", ArdenValue.class, ArdenValue.class);
+			write = ExecutionContext.class.getMethod("write", ArdenValue.class, ArdenValue.class, double.class);
 			call = ExecutionContext.class.getMethod("call", ArdenRunnable.class, ArdenValue[].class,
 					ArdenValue.class);
 			callEvent = ExecutionContext.class.getMethod("call", ArdenEvent.class, ArdenValue.class);
