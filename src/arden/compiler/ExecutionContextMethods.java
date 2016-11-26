@@ -41,7 +41,7 @@ final class ExecutionContextMethods {
 	public static final Method getMessage, getMessageAs, getDestination, getDestinationAs, getEvent;
 	public static final Method findModule, findModules, findInterface;
 	public static final Method write, call, callEvent;
-	public static final Method getEventTime, getTriggerTime, getCurrentTime;
+	public static final Method getCurrentTime;
 
 	static {
 		try {
@@ -62,8 +62,6 @@ final class ExecutionContextMethods {
 					double.class);
 			callEvent = ExecutionContext.class.getMethod("call", ArdenEvent.class, ArdenValue.class, double.class);
 
-			getEventTime = ExecutionContext.class.getMethod("getEventTime");
-			getTriggerTime = ExecutionContext.class.getMethod("getTriggerTime");
 			getCurrentTime = ExecutionContext.class.getMethod("getCurrentTime");
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);

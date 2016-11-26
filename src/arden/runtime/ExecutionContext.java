@@ -231,23 +231,6 @@ public abstract class ExecutionContext {
 		throw new RuntimeException("Event call not implemented");
 	}
 
-	protected ArdenTime eventTime = new ArdenTime(new Date());
-	protected ArdenTime triggerTime = new ArdenTime(new Date());
-
-	/**
-	 * @return The <code>EVENTTIME</code>.
-	 */
-	public ArdenTime getEventTime() {
-		return eventTime;
-	}
-
-	/**
-	 * @return The <code>TRIGGERTIME</code>.
-	 */
-	public ArdenTime getTriggerTime() {
-		return triggerTime;
-	}
-
 	/**
 	 * @return The <code>CURRENTTIME</code>.
 	 */
