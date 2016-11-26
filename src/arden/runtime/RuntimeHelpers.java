@@ -38,6 +38,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import arden.runtime.evoke.CallTrigger;
+import arden.runtime.evoke.Trigger;
 
 
 /**
@@ -347,5 +348,27 @@ public final class RuntimeHelpers {
 				setObjectMember(listEntry, upperCaseFieldName, newValue);
 			}
 		}
+	}
+
+	public static ArdenValue getEventTime(Trigger trigger) {
+		ArdenEvent triggeringEvent = trigger.getTriggeringEvent();
+		if (triggeringEvent != null) {
+			long eventTime = triggeringEvent.eventTime;
+			if (eventTime != ArdenValue.NOPRIMARYTIME) {
+				return new ArdenTime(eventTime);
+			}
+		}
+		return ArdenNull.INSTANCE;
+	}
+
+	public static ArdenValue getTriggerTime(Trigger trigger) {
+		ArdenEvent triggeringEvent = trigger.getTriggeringEvent();
+		if (triggeringEvent != null) {
+			long eventTime = triggeringEvent.eventTime;
+			if (eventTime != ArdenValue.NOPRIMARYTIME) {
+				return new ArdenTime(eventTime + trigger.getDelay());
+			}
+		}
+		return ArdenNull.INSTANCE;
 	}
 }

@@ -68,6 +68,8 @@ final class CodeGenerator {
 	private int nextFieldIndex;
 	private boolean isFinished;
 	private FieldReference nowField;
+	private FieldReference eventTimeField;
+	private FieldReference triggerTimeField;
 
 	private static final String literalPrefix = "$literal";
 
@@ -338,6 +340,20 @@ final class CodeGenerator {
 		return nowField;
 	}
 
+	public FieldReference getEventTimeField() {
+		if (eventTimeField == null) {
+			eventTimeField = classFileWriter.declareField("eventtime", ArdenValue.class, Modifier.PRIVATE);
+		}
+		return eventTimeField;
+	}
+
+	public FieldReference getTriggerTimeField() {
+		if (triggerTimeField == null) {
+			triggerTimeField = classFileWriter.declareField("triggertime", ArdenValue.class, Modifier.PRIVATE);
+		}
+		return triggerTimeField;
+	}
+
 	public FieldReference createField(String name, Class<?> type, int modifiers) {
 		return classFileWriter.declareField(name, type, modifiers);
 	}
@@ -406,9 +422,21 @@ final class CodeGenerator {
 			ctor.markForwardJumpsOnly(ctorInitCodeLabel);
 			if (nowField != null) {
 				ctor.loadThis();
-				ctor.loadVariable(1);
+				ctor.loadVariable(1); // executionContextVariable
 				ctor.invokeInstance(ExecutionContextMethods.getCurrentTime);
 				ctor.storeInstanceField(nowField);
+			}
+			if (eventTimeField != null) {
+				ctor.loadThis();
+				ctor.loadVariable(4); // triggerVariable
+				ctor.invokeStatic(Compiler.getRuntimeHelper("getEventTime", Trigger.class));
+				ctor.storeInstanceField(eventTimeField);
+			}
+			if (triggerTimeField != null) {
+				ctor.loadThis();
+				ctor.loadVariable(4); // triggerVariable
+				ctor.invokeStatic(Compiler.getRuntimeHelper("getTriggerTime", Trigger.class));
+				ctor.storeInstanceField(triggerTimeField);
 			}
 			for (FieldReference fieldToInit : fieldsNeedingInitialization) {
 				ctor.loadThis();
@@ -428,4 +456,5 @@ final class CodeGenerator {
 		}
 		classFileWriter.save(output);
 	}
+
 }
