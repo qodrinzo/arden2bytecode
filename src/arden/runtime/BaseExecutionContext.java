@@ -22,6 +22,8 @@ import arden.compiler.CompiledMlm;
 import arden.compiler.Compiler;
 import arden.compiler.CompilerException;
 import arden.runtime.MaintenanceMetadata.Validation;
+import arden.runtime.evoke.CallTrigger;
+import arden.runtime.evoke.EventTrigger;
 
 /**
  * <p>
@@ -182,7 +184,7 @@ public class BaseExecutionContext extends ExecutionContext {
 			// print delay and run now
 			System.out.println("delay (skipped): " + delay.toString());
 			try {
-				mlm.run(this, arguments);
+				mlm.run(this, arguments, new CallTrigger(0));
 			} catch (InvocationTargetException e) {
 				System.err.println("Could not run MLM:");
 				e.printStackTrace();
@@ -203,7 +205,7 @@ public class BaseExecutionContext extends ExecutionContext {
 
 			for (ArdenRunnable mlm : mlms) {
 				try {
-					mlm.run(this, null);
+					mlm.run(this, null, new EventTrigger(event));
 				} catch (InvocationTargetException e) {
 					System.err.println("Could not run MLM:");
 					e.printStackTrace();

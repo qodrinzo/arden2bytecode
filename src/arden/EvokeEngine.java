@@ -19,6 +19,7 @@ import arden.runtime.ArdenValue;
 import arden.runtime.BaseExecutionContext;
 import arden.runtime.ExecutionContext;
 import arden.runtime.MedicalLogicModule;
+import arden.runtime.evoke.CallTrigger;
 import arden.runtime.evoke.Trigger;
 
 /**
@@ -281,7 +282,8 @@ public class EvokeEngine implements Runnable {
 		public void run() {
 			// run MLM now
 			try {
-				runnable.run(context, args);
+				// TODO use correct delay
+				runnable.run(context, args, new CallTrigger());
 			} catch (InvocationTargetException e) {
 				// print error and skip this MLM
 				e.printStackTrace();

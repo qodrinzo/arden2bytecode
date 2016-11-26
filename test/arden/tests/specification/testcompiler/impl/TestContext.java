@@ -84,7 +84,7 @@ public class TestContext extends ExecutionContext {
 			return new ArdenRunnable() {
 
 				@Override
-				public ArdenValue[] run(ExecutionContext context, ArdenValue[] arguments)
+				public ArdenValue[] run(ExecutionContext context, ArdenValue[] arguments, Trigger trigger)
 						throws InvocationTargetException {
 					// RETURN (args[0] + args[1], args[0] * args[1]);
 					ArdenNumber firstArg = (ArdenNumber) arguments[0];

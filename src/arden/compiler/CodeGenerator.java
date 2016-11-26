@@ -190,7 +190,7 @@ final class CodeGenerator {
 	
 	public CompilerContext createConstructor(int lineNumberForInitializationSequencePoint) {
 		ctor = classFileWriter.createConstructor(Modifier.PUBLIC, new Class<?>[] { ExecutionContext.class,
-				MedicalLogicModule.class, ArdenValue[].class });
+				MedicalLogicModule.class, ArdenValue[].class, Trigger.class });
 		this.lineNumberForInitializationSequencePoint = lineNumberForInitializationSequencePoint;
 		if (isDebuggingEnabled) {
 			ctor.enableLineNumberTable();
@@ -206,7 +206,7 @@ final class CodeGenerator {
 		}
 		ctor.jump(ctorInitCodeLabel);
 		ctor.mark(ctorUserCodeLabel);
-		return new CompilerContext(this, ctor, 3);
+		return new CompilerContext(this, ctor, 4);
 	}
 	
 	public CompilerContext createParameterLessConstructor() {
@@ -219,7 +219,7 @@ final class CodeGenerator {
 		} catch (NoSuchMethodException e) {
 			throw new RuntimeException(e);
 		}
-		return new CompilerContext(this, ctor, 3);
+		return new CompilerContext(this, ctor, 0);
 	}
 
 	public CompilerContext createLogic() {
@@ -267,11 +267,7 @@ final class CodeGenerator {
 	}
 	
 	public CompilerContext createTriggers() {
-		MethodWriter w = classFileWriter.createMethod(
-				"getTriggers",
-				Modifier.PUBLIC, 
-				new Class<?>[] { ExecutionContext.class }, 
-				Trigger[].class);
+		MethodWriter w = classFileWriter.createMethod("getTriggers", Modifier.PUBLIC, new Class<?>[] { ExecutionContext.class }, Trigger[].class);
 		if (isDebuggingEnabled)
 			w.enableLineNumberTable();
 		return new CompilerContext(this, w, 1);

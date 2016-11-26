@@ -38,7 +38,7 @@ import arden.runtime.evoke.Trigger;
 public abstract class MedicalLogicModuleImplementation {
 	// All derived classes are expected to have a constructor taking:
 	// (ExecutionContext context, MedicalLogicModule self, ArdenValue[]
-	// arguments)
+	// arguments, Trigger evokingTrigger)
 	// None of the arguments may be null.
 
 	/** Executes the logic block. */

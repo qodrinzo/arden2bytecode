@@ -11,6 +11,7 @@ import arden.compiler.CompilerException;
 import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenValue;
 import arden.runtime.MedicalLogicModule;
+import arden.runtime.evoke.CallTrigger;
 import arden.tests.specification.testcompiler.ArdenVersion;
 import arden.tests.specification.testcompiler.TestCompiler;
 import arden.tests.specification.testcompiler.TestCompilerCompiletimeException;
@@ -76,7 +77,7 @@ public class TestCompilerImpl implements TestCompiler {
 
 		ArdenValue[] returnValues;
 		try {
-			returnValues = firstMlm.run(context, null);
+			returnValues = firstMlm.run(context, null, new CallTrigger());
 		} catch (Exception e) {
 			throw new TestCompilerRuntimeException(e);
 		} catch (Error e) {

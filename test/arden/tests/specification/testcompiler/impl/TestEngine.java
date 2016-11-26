@@ -18,6 +18,7 @@ import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
 import arden.runtime.MedicalLogicModule;
+import arden.runtime.evoke.CallTrigger;
 import arden.runtime.evoke.Trigger;
 import arden.tests.specification.testcompiler.TestCompiler;
 import arden.tests.specification.testcompiler.TestCompilerDelayedMessage;
@@ -226,7 +227,7 @@ public class TestEngine extends TestContext {
 		@Override
 		public void run() {
 			try {
-				mlm.run(context, args);
+				mlm.run(context, args, new CallTrigger());
 			} catch (InvocationTargetException e) {
 				throw new RuntimeException(e);
 			}

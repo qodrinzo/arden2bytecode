@@ -38,7 +38,7 @@ import arden.runtime.evoke.Trigger;
  */
 public interface MedicalLogicModule extends ArdenRunnable {
 	/** Creates a new instance of the implementation class. */
-	MedicalLogicModuleImplementation createInstance(ExecutionContext context, ArdenValue[] arguments)
+	MedicalLogicModuleImplementation createInstance(ExecutionContext context, ArdenValue[] arguments, Trigger evokingTrigger)
 			throws InvocationTargetException;
 
 	/** Gets the mlmname */

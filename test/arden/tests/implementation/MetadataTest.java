@@ -35,6 +35,7 @@ import arden.runtime.LibraryMetadata;
 import arden.runtime.MaintenanceMetadata;
 import arden.runtime.MaintenanceMetadata.ArdenVersion;
 import arden.runtime.MaintenanceMetadata.Validation;
+import arden.runtime.evoke.CallTrigger;
 import arden.runtime.MedicalLogicModule;
 import arden.runtime.MedicalLogicModuleImplementation;
 
@@ -88,7 +89,7 @@ public class MetadataTest extends ImplementationTest {
 		
 		ExecutionContext cx = new TestContext();
 		
-		MedicalLogicModuleImplementation impl = mlm.createInstance(cx, null);
+		MedicalLogicModuleImplementation impl = mlm.createInstance(cx, null, new CallTrigger());
 
 		MaintenanceMetadata m = impl.getMaintenanceMetadata();
 		Assert.assertEquals("Fractional excretion of sodium", m.getTitle());
@@ -113,7 +114,7 @@ public class MetadataTest extends ImplementationTest {
 
 		ExecutionContext cx = new TestContext();
 		
-		MedicalLogicModuleImplementation impl = mlm.createInstance(cx, null);
+		MedicalLogicModuleImplementation impl = mlm.createInstance(cx, null, new CallTrigger());
 		
 		MaintenanceMetadata m = impl.getMaintenanceMetadata();
 		Assert.assertEquals("Check for penicillin allergy", m.getTitle());

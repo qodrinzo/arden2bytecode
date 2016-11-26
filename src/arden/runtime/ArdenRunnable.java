@@ -29,7 +29,9 @@ package arden.runtime;
 
 import java.lang.reflect.InvocationTargetException;
 
-/** 
+import arden.runtime.evoke.Trigger;
+
+/**
  * 
  * Represents an executable entity (example: MedicalLogicModule).
  * 
@@ -43,5 +45,6 @@ public interface ArdenRunnable {
 	 * @return Returns the value(s) provided by the "return" statement, or
 	 *         (Java) null if no return statement was executed.
 	 */
-	ArdenValue[] run(ExecutionContext context, ArdenValue[] arguments) throws InvocationTargetException;
+	ArdenValue[] run(ExecutionContext context, ArdenValue[] arguments, Trigger evokingTrigger)
+			throws InvocationTargetException;
 }

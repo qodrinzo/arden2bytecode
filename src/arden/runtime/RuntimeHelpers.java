@@ -37,6 +37,8 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+import arden.runtime.evoke.CallTrigger;
+
 
 /**
  * Static helper methods.
@@ -54,7 +56,8 @@ public final class RuntimeHelpers {
 
 	public static ArdenValue[] call(ArdenRunnable mlm, ExecutionContext context, ArdenValue[] arguments) {
 		try {
-			return mlm.run(context, arguments);
+			// TODO use correct trigger
+			return mlm.run(context, arguments, new CallTrigger());
 		} catch (InvocationTargetException e) {
 			throw new RuntimeException(e);
 		}
@@ -64,7 +67,7 @@ public final class RuntimeHelpers {
 		List<ArdenValue> returnValues = new ArrayList<>();
 		for (ArdenRunnable mlm : context.findModules(event)) {
 			try {
-				ArdenValue[] values = mlm.run(context, arguments);
+				ArdenValue[] values = mlm.run(context, arguments, new CallTrigger(event, 0));
 				// ignore single NULL
 				if (!(values.length == 1 && values[0] instanceof ArdenNull)) {
 					Collections.addAll(returnValues, values);
