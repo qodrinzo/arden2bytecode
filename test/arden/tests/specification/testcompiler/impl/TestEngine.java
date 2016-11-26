@@ -72,7 +72,7 @@ public class TestEngine extends TestContext {
 	}
 
 	@Override
-	public void call(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delayValue, double urgency) {
+	public void call(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delayValue, Trigger trigger, double urgency) {
 		ArdenDuration delayDuration = (ArdenDuration) delayValue;
 		ArdenTime nextRuntime = new ArdenTime(currentTime.add(delayDuration));
 		scheduledCalls.add(nextRuntime, new MlmCall((MedicalLogicModule) mlm, this, arguments));

@@ -70,6 +70,7 @@ final class CodeGenerator {
 	private FieldReference nowField;
 	private FieldReference eventTimeField;
 	private FieldReference triggerTimeField;
+	private FieldReference triggerField;
 
 	private static final String literalPrefix = "$literal";
 
@@ -354,6 +355,13 @@ final class CodeGenerator {
 		return triggerTimeField;
 	}
 
+	public FieldReference getTriggerField() {
+		if (triggerField == null) {
+			triggerField = classFileWriter.declareField("$trigger", Trigger.class, Modifier.PRIVATE);
+		}
+		return triggerField;
+	}
+
 	public FieldReference createField(String name, Class<?> type, int modifiers) {
 		return classFileWriter.declareField(name, type, modifiers);
 	}
@@ -425,6 +433,11 @@ final class CodeGenerator {
 				ctor.loadVariable(1); // executionContextVariable
 				ctor.invokeInstance(ExecutionContextMethods.getCurrentTime);
 				ctor.storeInstanceField(nowField);
+			}
+			if (triggerField != null) {
+				ctor.loadThis();
+				ctor.loadVariable(4); // triggerVariable
+				ctor.storeInstanceField(triggerField);
 			}
 			if (eventTimeField != null) {
 				ctor.loadThis();

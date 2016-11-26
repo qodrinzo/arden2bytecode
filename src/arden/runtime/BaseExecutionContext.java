@@ -23,7 +23,7 @@ import arden.compiler.Compiler;
 import arden.compiler.CompilerException;
 import arden.runtime.MaintenanceMetadata.Validation;
 import arden.runtime.evoke.CallTrigger;
-import arden.runtime.evoke.EventTrigger;
+import arden.runtime.evoke.Trigger;
 
 /**
  * <p>
@@ -176,7 +176,7 @@ public class BaseExecutionContext extends ExecutionContext {
 	}
 
 	@Override
-	public void call(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay, double urgency) {
+	public void call(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay, Trigger trigger, double urgency) {
 		if (engine != null) {
 			// run on engine
 			engine.callWithDelay(mlm, arguments, (int) urgency, ExecutionContextHelpers.delayToMillis(delay));
@@ -205,7 +205,7 @@ public class BaseExecutionContext extends ExecutionContext {
 
 			for (ArdenRunnable mlm : mlms) {
 				try {
-					mlm.run(this, null, new EventTrigger(event));
+					mlm.run(this, null, new CallTrigger(event, 0));
 				} catch (InvocationTargetException e) {
 					System.err.println("Could not run MLM:");
 					e.printStackTrace();

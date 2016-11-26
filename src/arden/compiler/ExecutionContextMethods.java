@@ -34,6 +34,7 @@ import arden.runtime.ArdenRunnable;
 import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
 import arden.runtime.ObjectType;
+import arden.runtime.evoke.Trigger;
 
 /** Contains references to the methods from the ExecutionContext class */
 final class ExecutionContextMethods {
@@ -59,7 +60,7 @@ final class ExecutionContextMethods {
 
 			write = ExecutionContext.class.getMethod("write", ArdenValue.class, ArdenValue.class, double.class);
 			call = ExecutionContext.class.getMethod("call", ArdenRunnable.class, ArdenValue[].class, ArdenValue.class,
-					double.class);
+					Trigger.class, double.class);
 			callEvent = ExecutionContext.class.getMethod("call", ArdenEvent.class, ArdenValue.class, double.class);
 
 			getCurrentTime = ExecutionContext.class.getMethod("getCurrentTime");

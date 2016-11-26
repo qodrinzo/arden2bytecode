@@ -55,10 +55,9 @@ public final class RuntimeHelpers {
 		}
 	}
 
-	public static ArdenValue[] call(ArdenRunnable mlm, ExecutionContext context, ArdenValue[] arguments) {
+	public static ArdenValue[] call(ArdenRunnable mlm, ExecutionContext context, ArdenValue[] arguments, Trigger trigger) {
 		try {
-			// TODO use correct trigger
-			return mlm.run(context, arguments, new CallTrigger());
+			return mlm.run(context, arguments, trigger);
 		} catch (InvocationTargetException e) {
 			throw new RuntimeException(e);
 		}

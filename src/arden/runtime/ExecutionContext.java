@@ -29,6 +29,8 @@ package arden.runtime;
 
 import java.util.Date;
 
+import arden.runtime.evoke.Trigger;
+
 /**
  * Describes the environment in which a Medical Logic Module is executed.
  * 
@@ -210,10 +212,14 @@ public abstract class ExecutionContext {
 	 * @param delay
 	 *            The delay for calling the MLM (as ArdenDuration).
 	 * 
+	 * @param trigger
+	 *            The calling MLMs trigger. Used to calculate the called MLMs
+	 *            <code>EVENTTIME</code> and <code>TRIGGERTIME</code>.
+	 * 
 	 * @param urgency
 	 *            The urgency from the MLMs urgency slot.
 	 */
-	public void call(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay, double urgency) {
+	public void call(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay, Trigger trigger, double urgency) {
 		throw new RuntimeException("MLM call not implemented");
 	}
 
