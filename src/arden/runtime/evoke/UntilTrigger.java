@@ -4,9 +4,9 @@ import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
 import arden.runtime.ExecutionContext;
 
-public class UntilTrigger implements Trigger {
-	private Trigger cycle;
-	private ArdenTime until; // FIXME Should be a boolean expression
+public final class UntilTrigger implements Trigger {
+	private final Trigger cycle;
+	private final ArdenTime until; // FIXME Should be a boolean expression
 
 	public UntilTrigger(Trigger cycle, ArdenTime until) {
 		this.cycle = cycle;
@@ -40,5 +40,4 @@ public class UntilTrigger implements Trigger {
 	public long getDelay() {
 		return cycle.getDelay();
 	}
-
 }

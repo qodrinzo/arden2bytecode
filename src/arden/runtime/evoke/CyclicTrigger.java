@@ -9,12 +9,11 @@ import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
 import arden.runtime.ExecutionContext;
 
-public class CyclicTrigger implements Trigger {
-
-	private ArdenDuration interval;
-	private ArdenDuration length;
-	private Trigger starting;
-	private List<ScheduledCycle> scheduledCycles = new ArrayList<>();
+public final class CyclicTrigger implements Trigger {
+	private final ArdenDuration interval;
+	private final ArdenDuration length;
+	private final Trigger starting;
+	private final List<ScheduledCycle> scheduledCycles = new ArrayList<>();
 	private long currentDelay = 0;
 
 	public CyclicTrigger(ArdenDuration interval, ArdenDuration length, Trigger starting) {
@@ -42,9 +41,13 @@ public class CyclicTrigger implements Trigger {
 
 			// Calculate next run time
 			boolean sameTimeButNotStartTime = current.compareTo(cycle.next) == 0 && current.compareTo(cycle.start) != 0;
-			while (cycle.next.compareTo(cycle.end) <= 0 && ( // cycle has not ended
-						current.compareTo(cycle.next) > 0 // cycles next value lies in the past 
-						|| sameTimeButNotStartTime)) { // or value is same, but not the start (start is inclusive)
+			while (cycle.next.compareTo(cycle.end) <= 0 && ( // cycle has not
+																// ended
+			current.compareTo(cycle.next) > 0 // cycles next value lies in the
+												// past
+					|| sameTimeButNotStartTime)) { // or value is same, but not
+													// the start (start is
+													// inclusive)
 				cycle.next = new ArdenTime(cycle.next.add(interval));
 				cycle.nextReturned = false;
 			}
@@ -117,5 +120,4 @@ public class CyclicTrigger implements Trigger {
 			this.end = end;
 		}
 	}
-
 }

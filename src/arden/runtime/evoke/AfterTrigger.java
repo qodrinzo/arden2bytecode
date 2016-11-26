@@ -8,11 +8,10 @@ import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
 import arden.runtime.ExecutionContext;
 
-public class AfterTrigger implements Trigger {
-
-	Trigger target;
-	ArdenDuration duration;
-	SortedSet<ArdenTime> additionalSchedules;
+public final class AfterTrigger implements Trigger {
+	private final Trigger target;
+	private final ArdenDuration duration;
+	private final SortedSet<ArdenTime> additionalSchedules;
 
 	public AfterTrigger(ArdenDuration duration, Trigger target) {
 		this.duration = duration;
@@ -63,5 +62,4 @@ public class AfterTrigger implements Trigger {
 	public long getDelay() {
 		return target.getDelay() + (long) (duration.toSeconds() * 1000);
 	}
-
 }

@@ -5,7 +5,6 @@ import arden.runtime.ArdenTime;
 import arden.runtime.ExecutionContext;
 
 public interface Trigger {
-
 	/**
 	 * <p>
 	 * Calculates when the trigger should run next. Triggers are stateful, i.e.

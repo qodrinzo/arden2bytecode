@@ -4,9 +4,8 @@ import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
 import arden.runtime.ExecutionContext;
 
-public class FixedDateTrigger implements Trigger {
-
-	private ArdenTime date;
+public final class FixedDateTrigger implements Trigger {
+	private final ArdenTime date;
 	protected boolean triggered = false;
 
 	public FixedDateTrigger(ArdenTime date) {
@@ -42,5 +41,4 @@ public class FixedDateTrigger implements Trigger {
 	public long getDelay() {
 		return 0;
 	}
-
 }
