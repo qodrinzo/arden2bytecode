@@ -5,8 +5,6 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 
 import arden.runtime.MaintenanceMetadata.Validation;
-import arden.runtime.evoke.CallTrigger;
-import arden.runtime.evoke.Trigger;
 
 public class ExecutionContextHelpers {
 
@@ -74,12 +72,6 @@ public class ExecutionContextHelpers {
 			return matches.peek();
 		}
 		return null;
-	}
-
-	public static Trigger combine(Trigger callingMlmsTrigger, long delay) {
-		ArdenEvent event = callingMlmsTrigger.getTriggeringEvent();
-		long combinedDelay = callingMlmsTrigger.getDelay() + delay;
-		return new CallTrigger(event, combinedDelay);
 	}
 
 	public static long delayToMillis(ArdenValue delay) {

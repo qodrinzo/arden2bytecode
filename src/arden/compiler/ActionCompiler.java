@@ -204,7 +204,7 @@ final class ActionCompiler extends VisitorBase {
 		context.writer.loadVariable(context.executionContextVariable);
 		node.getExpr().apply(new ExpressionCompiler(context));
 		context.writer.loadNull();
-		loadUrgency();
+		loadUrgency(context);
 		context.writer.invokeInstance(ExecutionContextMethods.write);
 	}
 
@@ -221,11 +221,11 @@ final class ActionCompiler extends VisitorBase {
 					+ "' is not a valid destination variable.");
 		context.writer.loadThis();
 		context.writer.loadInstanceField(((DestinationVariable) destination).field);
-		loadUrgency();
+		loadUrgency(context);
 		context.writer.invokeInstance(ExecutionContextMethods.write);
 	}
 
-	private void loadUrgency() {
+	static void loadUrgency(CompilerContext context) {
 		context.writer.loadThis();
 		Method getUrgency;
 		try {

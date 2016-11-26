@@ -88,6 +88,7 @@ abstract class CallableVariable extends Variable {
 				throw new RuntimeCompilerException(errorPosition, "Could not create zero delay");
 			}
 		}
+		ActionCompiler.loadUrgency(context);
 		context.writer.invokeInstance(ExecutionContextMethods.call);
 	}
 }

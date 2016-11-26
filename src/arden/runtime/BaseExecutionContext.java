@@ -174,17 +174,10 @@ public class BaseExecutionContext extends ExecutionContext {
 	}
 
 	@Override
-	public void call(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay) {
+	public void call(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay, double urgency) {
 		if (engine != null) {
-			// use urgency as priority
-			int urgency = 50;
-			if (mlm instanceof MedicalLogicModule) {
-				MedicalLogicModule module = (MedicalLogicModule) mlm;
-				urgency = (int) Math.round(module.getUrgency());
-			}
-
 			// run on engine
-			engine.callWithDelay(mlm, arguments, urgency, delayToMillis(delay));
+			engine.callWithDelay(mlm, arguments, (int) urgency, ExecutionContextHelpers.delayToMillis(delay));
 		} else {
 			// print delay and run now
 			System.out.println("delay (skipped): " + delay.toString());
@@ -201,7 +194,7 @@ public class BaseExecutionContext extends ExecutionContext {
 	public void call(ArdenEvent event, ArdenValue delay) {
 		if (engine != null) {
 			// run on engine
-			engine.callEvent(event, delayToMillis(delay));
+			engine.callEvent(event, ExecutionContextHelpers.delayToMillis(delay));
 		} else {
 			// run MLMs for event now
 			ArdenRunnable[] mlms = findModules(event);
@@ -219,12 +212,4 @@ public class BaseExecutionContext extends ExecutionContext {
 		}
 	}
 
-	private long delayToMillis(ArdenValue delay) {
-		// get delay
-		if (!(delay instanceof ArdenDuration)) {
-			throw new RuntimeException("Delay must be a duration");
-		}
-		ArdenDuration delayDuration = (ArdenDuration) delay;
-		return Math.round(delayDuration.toSeconds() * 1000);
-	}
 }

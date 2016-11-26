@@ -202,15 +202,18 @@ public abstract class ExecutionContext {
 	 *            The MLM that should be called. This will be an instance
 	 *            returned from {@link #findModule(String, String)} or
 	 *            {@link #findInterface(String)}.
-	 *            
+	 * 
 	 * @param arguments
 	 *            The arguments being passed. Can be null if no arguments were
 	 *            specified.
 	 * 
 	 * @param delay
 	 *            The delay for calling the MLM (as ArdenDuration).
+	 * 
+	 * @param urgency
+	 *            The urgency from the MLMs urgency slot.
 	 */
-	public void call(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay) {
+	public void call(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay, double urgency) {
 		throw new RuntimeException("MLM call not implemented");
 	}
 
