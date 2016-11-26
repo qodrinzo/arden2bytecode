@@ -78,8 +78,17 @@ final class EventVariable extends DataVariable {
 	public void callWithDelay(CompilerContext context, Token errorPosition, PExpr arguments, PExpr delay) {
 		context.writer.sequencePoint(errorPosition.getLine());
 		context.writer.loadVariable(context.executionContextVariable);
+
+		// set the event's EVENTTIME to the calling MLMs TRIGGERTIME
 		context.writer.loadThis();
 		context.writer.loadInstanceField(field);
+		context.writer.loadThis();
+		context.writer.loadInstanceField(context.codeGenerator.getNowField());
+		context.writer.loadThis();
+		context.writer.loadInstanceField(context.codeGenerator.getTriggerTimeField());
+		context.writer.invokeStatic(
+				Compiler.getRuntimeHelper("prepareForCall", ArdenEvent.class, ArdenValue.class, ArdenValue.class));
+
 		if (delay != null) {
 			delay.apply(new ExpressionCompiler(context));
 		} else {
@@ -89,7 +98,9 @@ final class EventVariable extends DataVariable {
 				throw new RuntimeCompilerException(errorPosition, "Could not create zero delay");
 			}
 		}
+
 		ActionCompiler.loadUrgency(context);
+
 		context.writer.invokeInstance(ExecutionContextMethods.callEvent);
 	}
 }

@@ -370,4 +370,14 @@ public final class RuntimeHelpers {
 		}
 		return ArdenNull.INSTANCE;
 	}
+
+	public static ArdenEvent prepareForCall(ArdenEvent event, ArdenValue now, ArdenValue triggertime) {
+		if (triggertime instanceof ArdenTime) {
+			return (ArdenEvent) event.setTime(((ArdenTime) triggertime).value);
+		} else if (now instanceof ArdenTime) {
+			return (ArdenEvent) event.setTime(((ArdenTime) now).value);
+		} else {
+			return (ArdenEvent) event.setTime(ArdenValue.NOPRIMARYTIME);
+		}
+	}
 }
