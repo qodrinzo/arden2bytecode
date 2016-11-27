@@ -30,7 +30,7 @@ public interface Trigger {
 	 * 
 	 * @return The next run time or null if there is no next run time.
 	 */
-	public ArdenTime getNextRunTime(ExecutionContext context);
+	public ArdenTime getNextRunTime();
 
 	/**
 	 * Whether to immediately (no delay) run for an external event such as

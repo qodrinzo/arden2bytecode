@@ -149,7 +149,7 @@ public class TestEngine extends TestContext {
 		for (MedicalLogicModule mlm : mlms) {
 			try {
 				for (Trigger trigger : mlm.getTriggers(this)) {
-					ArdenTime nextRuntime = trigger.getNextRunTime(this);
+					ArdenTime nextRuntime = trigger.getNextRunTime();
 					if (nextRuntime == null) {
 						// not scheduled
 						continue;

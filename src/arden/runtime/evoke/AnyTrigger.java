@@ -5,7 +5,6 @@ import java.util.List;
 
 import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
-import arden.runtime.ExecutionContext;
 
 public final class AnyTrigger implements Trigger {
 	private final List<Trigger> triggers;
@@ -19,11 +18,11 @@ public final class AnyTrigger implements Trigger {
 	}
 
 	@Override
-	public ArdenTime getNextRunTime(ExecutionContext context) {
+	public ArdenTime getNextRunTime() {
 		// Find oldest trigger/event
 		ArdenTime oldest = null;
 		for (Trigger trigger : triggers) {
-			ArdenTime nextRunTime = trigger.getNextRunTime(context);
+			ArdenTime nextRunTime = trigger.getNextRunTime();
 			if (nextRunTime != null && (oldest == null || oldest.compareTo(nextRunTime) > 0)) {
 				oldest = nextRunTime;
 			}

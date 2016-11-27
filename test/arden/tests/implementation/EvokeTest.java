@@ -80,7 +80,7 @@ public class EvokeTest extends ImplementationTest {
 		MedicalLogicModule mlm = parseEvoke("3 days after 1992-01-01T00:00:00");
 
 		Trigger trigger = mlm.getTriggers(context)[0];
-		Assert.assertEquals(createDate(1992, 0, 4), trigger.getNextRunTime(context));
+		Assert.assertEquals(createDate(1992, 0, 4), trigger.getNextRunTime());
 		Assert.assertNull(trigger.getTriggeringEvent());
 	}
 
@@ -109,7 +109,7 @@ public class EvokeTest extends ImplementationTest {
 		trigger.scheduleEvent(event);
 		Assert.assertEquals(event, trigger.getTriggeringEvent());
 
-		Assert.assertEquals(createDate(1992, 0, 4), trigger.getNextRunTime(context));
+		Assert.assertEquals(createDate(1992, 0, 4), trigger.getNextRunTime());
 	}
 
 	@Test
@@ -124,7 +124,7 @@ public class EvokeTest extends ImplementationTest {
 		trigger.scheduleEvent(event);
 		Assert.assertEquals(event, trigger.getTriggeringEvent());
 
-		Assert.assertEquals(createDate(1992, 0, 6), trigger.getNextRunTime(context));
+		Assert.assertEquals(createDate(1992, 0, 6), trigger.getNextRunTime());
 		Assert.assertEquals(1000 * 60 * 60 * 24 * 5, trigger.getDelay());
 	}
 
@@ -135,7 +135,7 @@ public class EvokeTest extends ImplementationTest {
 		MedicalLogicModule mlm = parseEvoke("1992-03-04");
 		Trigger trigger = mlm.getTriggers(context)[0];
 
-		Assert.assertEquals(createDate(1992, 2, 4), trigger.getNextRunTime(context));
+		Assert.assertEquals(createDate(1992, 2, 4), trigger.getNextRunTime());
 	}
 
 	@Test
@@ -145,7 +145,7 @@ public class EvokeTest extends ImplementationTest {
 		MedicalLogicModule mlm = parseEvoke("1992-01-03T14:23:17.0");
 		Trigger trigger = mlm.getTriggers(context)[0];
 
-		Assert.assertEquals(createDateTime(1992, 0, 3, 14, 23, 17), trigger.getNextRunTime(context));
+		Assert.assertEquals(createDateTime(1992, 0, 3, 14, 23, 17), trigger.getNextRunTime());
 
 		Assert.assertNull(trigger.getTriggeringEvent());
 	}
@@ -219,7 +219,7 @@ public class EvokeTest extends ImplementationTest {
 		Trigger trigger = mlm.getTriggers(context)[0];
 
 		Assert.assertTrue(trigger instanceof AfterTrigger);
-		Assert.assertEquals(null, trigger.getNextRunTime(context));
+		Assert.assertEquals(null, trigger.getNextRunTime());
 
 		ArdenEvent event = new ArdenEvent("test", context.getCurrentTime().value);
 		Assert.assertFalse(trigger.runOnEvent(event));
@@ -228,7 +228,7 @@ public class EvokeTest extends ImplementationTest {
 		Assert.assertFalse(trigger.runOnEvent(event));
 		Assert.assertEquals(event, trigger.getTriggeringEvent());
 		Assert.assertEquals(1000 * 60 * 60 * 24 * 3, trigger.getDelay());
-		Assert.assertEquals(createDate(1990, 0, 4), trigger.getNextRunTime(context));
+		Assert.assertEquals(createDate(1990, 0, 4), trigger.getNextRunTime());
 	}
 
 	@Test
@@ -239,9 +239,9 @@ public class EvokeTest extends ImplementationTest {
 		Trigger trigger = mlm.getTriggers(context)[0];
 		Assert.assertTrue(trigger instanceof CyclicTrigger);
 
-		Assert.assertEquals(createDate(1992, 2, 9), trigger.getNextRunTime(context));
+		Assert.assertEquals(createDate(1992, 2, 9), trigger.getNextRunTime());
 		context.setCurrentTime(createDate(1992, 2, 10));
-		Assert.assertEquals(createDate(1992, 2, 14), trigger.getNextRunTime(context));
+		Assert.assertEquals(createDate(1992, 2, 14), trigger.getNextRunTime());
 	}
 
 	@Test
@@ -254,22 +254,22 @@ public class EvokeTest extends ImplementationTest {
 		ArdenEvent event = new ArdenEvent("test", context.getCurrentTime().value);
 
 		trigger.scheduleEvent(event);
-		Assert.assertEquals(createDate(1990, 0, 4), trigger.getNextRunTime(context));
+		Assert.assertEquals(createDate(1990, 0, 4), trigger.getNextRunTime());
 		Assert.assertEquals(event, trigger.getTriggeringEvent());
 		Assert.assertEquals(1000 * 60 * 60 * 24 * 3, trigger.getDelay());
 
 		context.setCurrentTime(createDateTime(1990, 0, 4, 0, 0, 1));
-		Assert.assertEquals(createDate(1990, 0, 5), trigger.getNextRunTime(context));
+		Assert.assertEquals(createDate(1990, 0, 5), trigger.getNextRunTime());
 		Assert.assertEquals(event, trigger.getTriggeringEvent());
 		Assert.assertEquals(1000 * 60 * 60 * 24 * 4, trigger.getDelay());
 
 		context.setCurrentTime(createDateTime(1990, 0, 5, 0, 0, 1));
-		Assert.assertEquals(createDate(1990, 0, 6), trigger.getNextRunTime(context));
+		Assert.assertEquals(createDate(1990, 0, 6), trigger.getNextRunTime());
 		Assert.assertEquals(event, trigger.getTriggeringEvent());
 		Assert.assertEquals(1000 * 60 * 60 * 24 * 5, trigger.getDelay());
 
 		context.setCurrentTime(createDateTime(1990, 0, 6, 0, 0, 1));
-		Assert.assertNull(trigger.getNextRunTime(context));
+		Assert.assertNull(trigger.getNextRunTime());
 
 		trigger.scheduleEvent(event);
 	}
@@ -288,9 +288,9 @@ public class EvokeTest extends ImplementationTest {
 		ArdenEvent event = new ArdenEvent("test 2", context.getCurrentTime().value);
 		trigger.scheduleEvent(event);
 
-		Assert.assertEquals(createDate(1990, 0, 1), trigger.getNextRunTime(context));
-		Assert.assertEquals(createDate(1990, 0, 6), trigger.getNextRunTime(context));
-		Assert.assertEquals(createDate(1990, 0, 11), trigger.getNextRunTime(context));
-		Assert.assertNull(trigger.getNextRunTime(context));
+		Assert.assertEquals(createDate(1990, 0, 1), trigger.getNextRunTime());
+		Assert.assertEquals(createDate(1990, 0, 6), trigger.getNextRunTime());
+		Assert.assertEquals(createDate(1990, 0, 11), trigger.getNextRunTime());
+		Assert.assertNull(trigger.getNextRunTime());
 	}
 }

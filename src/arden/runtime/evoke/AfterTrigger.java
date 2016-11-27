@@ -6,7 +6,6 @@ import java.util.TreeSet;
 import arden.runtime.ArdenDuration;
 import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
-import arden.runtime.ExecutionContext;
 
 public final class AfterTrigger implements Trigger {
 	private final Trigger target;
@@ -20,8 +19,8 @@ public final class AfterTrigger implements Trigger {
 	}
 
 	@Override
-	public ArdenTime getNextRunTime(ExecutionContext context) {
-		ArdenTime nextRunTime = target.getNextRunTime(context);
+	public ArdenTime getNextRunTime() {
+		ArdenTime nextRunTime = target.getNextRunTime();
 		if (nextRunTime != null) {
 			nextRunTime = new ArdenTime(nextRunTime.add(duration));
 		}

@@ -2,7 +2,6 @@ package arden.runtime.evoke;
 
 import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
-import arden.runtime.ExecutionContext;
 
 public final class UntilTrigger implements Trigger {
 	private final Trigger cycle;
@@ -14,8 +13,8 @@ public final class UntilTrigger implements Trigger {
 	}
 
 	@Override
-	public ArdenTime getNextRunTime(ExecutionContext context) {
-		ArdenTime next = cycle.getNextRunTime(context);
+	public ArdenTime getNextRunTime() {
+		ArdenTime next = cycle.getNextRunTime();
 		if (until.compareTo(next) > 0) {
 			return next;
 		}

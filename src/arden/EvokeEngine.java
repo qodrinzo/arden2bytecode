@@ -190,7 +190,7 @@ public class EvokeEngine implements Runnable {
 			}
 			for (Trigger trigger : triggers) {
 
-				ArdenTime nextRuntime = trigger.getNextRunTime(context);
+				ArdenTime nextRuntime = trigger.getNextRunTime();
 				if (nextRuntime == null) {
 					// not scheduled
 					continue;

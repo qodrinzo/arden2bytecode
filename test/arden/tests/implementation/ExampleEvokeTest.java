@@ -151,7 +151,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 		// default runtime should be 5 days after the event as declared in the MLM:
 		Assert.assertEquals(
 				fiveDaysLater, 
-				trigger.getNextRunTime(context));
+				trigger.getNextRunTime());
 
 		ArdenTime tenDaysLater = new ArdenTime(fiveDaysLater.add(fiveDays));
 		ArdenDuration oneSecond = (ArdenDuration)ArdenDuration.create(1, false, context.getCurrentTime().value);
@@ -160,7 +160,7 @@ public class ExampleEvokeTest extends ImplementationTest {
 		// after the first runtime has been passed, the mlm should be re-run another 5 days later:
 		Assert.assertEquals(
 				tenDaysLater,
-				trigger.getNextRunTime(context)); 
+				trigger.getNextRunTime());
 	}
 
 	@Test

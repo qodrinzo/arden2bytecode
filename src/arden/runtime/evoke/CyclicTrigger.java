@@ -7,7 +7,6 @@ import java.util.List;
 import arden.runtime.ArdenDuration;
 import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenTime;
-import arden.runtime.ExecutionContext;
 
 public final class CyclicTrigger implements Trigger {
 	private final ArdenDuration interval;
@@ -23,9 +22,9 @@ public final class CyclicTrigger implements Trigger {
 	}
 
 	@Override
-	public ArdenTime getNextRunTime(ExecutionContext context) {
+	public ArdenTime getNextRunTime() {
 		// Check if the starting trigger has happened
-		ArdenTime startTime = starting.getNextRunTime(context);
+		ArdenTime startTime = starting.getNextRunTime();
 		if (startTime != null) {
 			ArdenTime end = new ArdenTime(startTime.add(length));
 			ScheduledCycle cycle = new ScheduledCycle(startTime, end);
