@@ -58,6 +58,7 @@ import arden.runtime.BaseExecutionContext;
 import arden.runtime.ExecutionContext;
 import arden.runtime.MedicalLogicModule;
 import arden.runtime.StdIOExecutionContext;
+import arden.runtime.evoke.CallTrigger;
 import arden.runtime.jdbc.JDBCExecutionContext;
 
 public class MainClass {
@@ -448,7 +449,7 @@ public class MainClass {
 	public static ArdenValue[] runMlm(MedicalLogicModule mlm, ExecutionContext context, ArdenValue[] arguments) throws MainException {
 		ArdenValue[] result = null;
 		try {
-			result = mlm.run(context, arguments);
+			result = mlm.run(context, arguments, new CallTrigger());
 			if (result != null && result.length == 1) {
 				System.out.println("Return Value: " + result[0].toString());
 			} else if (result != null && result.length > 1) {

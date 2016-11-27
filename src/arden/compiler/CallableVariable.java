@@ -35,6 +35,7 @@ import arden.runtime.ArdenDuration;
 import arden.runtime.ArdenRunnable;
 import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
+import arden.runtime.evoke.Trigger;
 
 /**
  * MLM or INTERFACE Variables.
@@ -64,8 +65,10 @@ abstract class CallableVariable extends Variable {
 		} else {
 			context.writer.loadNull();
 		}
-		context.writer.invokeStatic(
-				Compiler.getRuntimeHelper("call", ArdenRunnable.class, ExecutionContext.class, ArdenValue[].class));
+		context.writer.loadThis();
+		context.writer.loadInstanceField(context.codeGenerator.getTriggerField());
+		context.writer.invokeStatic(Compiler.getRuntimeHelper("call", ArdenRunnable.class, ExecutionContext.class,
+				ArdenValue[].class, Trigger.class));
 	}
 
 	@Override
@@ -88,6 +91,8 @@ abstract class CallableVariable extends Variable {
 				throw new RuntimeCompilerException(errorPosition, "Could not create zero delay");
 			}
 		}
+		context.writer.loadThis();
+		context.writer.loadInstanceField(context.codeGenerator.getTriggerField());
 		ActionCompiler.loadUrgency(context);
 		context.writer.invokeInstance(ExecutionContextMethods.call);
 	}

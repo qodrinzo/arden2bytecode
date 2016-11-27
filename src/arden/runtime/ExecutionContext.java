@@ -29,6 +29,8 @@ package arden.runtime;
 
 import java.util.Date;
 
+import arden.runtime.evoke.Trigger;
+
 /**
  * Describes the environment in which a Medical Logic Module is executed.
  * 
@@ -125,8 +127,7 @@ public abstract class ExecutionContext {
 	 *            The contents of the statement's mapping clause.
 	 * 
 	 * @return An {@link ArdenEvent}. If it is the event, that triggered the
-	 *         MLM, it should flagged as such with
-	 *         {@link ArdenEvent#setEvokingEvent(boolean)}.
+	 *         MLM, it will automatically flagged as such.
 	 */
 	public ArdenEvent getEvent(String mapping) {
 		return new ArdenEvent(mapping);
@@ -210,10 +211,14 @@ public abstract class ExecutionContext {
 	 * @param delay
 	 *            The delay for calling the MLM (as ArdenDuration).
 	 * 
+	 * @param trigger
+	 *            The calling MLMs trigger. Used to calculate the called MLMs
+	 *            <code>EVENTTIME</code> and <code>TRIGGERTIME</code>.
+	 * 
 	 * @param urgency
 	 *            The urgency from the MLMs urgency slot.
 	 */
-	public void call(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay, double urgency) {
+	public void call(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay, Trigger trigger, double urgency) {
 		throw new RuntimeException("MLM call not implemented");
 	}
 
@@ -229,23 +234,6 @@ public abstract class ExecutionContext {
 	 */
 	public void call(ArdenEvent event, ArdenValue delay, double urgency) {
 		throw new RuntimeException("Event call not implemented");
-	}
-
-	protected ArdenTime eventTime = new ArdenTime(new Date());
-	protected ArdenTime triggerTime = new ArdenTime(new Date());
-
-	/**
-	 * @return The <code>EVENTTIME</code>.
-	 */
-	public ArdenTime getEventTime() {
-		return eventTime;
-	}
-
-	/**
-	 * @return The <code>TRIGGERTIME</code>.
-	 */
-	public ArdenTime getTriggerTime() {
-		return triggerTime;
 	}
 
 	/**

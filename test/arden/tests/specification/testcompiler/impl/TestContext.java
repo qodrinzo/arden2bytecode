@@ -66,7 +66,7 @@ public class TestContext extends ExecutionContext {
 		List<MedicalLogicModule> foundModules = new ArrayList<>();
 		for (MedicalLogicModule mlm : mlms) {
 			try {
-				for (Trigger trigger : mlm.getTriggers(this, null)) {
+				for (Trigger trigger : mlm.getTriggers(this)) {
 					if (trigger.runOnEvent(event)) {
 						foundModules.add(mlm);
 					}
@@ -84,7 +84,7 @@ public class TestContext extends ExecutionContext {
 			return new ArdenRunnable() {
 
 				@Override
-				public ArdenValue[] run(ExecutionContext context, ArdenValue[] arguments)
+				public ArdenValue[] run(ExecutionContext context, ArdenValue[] arguments, Trigger trigger)
 						throws InvocationTargetException {
 					// RETURN (args[0] + args[1], args[0] * args[1]);
 					ArdenNumber firstArg = (ArdenNumber) arguments[0];
@@ -101,7 +101,7 @@ public class TestContext extends ExecutionContext {
 
 	@Override
 	public ArdenEvent getEvent(String mapping) {
-		return new ArdenEvent(mapping, super.getEventTime().value);
+		return new ArdenEvent(mapping, getCurrentTime().value);
 	}
 
 	@Override

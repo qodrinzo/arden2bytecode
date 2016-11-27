@@ -76,9 +76,11 @@ import arden.compiler.node.Switchable;
 import arden.compiler.node.TIdentifier;
 import arden.compiler.node.TStringLiteral;
 import arden.compiler.node.TTerm;
+import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenValue;
 import arden.runtime.DatabaseQuery;
 import arden.runtime.ObjectType;
+import arden.runtime.evoke.Trigger;
 
 /**
  * Compiler for data block.
@@ -283,6 +285,10 @@ final class DataCompiler extends VisitorBase {
 				context.writer.loadVariable(context.executionContextVariable);
 				context.writer.loadStringConstant(ParseHelpers.getStringForMapping(node.getMappingFactor()));
 				context.writer.invokeInstance(ExecutionContextMethods.getEvent);
+				context.writer.loadThis();
+				context.writer.loadInstanceField(context.codeGenerator.getTriggerField());
+				context.writer
+						.invokeStatic(Compiler.getRuntimeHelper("flagEvokingEvent", ArdenEvent.class, Trigger.class));
 				context.writer.storeInstanceField(e.field);
 			}
 

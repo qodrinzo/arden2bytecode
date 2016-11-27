@@ -64,10 +64,11 @@ public class EvokeEngine implements Runnable {
 		context.setEngine(this);
 	}
 
+	/** @see {@link ExecutionContext#findModules(ArdenEvent)} */
 	public MedicalLogicModule[] findModules(ArdenEvent event) throws InvocationTargetException {
 		List<MedicalLogicModule> foundModules = new ArrayList<>();
 		for (MedicalLogicModule mlm : mlms) {
-			for (Trigger trigger : mlm.getTriggers(context, null)) {
+			for (Trigger trigger : mlm.getTriggers(context)) {
 				if (trigger.runOnEvent(event)) {
 					foundModules.add(mlm);
 				}
@@ -76,14 +77,26 @@ public class EvokeEngine implements Runnable {
 		return foundModules.toArray(new MedicalLogicModule[foundModules.size()]);
 	}
 
-	public void callEvent(ArdenEvent event, long delay) {
+	/**
+	 * Call all MLMs for an event, after a delay
+	 * 
+	 * @param event
+	 *            the event, which will be called "as is" without changing the
+	 *            eventtime
+	 * @param delay
+	 *            the delay in milliseconds
+	 * @param urgency
+	 *            a number from 1 (low urgency) to 99 (high urgency), which is
+	 *            used to decide in which order to evaluate events.
+	 */
+	public void call(ArdenEvent event, long delay, int urgency) {
 		/*
 		 * Checking the evoke statements may require running the data slot,
 		 * which should not run concurrent to other (possibly data changing)
 		 * MLMs. Therefore add an EventCall to messages, so it is run on the
 		 * engines thread.
 		 */
-		final EventCall call = new EventCall(event);
+		final EventCall call = new EventCall(event, urgency);
 		if (delay <= 0) {
 			// run event as soon as possible
 			messages.add(call);
@@ -98,8 +111,24 @@ public class EvokeEngine implements Runnable {
 		}
 	}
 
-	public void callWithDelay(ArdenRunnable mlm, ArdenValue[] arguments, int urgency, long delay) {
-		final MlmCall call = new MlmCall(mlm, arguments, urgency);
+	/**
+	 * Call an MLM after a delay.
+	 * 
+	 * @param mlm
+	 *            the MLM to call
+	 * @param arguments
+	 *            parameters to te MLM
+	 * @param delay
+	 *            the delay in milliseconds
+	 * @param evokingTrigger
+	 *            the trigger, that will be given to the MLM "as is", without
+	 *            changing the delay
+	 * @param urgency
+	 *            a number from 1 (low urgency) to 99 (high urgency), which is
+	 *            used to decide in which order to evaluate MLMs.
+	 */
+	public void call(ArdenRunnable mlm, ArdenValue[] arguments, long delay, Trigger evokingTrigger, int urgency) {
+		final MlmCall call = new MlmCall(mlm, arguments, evokingTrigger, urgency);
 		if (delay <= 0) {
 			// run MLM as soon as possible
 			messages.add(call);
@@ -132,7 +161,7 @@ public class EvokeEngine implements Runnable {
 
 			// execute MlmCall or EventCall on this thread
 			message.run();
-			
+
 			// check for MLMs which may now be triggered
 			scheduleTriggers();
 		}
@@ -182,15 +211,14 @@ public class EvokeEngine implements Runnable {
 		for (MedicalLogicModule mlm : mlms) {
 			Trigger[] triggers;
 			try {
-				triggers = mlm.getTriggers(context, null);
+				triggers = mlm.getTriggers(context);
 			} catch (InvocationTargetException e) {
 				// print error and skip this MLM
 				e.printStackTrace();
 				continue;
 			}
 			for (Trigger trigger : triggers) {
-
-				ArdenTime nextRuntime = trigger.getNextRunTime(context);
+				ArdenTime nextRuntime = trigger.getNextRunTime();
 				if (nextRuntime == null) {
 					// not scheduled
 					continue;
@@ -201,7 +229,7 @@ public class EvokeEngine implements Runnable {
 					scheduleGroup = new ArrayList<MlmCall>();
 					schedule.put(nextRuntime, scheduleGroup);
 				}
-				scheduleGroup.add(new MlmCall(mlm, null));
+				scheduleGroup.add(new MlmCall(mlm, null, trigger));
 			}
 		}
 
@@ -223,15 +251,17 @@ public class EvokeEngine implements Runnable {
 
 	private class EventCall implements Message {
 		ArdenEvent event;
+		int urgency;
 
-		public EventCall(ArdenEvent event) {
+		public EventCall(ArdenEvent event, int urgency) {
 			this.event = event;
+			this.urgency = urgency;
 		}
 
 		@Override
 		public int getPriority() {
-			// always handle events before MlmCalls
-			return Integer.MAX_VALUE;
+			// handle events before MlmCalls (highest priority/urgency is 99)
+			return 99 + urgency;
 		}
 
 		@Override
@@ -240,7 +270,7 @@ public class EvokeEngine implements Runnable {
 			for (MedicalLogicModule mlm : mlms) {
 				Trigger[] triggers;
 				try {
-					triggers = mlm.getTriggers(context, null);
+					triggers = mlm.getTriggers(context);
 				} catch (InvocationTargetException e) {
 					// print error and skip this MLM
 					e.printStackTrace();
@@ -250,7 +280,7 @@ public class EvokeEngine implements Runnable {
 				for (Trigger trigger : triggers) {
 					trigger.scheduleEvent(event);
 					if (trigger.runOnEvent(event)) {
-						messages.add(new MlmCall(mlm, null));
+						messages.add(new MlmCall(mlm, null, trigger));
 					}
 				}
 			}
@@ -261,15 +291,17 @@ public class EvokeEngine implements Runnable {
 		ArdenRunnable runnable;
 		ArdenValue[] args;
 		int priority;
+		Trigger trigger;
 
-		public MlmCall(ArdenRunnable runnable, ArdenValue[] args, int priority) {
+		public MlmCall(ArdenRunnable runnable, ArdenValue[] args, Trigger trigger, int priority) {
 			this.runnable = runnable;
 			this.args = args;
+			this.trigger = trigger;
 			this.priority = priority;
 		}
 
-		public MlmCall(MedicalLogicModule mlm, ArdenValue[] args) {
-			this(mlm, args, (int) Math.round(mlm.getPriority()));
+		public MlmCall(MedicalLogicModule mlm, ArdenValue[] args, Trigger trigger) {
+			this(mlm, args, trigger, (int) Math.round(mlm.getPriority()));
 		}
 
 		@Override
@@ -281,7 +313,7 @@ public class EvokeEngine implements Runnable {
 		public void run() {
 			// run MLM now
 			try {
-				runnable.run(context, args);
+				runnable.run(context, args, trigger);
 			} catch (InvocationTargetException e) {
 				// print error and skip this MLM
 				e.printStackTrace();
