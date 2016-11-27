@@ -53,6 +53,7 @@ import arden.compiler.Compiler;
 import arden.compiler.CompilerException;
 import arden.constants.ConstantParser;
 import arden.constants.ConstantParserException;
+import arden.engine.EvokeEngine;
 import arden.runtime.ArdenValue;
 import arden.runtime.BaseExecutionContext;
 import arden.runtime.ExecutionContext;
@@ -360,13 +361,14 @@ public class MainClass {
 		});
 
 		BaseExecutionContext context = createExecutionContext();
+		EvokeEngine engine = new EvokeEngine(context, mlms);
+		context.setEngine(engine);
 
 		// start event server
 		if (options.isPort()) {
 			new EventServer(context, options.getVerbose(), options.getPort()).startServer();
 		}
 
-		EvokeEngine engine = new EvokeEngine(context, mlms);
 		// launch engine loop on main thread -> only exits on interrupt
 		engine.run();
 
@@ -390,16 +392,13 @@ public class MainClass {
 	}
 
 	private BaseExecutionContext createExecutionContext() {
-		BaseExecutionContext context;
 		if (options.getEnvironment().startsWith("jdbc")) {
-			context = new JDBCExecutionContext(options);
+			return new JDBCExecutionContext(options);
 		} else if ("stdio".equalsIgnoreCase(options.getEnvironment())) {
-			context = new StdIOExecutionContext(options);
+			return new StdIOExecutionContext(options);
 		} else {
-			context = new StdIOExecutionContext(options);
+			return new StdIOExecutionContext(options);
 		}
-
-		return context;
 	}
 
 	private List<MedicalLogicModule> getMlmsFromFiles(List<File> files) throws MainException {
