@@ -14,7 +14,6 @@ import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenRunnable;
 import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
-import arden.runtime.BaseExecutionContext;
 import arden.runtime.ExecutionContext;
 import arden.runtime.MedicalLogicModule;
 import arden.runtime.evoke.Trigger;
@@ -47,10 +46,9 @@ public class EvokeEngine implements Runnable {
 	private final ExecutionContext context;
 	private final List<MedicalLogicModule> mlms;
 
-	public EvokeEngine(BaseExecutionContext context, List<MedicalLogicModule> mlms) {
+	public EvokeEngine(ExecutionContext context, List<MedicalLogicModule> mlms) {
 		this.mlms = mlms;
 		this.context = context;
-		context.setEngine(this);
 	}
 
 	/** @see {@link ExecutionContext#findModules(ArdenEvent)} */
