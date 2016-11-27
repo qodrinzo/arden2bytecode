@@ -25,69 +25,34 @@
 // IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 // OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package arden.tests.implementation;
+package arden.compiler;
 
-import arden.runtime.ArdenEvent;
-import arden.runtime.ArdenString;
-import arden.runtime.ArdenTime;
-import arden.runtime.ArdenValue;
-import arden.runtime.DatabaseQuery;
-import arden.runtime.ExecutionContext;
+import java.lang.reflect.Modifier;
 
-public class TestContext extends ExecutionContext {
-	StringBuilder b = new StringBuilder();
-	ArdenEvent defaultEvent = null;
-	ArdenTime defaultTime = null;
-	
-	public TestContext() {
-		
-	}
-	
-	public TestContext(ArdenEvent defaultEvent) {
-		this.defaultEvent = defaultEvent;
-	}
-	
-	public TestContext(ArdenEvent defaultEvent, ArdenTime defaultTime) {
-		this(defaultEvent);
-		this.defaultTime = defaultTime;
-	}
-	
-	public TestContext(ArdenTime defaultTime) {
-		this.defaultTime = defaultTime;
-	}
-	
-	@Override
-	public DatabaseQuery createQuery(String mapping) {
-		return DatabaseQuery.NULL;
+import arden.codegenerator.FieldReference;
+import arden.compiler.node.TIdentifier;
+import arden.runtime.MedicalLogicModule;
+
+/** MLM Variables */
+final class MedicalLogicModuleVariable extends CallableVariable {
+
+	private MedicalLogicModuleVariable(TIdentifier varName, FieldReference mlmField) {
+		super(varName, mlmField);
 	}
 
-	@Override
-	public void write(ArdenValue message, ArdenValue destination, double urgency) {
-		b.append(((ArdenString) message).value);
-		b.append("\n");
-	}
-
-	public String getOutputText() {
-		return b.toString();
-	}
-	
-	@Override
-	public ArdenEvent getEvent(String mapping) {
-		if (defaultEvent != null) {
-			return defaultEvent;
+	/** Gets the MedicalLogicModuleVariable for the LHSR, or creates it on demand. */
+	public static MedicalLogicModuleVariable getVariable(CodeGenerator codeGen, LeftHandSideResult lhs) {
+		if (!(lhs instanceof LeftHandSideIdentifier))
+			throw new RuntimeCompilerException(lhs.getPosition(), "MLM variables must be simple identifiers");
+		TIdentifier ident = ((LeftHandSideIdentifier) lhs).identifier;
+		Variable variable = codeGen.getVariable(ident.getText());
+		if (variable instanceof MedicalLogicModuleVariable) {
+			return (MedicalLogicModuleVariable) variable;
+		} else {
+			FieldReference mlmField = codeGen.createField(ident.getText(), MedicalLogicModule.class, Modifier.PRIVATE);
+			MedicalLogicModuleVariable cv = new MedicalLogicModuleVariable(ident, mlmField);
+			codeGen.addVariable(cv);
+			return cv;
 		}
-		return super.getEvent(mapping);
-	}
-	
-	@Override
-	public ArdenTime getCurrentTime() {
-		if (defaultTime != null) {
-			return defaultTime;
-		}
-		return super.getCurrentTime();
-	}
-	
-	public void setCurrentTime(ArdenTime currentTime) {
-		defaultTime = currentTime;
 	}
 }

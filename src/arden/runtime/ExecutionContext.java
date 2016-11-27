@@ -146,8 +146,11 @@ public abstract class ExecutionContext {
 	 *            returned from {@link #getDestination(String)} or
 	 *            {@link #getDestinationAs(String, ObjectType)}. May be null, if
 	 *            the default destination should be used.
+	 * 
+	 * @param urgency
+	 *            The urgency from the MLMs urgency slot.
 	 */
-	public void write(ArdenValue message, ArdenValue destination) {
+	public void write(ArdenValue message, ArdenValue destination, double urgency) {
 	}
 
 	/**
@@ -161,7 +164,7 @@ public abstract class ExecutionContext {
 	 * 
 	 * @return The requested MLM.
 	 */
-	public ArdenRunnable findModule(String name, String institution) {
+	public MedicalLogicModule findModule(String name, String institution) {
 		throw new RuntimeException("findModule not implemented");
 	}
 
@@ -174,7 +177,7 @@ public abstract class ExecutionContext {
 	 * 
 	 * @return The requested MLMs.
 	 */
-	public ArdenRunnable[] findModules(ArdenEvent event) {
+	public MedicalLogicModule[] findModules(ArdenEvent event) {
 		throw new RuntimeException("findModules not implemented");
 	}
 
@@ -199,16 +202,19 @@ public abstract class ExecutionContext {
 	 *            The MLM that should be called. This will be an instance
 	 *            returned from {@link #findModule(String, String)} or
 	 *            {@link #findInterface(String)}.
-	 *            
+	 * 
 	 * @param arguments
 	 *            The arguments being passed. Can be null if no arguments were
 	 *            specified.
 	 * 
 	 * @param delay
 	 *            The delay for calling the MLM (as ArdenDuration).
+	 * 
+	 * @param urgency
+	 *            The urgency from the MLMs urgency slot.
 	 */
-	public void callWithDelay(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay) {
-		throw new RuntimeException("callWithDelay not implemented");
+	public void call(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delay, double urgency) {
+		throw new RuntimeException("MLM call not implemented");
 	}
 
 	/**
@@ -221,8 +227,8 @@ public abstract class ExecutionContext {
 	 * @param delay
 	 *            The delay for calling the event (as ArdenDuration).
 	 */
-	public void callEventWithDelay(ArdenEvent event, ArdenValue delay) {
-		throw new RuntimeException("callEventWithDelay not implemented");
+	public void call(ArdenEvent event, ArdenValue delay, double urgency) {
+		throw new RuntimeException("Event call not implemented");
 	}
 
 	protected ArdenTime eventTime = new ArdenTime(new Date());

@@ -44,7 +44,7 @@ final class EventVariable extends DataVariable {
 		super(name, field);
 	}
 
-	public static EventVariable getEventVariable(CodeGenerator codeGen, LeftHandSideResult lhs) {
+	public static EventVariable getVariable(CodeGenerator codeGen, LeftHandSideResult lhs) {
 		if (!(lhs instanceof LeftHandSideIdentifier))
 			throw new RuntimeCompilerException(lhs.getPosition(), "EVENT variables must be simple identifiers");
 		TIdentifier ident = ((LeftHandSideIdentifier) lhs).identifier;
@@ -89,6 +89,7 @@ final class EventVariable extends DataVariable {
 				throw new RuntimeCompilerException(errorPosition, "Could not create zero delay");
 			}
 		}
-		context.writer.invokeInstance(ExecutionContextMethods.callEventWithDelay);
+		ActionCompiler.loadUrgency(context);
+		context.writer.invokeInstance(ExecutionContextMethods.callEvent);
 	}
 }

@@ -80,7 +80,7 @@ public class StdIOExecutionContext extends BaseExecutionContext {
 	}
 
 	@Override
-	public void write(ArdenValue message, ArdenValue destination) {
+	public void write(ArdenValue message, ArdenValue destination, double urgency) {
 		String destString = ArdenString.getStringFromValue(destination);
 		if (destString != null  && "stdout".equalsIgnoreCase(destString)) {
 			// just print string

@@ -84,10 +84,13 @@ public final class RuntimeHelpers {
 	public static final double DEFAULT_PRIORITY = 50; 
 
 	public static double urgencyGetPrimitiveValue(ArdenValue val) {
-		if (val instanceof ArdenNumber)
-			return ((ArdenNumber) val).value;
-		else
-			return DEFAULT_URGENCY;
+		if (val instanceof ArdenNumber) {
+			double urgency = ((ArdenNumber) val).value;
+			if (urgency >= 1 && urgency <= 99) {
+				return urgency;
+			}
+		}
+		return DEFAULT_URGENCY;
 	}
 
 	/** Converts val to int. Returns -1 if val is not an integer. */

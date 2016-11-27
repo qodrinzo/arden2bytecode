@@ -71,21 +71,21 @@ public class TestEngine extends TestContext {
 	}
 
 	@Override
-	public void callWithDelay(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delayValue) {
+	public void call(ArdenRunnable mlm, ArdenValue[] arguments, ArdenValue delayValue, double urgency) {
 		ArdenDuration delayDuration = (ArdenDuration) delayValue;
 		ArdenTime nextRuntime = new ArdenTime(currentTime.add(delayDuration));
 		scheduledCalls.add(nextRuntime, new MlmCall((MedicalLogicModule) mlm, this, arguments));
 	}
 
 	@Override
-	public void callEventWithDelay(ArdenEvent event, ArdenValue delayValue) {
+	public void call(ArdenEvent event, ArdenValue delayValue, double urgency) {
 		ArdenDuration delayDuration = (ArdenDuration) delayValue;
 		ArdenTime nextRuntime = new ArdenTime(currentTime.add(delayDuration));
 		scheduledCalls.add(nextRuntime, new EventCall(event, this));
 	}
 
 	@Override
-	public void write(ArdenValue message, ArdenValue destination) {
+	public void write(ArdenValue message, ArdenValue destination, double urgency) {
 		// save messages
 		String stringMessage;
 		if (message instanceof ArdenString) {

@@ -40,7 +40,7 @@ final class ExecutionContextMethods {
 	public static final Method createQuery;
 	public static final Method getMessage, getMessageAs, getDestination, getDestinationAs, getEvent;
 	public static final Method findModule, findModules, findInterface;
-	public static final Method write, callWithDelay, callEventWithDelay;
+	public static final Method write, call, callEvent;
 	public static final Method getEventTime, getTriggerTime, getCurrentTime;
 
 	static {
@@ -57,11 +57,10 @@ final class ExecutionContextMethods {
 			findModules = ExecutionContext.class.getMethod("findModules", ArdenEvent.class);
 			findInterface = ExecutionContext.class.getMethod("findInterface", String.class);
 
-			write = ExecutionContext.class.getMethod("write", ArdenValue.class, ArdenValue.class);
-			callWithDelay = ExecutionContext.class.getMethod("callWithDelay", ArdenRunnable.class, ArdenValue[].class,
-					ArdenValue.class);
-			callEventWithDelay = ExecutionContext.class.getMethod("callEventWithDelay", ArdenEvent.class,
-					ArdenValue.class);
+			write = ExecutionContext.class.getMethod("write", ArdenValue.class, ArdenValue.class, double.class);
+			call = ExecutionContext.class.getMethod("call", ArdenRunnable.class, ArdenValue[].class, ArdenValue.class,
+					double.class);
+			callEvent = ExecutionContext.class.getMethod("call", ArdenEvent.class, ArdenValue.class, double.class);
 
 			getEventTime = ExecutionContext.class.getMethod("getEventTime");
 			getTriggerTime = ExecutionContext.class.getMethod("getTriggerTime");

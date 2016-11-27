@@ -265,19 +265,19 @@ final class DataCompiler extends VisitorBase {
 			@Override
 			public void caseAImapDataAssignPhrase(AImapDataAssignPhrase node) {
 				// {imap} interface mapping_factor
-				CallableVariable var = CallableVariable.getCallableVariable(context.codeGenerator, lhs);
+				CallableVariable var = InterfaceVariable.getVariable(context.codeGenerator, lhs);
 				context.writer.sequencePoint(lhs.getPosition().getLine());
 				context.writer.loadThis();
 				context.writer.loadVariable(context.executionContextVariable);
 				context.writer.loadStringConstant(ParseHelpers.getStringForMapping(node.getMappingFactor()));
 				context.writer.invokeInstance(ExecutionContextMethods.findInterface);
-				context.writer.storeInstanceField(var.mlmField);
+				context.writer.storeInstanceField(var.runnableField);
 			}
 
 			@Override
 			public void caseAEmapDataAssignPhrase(AEmapDataAssignPhrase node) {
 				// {emap} event mapping_factor
-				EventVariable e = EventVariable.getEventVariable(context.codeGenerator, lhs);
+				EventVariable e = EventVariable.getVariable(context.codeGenerator, lhs);
 				context.writer.sequencePoint(lhs.getPosition().getLine());
 				context.writer.loadThis();
 				context.writer.loadVariable(context.executionContextVariable);
@@ -289,7 +289,7 @@ final class DataCompiler extends VisitorBase {
 			@Override
 			public void caseAMmapDataAssignPhrase(AMmapDataAssignPhrase node) {
 				// {mmap} message mapping_factor
-				MessageVariable v = MessageVariable.getMessageVariable(context.codeGenerator, lhs);
+				MessageVariable v = MessageVariable.getVariable(context.codeGenerator, lhs);
 				context.writer.loadThis();
 				context.writer.loadVariable(context.executionContextVariable);
 				String mappingString = ParseHelpers.getStringForMapping(node.getMappingFactor());
@@ -301,7 +301,7 @@ final class DataCompiler extends VisitorBase {
 			@Override
 			public void caseAMasmapDataAssignPhrase(AMasmapDataAssignPhrase node) {
 				// {masmap} message as identifier mapping_factor?
-				MessageVariable v = MessageVariable.getMessageVariable(context.codeGenerator, lhs);
+				MessageVariable v = MessageVariable.getVariable(context.codeGenerator, lhs);
 				context.writer.loadThis();
 				context.writer.loadVariable(context.executionContextVariable);
 				String mappingString = ParseHelpers.getStringForMapping(node.getMappingFactor());
@@ -412,7 +412,7 @@ final class DataCompiler extends VisitorBase {
 
 	/** Creates an MLM variable. */
 	private void createMlmVariable(LeftHandSideResult lhs, TTerm name, TStringLiteral institution) {
-		CallableVariable var = CallableVariable.getCallableVariable(context.codeGenerator, lhs);
+		CallableVariable var = MedicalLogicModuleVariable.getVariable(context.codeGenerator, lhs);
 		context.writer.sequencePoint(lhs.getPosition().getLine());
 		context.writer.loadThis();
 		if (name == null) {
@@ -427,7 +427,7 @@ final class DataCompiler extends VisitorBase {
 			}
 			context.writer.invokeInstance(ExecutionContextMethods.findModule);
 		}
-		context.writer.storeInstanceField(var.mlmField);
+		context.writer.storeInstanceField(var.runnableField);
 	}
 
 	/** Assigns the argument to the variable. */

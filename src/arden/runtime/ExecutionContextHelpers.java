@@ -74,4 +74,12 @@ public class ExecutionContextHelpers {
 		return null;
 	}
 
+	public static long delayToMillis(ArdenValue delay) {
+		if (!(delay instanceof ArdenDuration)) {
+			throw new IllegalArgumentException("Delay must be a duration");
+		}
+		ArdenDuration delayDuration = (ArdenDuration) delay;
+		return Math.round(delayDuration.toSeconds() * 1000);
+	}
+
 }

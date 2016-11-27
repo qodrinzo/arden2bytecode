@@ -25,69 +25,34 @@
 // IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT
 // OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-package arden.tests.implementation;
+package arden.compiler;
 
-import arden.runtime.ArdenEvent;
-import arden.runtime.ArdenString;
-import arden.runtime.ArdenTime;
-import arden.runtime.ArdenValue;
-import arden.runtime.DatabaseQuery;
-import arden.runtime.ExecutionContext;
+import java.lang.reflect.Modifier;
 
-public class TestContext extends ExecutionContext {
-	StringBuilder b = new StringBuilder();
-	ArdenEvent defaultEvent = null;
-	ArdenTime defaultTime = null;
-	
-	public TestContext() {
-		
-	}
-	
-	public TestContext(ArdenEvent defaultEvent) {
-		this.defaultEvent = defaultEvent;
-	}
-	
-	public TestContext(ArdenEvent defaultEvent, ArdenTime defaultTime) {
-		this(defaultEvent);
-		this.defaultTime = defaultTime;
-	}
-	
-	public TestContext(ArdenTime defaultTime) {
-		this.defaultTime = defaultTime;
-	}
-	
-	@Override
-	public DatabaseQuery createQuery(String mapping) {
-		return DatabaseQuery.NULL;
+import arden.codegenerator.FieldReference;
+import arden.compiler.node.TIdentifier;
+import arden.runtime.ArdenRunnable;
+
+/** INTERFACE Variables */
+final class InterfaceVariable extends CallableVariable {
+
+	protected InterfaceVariable(TIdentifier varName, FieldReference runnableField) {
+		super(varName, runnableField);
 	}
 
-	@Override
-	public void write(ArdenValue message, ArdenValue destination, double urgency) {
-		b.append(((ArdenString) message).value);
-		b.append("\n");
-	}
-
-	public String getOutputText() {
-		return b.toString();
-	}
-	
-	@Override
-	public ArdenEvent getEvent(String mapping) {
-		if (defaultEvent != null) {
-			return defaultEvent;
+	/** Gets the InterfaceVariable for the LHSR, or creates it on demand. */
+	public static InterfaceVariable getVariable(CodeGenerator codeGen, LeftHandSideResult lhs) {
+		if (!(lhs instanceof LeftHandSideIdentifier))
+			throw new RuntimeCompilerException(lhs.getPosition(), "INTERFACE variables must be simple identifiers");
+		TIdentifier ident = ((LeftHandSideIdentifier) lhs).identifier;
+		Variable variable = codeGen.getVariable(ident.getText());
+		if (variable instanceof InterfaceVariable) {
+			return (InterfaceVariable) variable;
+		} else {
+			FieldReference mlmField = codeGen.createField(ident.getText(), ArdenRunnable.class, Modifier.PRIVATE);
+			InterfaceVariable cv = new InterfaceVariable(ident, mlmField);
+			codeGen.addVariable(cv);
+			return cv;
 		}
-		return super.getEvent(mapping);
-	}
-	
-	@Override
-	public ArdenTime getCurrentTime() {
-		if (defaultTime != null) {
-			return defaultTime;
-		}
-		return super.getCurrentTime();
-	}
-	
-	public void setCurrentTime(ArdenTime currentTime) {
-		defaultTime = currentTime;
 	}
 }
