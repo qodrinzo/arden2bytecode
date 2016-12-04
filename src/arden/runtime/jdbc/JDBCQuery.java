@@ -32,52 +32,62 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
+import arden.runtime.ArdenBoolean;
 import arden.runtime.ArdenList;
 import arden.runtime.ArdenNull;
 import arden.runtime.ArdenNumber;
 import arden.runtime.ArdenString;
+import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
 import arden.runtime.DatabaseQuery;
 
 public class JDBCQuery extends DatabaseQuery {
 	private Connection connection;
 	private String mapping;
-	
+
 	public JDBCQuery(String mapping, Connection connection) {
 		this.mapping = mapping;
 		this.connection = connection;
 	}
-	
+
 	public static ArdenValue objectToArdenValue(Object o) {
-		if (o instanceof String) {
-			return new ArdenString((String)o);
-		} else if (o instanceof Double) {
-			return new ArdenNumber(((Double)o).doubleValue());
-		} else if (o instanceof Integer) {
-			return new ArdenNumber(((Integer)o).doubleValue());
+		if (o == null) {
+			return ArdenNull.INSTANCE;
+		} else if (Boolean.TRUE.equals(o)) {
+			return ArdenBoolean.TRUE;
+		} else if (Boolean.FALSE.equals(o)) {
+			return ArdenBoolean.FALSE;
+		} else if (o instanceof String) {
+			return new ArdenString((String) o);
+		} else if (o instanceof Number) {
+			return new ArdenNumber(((Number) o).doubleValue());
+		} else if (o instanceof Date) {
+			return new ArdenTime((Date) o);
 		} else {
+			// database-specific abstract data type -> just use the string value
 			return new ArdenString(o.toString());
 		}
 	}
-	
+
 	public static ArdenValue[] resultSetToArdenValues(ResultSet results) throws SQLException {
 		int columnCount = results.getMetaData().getColumnCount();
-		
+
 		List<List<ArdenValue>> resultTable = new ArrayList<List<ArdenValue>>(columnCount);
 		for (int column = 0; column < columnCount; column++) {
 			resultTable.add(new LinkedList<ArdenValue>());
 		}
-		
+
 		while (results.next()) {
 			for (int column = 0; column < columnCount; column++) {
 				Object o = results.getObject(column + 1);
 				resultTable.get(column).add(objectToArdenValue(o));
 			}
 		}
-		
+
 		List<ArdenList> ardenResult = new LinkedList<ArdenList>();
 		for (int column = 0; column < columnCount; column++) {
 			// convert every column to ArdenList
@@ -86,12 +96,12 @@ public class JDBCQuery extends DatabaseQuery {
 		}
 		return ardenResult.toArray(new ArdenList[0]);
 	}
-	
+
 	@Override
-	public ArdenValue[] execute() { 
+	public ArdenValue[] execute() {
 		try {
 			Statement stmt = connection.createStatement();
-			
+
 			boolean resultSetAvailable = stmt.execute(mapping);
 			if (resultSetAvailable) {
 				return resultSetToArdenValues(stmt.getResultSet());
@@ -108,5 +118,4 @@ public class JDBCQuery extends DatabaseQuery {
 		return ArdenList.EMPTY.values;
 	}
 
-	
 }
