@@ -44,6 +44,11 @@ public abstract class ExecutionContext {
 	 * {@link DatabaseQuery} object can be used to limit the number of results
 	 * produced.
 	 * 
+	 * @param mlm
+	 *            The MLM, that called this query. It's variables can be
+	 *            accessed via {@link MedicalLogicModule#getValue(String)}, e.g.
+	 *            for variable-substitution in the mapping.
+	 * 
 	 * @param mapping
 	 *            The contents of the statement's mapping clause (text between
 	 *            curly braces). The meaning is implementation-defined. The
@@ -54,7 +59,7 @@ public abstract class ExecutionContext {
 	 *         {@link DatabaseQuery#NULL}, a query that will always produce an
 	 *         empty result set.
 	 */
-	public DatabaseQuery createQuery(String mapping) {
+	public DatabaseQuery createQuery(MedicalLogicModule mlm, String mapping) {
 		return DatabaseQuery.NULL;
 	}
 

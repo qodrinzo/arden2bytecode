@@ -33,6 +33,7 @@ import arden.runtime.ArdenEvent;
 import arden.runtime.ArdenRunnable;
 import arden.runtime.ArdenValue;
 import arden.runtime.ExecutionContext;
+import arden.runtime.MedicalLogicModule;
 import arden.runtime.ObjectType;
 import arden.runtime.evoke.Trigger;
 
@@ -46,7 +47,7 @@ final class ExecutionContextMethods {
 
 	static {
 		try {
-			createQuery = ExecutionContext.class.getMethod("createQuery", String.class);
+			createQuery = ExecutionContext.class.getMethod("createQuery", MedicalLogicModule.class, String.class);
 
 			getMessage = ExecutionContext.class.getMethod("getMessage", String.class);
 			getMessageAs = ExecutionContext.class.getMethod("getMessageAs", String.class, ObjectType.class);

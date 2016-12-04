@@ -36,6 +36,7 @@ import arden.CommandLineOptions;
 import arden.runtime.ArdenString;
 import arden.runtime.ArdenValue;
 import arden.runtime.DatabaseQuery;
+import arden.runtime.MedicalLogicModule;
 import arden.runtime.StdIOExecutionContext;
 
 public class JDBCExecutionContext extends StdIOExecutionContext {
@@ -95,7 +96,7 @@ public class JDBCExecutionContext extends StdIOExecutionContext {
 	}
 	
 	@Override
-	public DatabaseQuery createQuery(String mapping) {		
+	public DatabaseQuery createQuery(MedicalLogicModule mlm, String mapping) {
 		return new JDBCQuery(mapping, connection);
 	}	
 	

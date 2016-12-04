@@ -105,7 +105,7 @@ public class TestContext extends ExecutionContext {
 	}
 
 	@Override
-	public DatabaseQuery createQuery(String mapping) {
+	public DatabaseQuery createQuery(MedicalLogicModule mlm, String mapping) {
 		if (READ_MAPPING.equals(mapping)) {
 			return new DatabaseQuery() {
 

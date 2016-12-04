@@ -16,7 +16,7 @@ public class StdIOExecutionContext extends BaseExecutionContext {
 	}
 	
 	@Override
-	public DatabaseQuery createQuery(String mapping) {
+	public DatabaseQuery createQuery(MedicalLogicModule mlm, String mapping) {
 		System.out.println(
 				"Query mapping: \"" + mapping + "\". Enter result as " + "Arden Syntax constant (Strings in quotes)");
 		System.out.print(PROMPT_SIGN);

@@ -228,6 +228,7 @@ final class ReadPhraseCompiler extends VisitorBase {
 	@Override
 	public void caseAMappingFactor(AMappingFactor node) {
 		context.writer.loadVariable(context.executionContextVariable);
+		context.writer.loadVariable(context.selfMLMVariable);
 		context.writer.loadStringConstant(node.getDataMapping().getText());
 		context.writer.invokeInstance(ExecutionContextMethods.createQuery);
 	}
