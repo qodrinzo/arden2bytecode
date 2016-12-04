@@ -50,11 +50,16 @@ public class ArdenObject extends ArdenValue {
 		StringBuilder b = new StringBuilder();
 		b.append("NEW ");
 		b.append(type.name);
-		b.append(" WITH ");
-		for (int i = 0; i < fields.length; i++) {
-			if (i > 0)
-				b.append(", ");
-			b.append(fields[i].toString());
+		if (fields.length > 0) {
+			b.append(" WITH [");
+			for (int i = 0; i < fields.length; i++) {
+				if (i > 0)
+					b.append(", ");
+				b.append(type.fieldNames[i].toString());
+				b.append(":=");
+				b.append(fields[i].toString());
+			}
+			b.append("]");
 		}
 		return b.toString();
 	}

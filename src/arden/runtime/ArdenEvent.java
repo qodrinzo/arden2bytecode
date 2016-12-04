@@ -86,4 +86,8 @@ public class ArdenEvent extends ArdenValue {
 	public int hashCode() {
 		return name.hashCode();
 	}
+
+	public String toString() {
+		return "EVENT {" + name + "}";
+	}
 }
