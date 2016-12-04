@@ -27,7 +27,7 @@ public final class EventTrigger implements Trigger {
 	@Override
 	public void scheduleEvent(ArdenEvent event) {
 		// saves primarytime and eventtime
-		triggeringEvent = event.equals(this.event) ? event : null;
+		triggeringEvent = this.event.equals(event) ? event : null;
 	}
 
 	@Override

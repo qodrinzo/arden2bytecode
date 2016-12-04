@@ -1,7 +1,17 @@
 package arden.runtime;
 
-/** Represents an <code>EVENT</code> object. */
-public final class ArdenEvent extends ArdenValue {
+/**
+ * Represents an <code>EVENT</code> object.
+ * <p>
+ * Subclasses can customize the default behavior, by overriding
+ * {@link #equals(Object)}, e.g. if this event definition encompasses multiple
+ * other events.<br>
+ * Subclasses must also override {@link #setTime(long)} and
+ * {@link #setEvokingEvent(boolean)}, so the comparison behavior is correctly
+ * propagated.
+ * </p>
+ */
+public class ArdenEvent extends ArdenValue {
 	public final String name;
 	public final boolean isEvokingEvent;
 	/**
@@ -72,4 +82,8 @@ public final class ArdenEvent extends ArdenValue {
 		return obj instanceof ArdenEvent && name.equalsIgnoreCase(((ArdenEvent) obj).name);
 	}
 
+	@Override
+	public int hashCode() {
+		return name.hashCode();
+	}
 }
