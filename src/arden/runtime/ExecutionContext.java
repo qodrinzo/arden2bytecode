@@ -161,7 +161,8 @@ public abstract class ExecutionContext {
 	 *            The name of the requested MLM.
 	 * 
 	 * @param institution
-	 *            The institution of the requested MLM.
+	 *            The institution of the requested MLM. This is the calling MLMs
+	 *            institution if no other is given.
 	 * 
 	 * @return The requested MLM.
 	 */
@@ -179,7 +180,7 @@ public abstract class ExecutionContext {
 	 * @return The requested MLMs.
 	 */
 	public MedicalLogicModule[] findModules(ArdenEvent event) {
-		throw new RuntimeException("findModules not implemented");
+		throw new RuntimeException("findModules(ArdenEvent) not implemented");
 	}
 
 	/**
