@@ -16,13 +16,10 @@ public class ExecutionContextHelpers {
 	 * @param name
 	 *            Name of the MLM to find.
 	 * @param institution
-	 *            Institution of the MLM to find. May be <code>null</code> to
-	 *            signify that no institution is specified.
-	 * @param institutionSelf
-	 *            The calling MLMs institution. Only used if institution is
-	 *            <code>null</code>.
+	 *            Institution of the MLM to find. If not available this should
+	 *            be the calling MLMs institution.
 	 * @param mlms
-	 *            All MLMs which should be search for a match.
+	 *            All MLMs which should be searched for a match.
 	 * @param versionComparator
 	 *            A {@link Comparator} to compare versions in the MLMs
 	 *            "version:" slot. May be <code>null</code>.
