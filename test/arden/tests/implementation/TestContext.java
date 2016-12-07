@@ -33,6 +33,7 @@ import arden.runtime.ArdenTime;
 import arden.runtime.ArdenValue;
 import arden.runtime.DatabaseQuery;
 import arden.runtime.ExecutionContext;
+import arden.runtime.MedicalLogicModule;
 
 public class TestContext extends ExecutionContext {
 	StringBuilder b = new StringBuilder();
@@ -57,7 +58,7 @@ public class TestContext extends ExecutionContext {
 	}
 	
 	@Override
-	public DatabaseQuery createQuery(String mapping) {
+	public DatabaseQuery createQuery(MedicalLogicModule mlm, String mapping) {
 		return DatabaseQuery.NULL;
 	}
 
@@ -72,11 +73,11 @@ public class TestContext extends ExecutionContext {
 	}
 	
 	@Override
-	public ArdenEvent getEvent(String mapping) {
+	public ArdenEvent getEvent(MedicalLogicModule mlm, String mapping) {
 		if (defaultEvent != null) {
 			return defaultEvent;
 		}
-		return super.getEvent(mapping);
+		return super.getEvent(mlm, mapping);
 	}
 	
 	@Override

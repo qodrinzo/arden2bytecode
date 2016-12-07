@@ -71,7 +71,7 @@ public class LoadMlmFromBytecodeTest extends ImplementationTest {
 		MedicalLogicModule mlm = compileBytecode("x3.3.mlm");
 		TestContext context = new TestContext() {
 			@Override
-			public DatabaseQuery createQuery(String mapping) {
+			public DatabaseQuery createQuery(MedicalLogicModule mlm, String mapping) {
 				Assert.assertEquals("allergy where agent_class = penicillin", mapping);
 				ArdenList list = new ArdenList(new ArdenValue[] { new ArdenString("all1"), new ArdenString("all2") });
 				return new MemoryQuery(new ArdenValue[] { list });
@@ -87,7 +87,7 @@ public class LoadMlmFromBytecodeTest extends ImplementationTest {
 		MedicalLogicModule mlm = compileBytecode("x3.3.mlm");
 		TestContext context = new TestContext() {
 			@Override
-			public DatabaseQuery createQuery(String mapping) {
+			public DatabaseQuery createQuery(MedicalLogicModule mlm, String mapping) {
 				Assert.assertEquals("allergy where agent_class = penicillin", mapping);
 				ArdenList list = new ArdenList(new ArdenValue[] { new ArdenString("all1"), ArdenNull.INSTANCE });
 				return new MemoryQuery(new ArdenValue[] { list });

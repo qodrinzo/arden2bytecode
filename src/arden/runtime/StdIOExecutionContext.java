@@ -16,7 +16,7 @@ public class StdIOExecutionContext extends BaseExecutionContext {
 	}
 	
 	@Override
-	public DatabaseQuery createQuery(String mapping) {
+	public DatabaseQuery createQuery(MedicalLogicModule mlm, String mapping) {
 		System.out.println(
 				"Query mapping: \"" + mapping + "\". Enter result as " + "Arden Syntax constant (Strings in quotes)");
 		System.out.print(PROMPT_SIGN);
@@ -48,13 +48,13 @@ public class StdIOExecutionContext extends BaseExecutionContext {
 	}
 
 	@Override
-	public ArdenValue getMessage(String mapping) {
+	public ArdenValue getMessage(MedicalLogicModule mlm, String mapping) {
 		System.out.println("Message, mapping: " + mapping);
 		return new ArdenString(mapping);
 	}
 	
 	@Override
-	public ArdenObject getMessageAs(String mapping, ObjectType type) {
+	public ArdenObject getMessageAs(MedicalLogicModule mlm, String mapping, ObjectType type) {
 		System.out.println("Message, mapping: " + mapping + ", type: " + type.name);
 		ArdenObject object = new ArdenObject(type);
 		if(object.fields.length > 0) {
@@ -64,13 +64,13 @@ public class StdIOExecutionContext extends BaseExecutionContext {
 	}
 	
 	@Override
-	public ArdenValue getDestination(String mapping) {
+	public ArdenValue getDestination(MedicalLogicModule mlm, String mapping) {
 		System.out.println("Destination, mapping: " + mapping);
 		return new ArdenString(mapping);
 	}
 	
 	@Override
-	public ArdenObject getDestinationAs(String mapping, ObjectType type) {
+	public ArdenObject getDestinationAs(MedicalLogicModule mlm, String mapping, ObjectType type) {
 		System.out.println("Destination, mapping: " + mapping + ", type: " + type.name);
 		ArdenObject object = new ArdenObject(type);
 		if(object.fields.length > 0) {
