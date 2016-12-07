@@ -19,7 +19,8 @@ public class StdIOExecutionContext extends BaseExecutionContext {
 
 	@Override
 	public DatabaseQuery createQuery(MedicalLogicModule mlm, String mapping) {
-		System.out.println("Query mapping: \"" + mapping + "\". Enter result as " + "Arden Syntax constant (Strings in quotes)");
+		System.out.println(
+				"Query mapping: \"" + mapping + "\". Enter result as " + "Arden Syntax constant (Strings in quotes)");
 		System.out.print(PROMPT_SIGN);
 
 		ArdenValue[] val = null;
@@ -99,10 +100,13 @@ public class StdIOExecutionContext extends BaseExecutionContext {
 				System.out.println(message);
 			}
 		} else {
-			// prepend destination to printed string
-			System.out.print("Destination: ");
-			System.out.print(destination);
-			System.out.print(" Message: ");
+			if (destination != null) {
+				// prepend destination to printed string
+				System.out.print("Destination: ");
+				System.out.print(destination);
+				System.out.print(" ");
+			}
+			System.out.print("Message: ");
 			if (message instanceof ArdenString) {
 				System.out.println(ArdenString.getStringFromValue(message));
 			} else {
