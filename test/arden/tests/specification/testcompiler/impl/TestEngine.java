@@ -111,7 +111,7 @@ public class TestEngine extends TestContext {
 	}
 
 	@Override
-	public ArdenEvent getEvent(String mapping) {
+	public ArdenEvent getEvent(MedicalLogicModule mlm, String mapping) {
 		return new ArdenEvent(mapping, getCurrentTime().value);
 	}
 

@@ -45,9 +45,9 @@ public abstract class ExecutionContext {
 	 * produced.
 	 * 
 	 * @param mlm
-	 *            The MLM, that called this query. It's variables can be
-	 *            accessed via {@link MedicalLogicModule#getValue(String)}, e.g.
-	 *            for variable-substitution in the mapping.
+	 *            The MLM,that called this query. Its variables can be accessed
+	 *            via {@link MedicalLogicModule#getValue(String)}, e.g. for
+	 *            variable-substitution in the mapping.
 	 * 
 	 * @param mapping
 	 *            The contents of the statement's mapping clause (text between
@@ -67,6 +67,9 @@ public abstract class ExecutionContext {
 	 * Gets a value that represents a message, as part of a <code>MESSAGE</code>
 	 * statement.
 	 * 
+	 * @param mlm
+	 *            The MLM that called this method.
+	 * 
 	 * @param mapping
 	 *            The contents of the statement's mapping clause.
 	 * 
@@ -74,13 +77,16 @@ public abstract class ExecutionContext {
 	 *         represents the message. This value may be given as a parameter in
 	 *         the {@link #write(ArdenValue, ArdenValue)} method.
 	 */
-	public ArdenValue getMessage(String mapping) {
+	public ArdenValue getMessage(MedicalLogicModule mlm, String mapping) {
 		return new ArdenString(mapping);
 	}
 
 	/**
 	 * Gets an object that represents a message, as part of a
 	 * <code>MESSAGE AS</code> statement.
+	 * 
+	 * @param mlm
+	 *            The MLM that called this method.
 	 * 
 	 * @param mapping
 	 *            The contents of the statement's mapping clause.
@@ -90,13 +96,16 @@ public abstract class ExecutionContext {
 	 * 
 	 * @return An {@link ArdenObject} of the given {@link ObjectType}.
 	 */
-	public ArdenObject getMessageAs(String mapping, ObjectType type) {
+	public ArdenObject getMessageAs(MedicalLogicModule mlm, String mapping, ObjectType type) {
 		return new ArdenObject(type);
 	}
 
 	/**
 	 * Gets a value that represents a destination, as part of the
 	 * <code>DESTINATION</code> statement.
+	 * 
+	 * @param mlm
+	 *            The MLM that called this method.
 	 * 
 	 * @param mapping
 	 *            The contents of the statement's mapping clause.
@@ -105,13 +114,16 @@ public abstract class ExecutionContext {
 	 *         represents the destination. This value is used as a parameter in
 	 *         the {@link #write(ArdenValue, ArdenValue)} method.
 	 */
-	public ArdenValue getDestination(String mapping) {
+	public ArdenValue getDestination(MedicalLogicModule mlm, String mapping) {
 		return new ArdenString(mapping);
 	}
 
 	/**
 	 * Gets an object that represents a destination, as part of a
 	 * <code>DESTINATION AS</code> statement.
+	 * 
+	 * @param mlm
+	 *            The MLM that called this method.
 	 * 
 	 * @param mapping
 	 *            The contents of the statement's mapping clause.
@@ -121,42 +133,42 @@ public abstract class ExecutionContext {
 	 * 
 	 * @return An {@link ArdenObject} of the given {@link ObjectType}.
 	 */
-	public ArdenObject getDestinationAs(String mapping, ObjectType type) {
+	public ArdenObject getDestinationAs(MedicalLogicModule mlm, String mapping, ObjectType type) {
 		return new ArdenObject(type);
 	}
 
 	/**
-	 * Gets an event as part of the <code>EVENT</code> statement.
+	 * Gets an event definition as part of the <code>EVENT</code> statement.
+	 * 
+	 * @param mlm
+	 *            The MLM that called this method.
 	 * 
 	 * @param mapping
 	 *            The contents of the statement's mapping clause.
 	 * 
-	 * @return An {@link ArdenEvent}. If it is the event, that triggered the
-	 *         MLM, it will automatically flagged as such.
+	 * @return An {@link ArdenEvent}. It will be compared with other events via
+	 *         its {@link ArdenEvent#equals(Object)} method. If it is the event,
+	 *         that triggered the MLM, it will automatically flagged as such via
+	 *         {@link ArdenEvent#setEvokingEvent(boolean)}.
 	 */
-	public ArdenEvent getEvent(String mapping) {
+	public ArdenEvent getEvent(MedicalLogicModule mlm, String mapping) {
 		return new ArdenEvent(mapping);
 	}
 
 	/**
-	 * Called by the <code>WRITE</code> statement.
+	 * Retrieves an interface implementation, as part of the
+	 * <code>INTERFACE</code> statement.
 	 * 
-	 * @param message
-	 *            The message to be written. This may be an instance returned
-	 *            from {@link #getMessage(String)} or
-	 *            {@link #getMessageAs(String, ObjectType)}, but other values
-	 *            are possible.
+	 * @param mlm
+	 *            The MLM that called this method.
 	 * 
-	 * @param destination
-	 *            The destination for the message. This will be an instance
-	 *            returned from {@link #getDestination(String)} or
-	 *            {@link #getDestinationAs(String, ObjectType)}. May be null, if
-	 *            the default destination should be used.
+	 * @param mapping
+	 *            The contents of the statement's mapping clause.
 	 * 
-	 * @param urgency
-	 *            The urgency from the MLMs urgency slot.
+	 * @return The interface implementation as an {@link ArdenRunnable}.
 	 */
-	public void write(ArdenValue message, ArdenValue destination, double urgency) {
+	public ArdenRunnable findInterface(MedicalLogicModule mlm, String mapping) {
+		throw new RuntimeException("findInterface not implemented");
 	}
 
 	/**
@@ -189,16 +201,31 @@ public abstract class ExecutionContext {
 	}
 
 	/**
-	 * Retrieves an interface implementation, as part of the
-	 * <code>INTERFACE</code> statement.
-	 * 
-	 * @param mapping
-	 *            The contents of the statement's mapping clause.
-	 * 
-	 * @return The interface implementation as an {@link ArdenRunnable}.
+	 * @return The <code>CURRENTTIME</code>.
 	 */
-	public ArdenRunnable findInterface(String mapping) {
-		throw new RuntimeException("findInterface not implemented");
+	public ArdenTime getCurrentTime() {
+		return new ArdenTime(new Date());
+	}
+
+	/**
+	 * Called by the <code>WRITE</code> statement.
+	 * 
+	 * @param message
+	 *            The message to be written. This may be an instance returned
+	 *            from {@link #getMessage(String)} or
+	 *            {@link #getMessageAs(String, ObjectType)}, but other values
+	 *            are possible.
+	 * 
+	 * @param destination
+	 *            The destination for the message. This will be an instance
+	 *            returned from {@link #getDestination(String)} or
+	 *            {@link #getDestinationAs(String, ObjectType)}. May be null, if
+	 *            the default destination should be used.
+	 * 
+	 * @param urgency
+	 *            The urgency from the MLMs urgency slot.
+	 */
+	public void write(ArdenValue message, ArdenValue destination, double urgency) {
 	}
 
 	/**
@@ -240,12 +267,5 @@ public abstract class ExecutionContext {
 	 */
 	public void call(ArdenEvent event, ArdenValue delay, double urgency) {
 		throw new RuntimeException("Event call not implemented");
-	}
-
-	/**
-	 * @return The <code>CURRENTTIME</code>.
-	 */
-	public ArdenTime getCurrentTime() {
-		return new ArdenTime(new Date());
 	}
 }

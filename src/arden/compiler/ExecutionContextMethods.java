@@ -49,22 +49,21 @@ final class ExecutionContextMethods {
 		try {
 			createQuery = ExecutionContext.class.getMethod("createQuery", MedicalLogicModule.class, String.class);
 
-			getMessage = ExecutionContext.class.getMethod("getMessage", String.class);
-			getMessageAs = ExecutionContext.class.getMethod("getMessageAs", String.class, ObjectType.class);
-			getDestination = ExecutionContext.class.getMethod("getDestination", String.class);
-			getDestinationAs = ExecutionContext.class.getMethod("getDestinationAs", String.class, ObjectType.class);
-			getEvent = ExecutionContext.class.getMethod("getEvent", String.class);
+			getMessage = ExecutionContext.class.getMethod("getMessage", MedicalLogicModule.class, String.class);
+			getMessageAs = ExecutionContext.class.getMethod("getMessageAs", MedicalLogicModule.class, String.class, ObjectType.class);
+			getDestination = ExecutionContext.class.getMethod("getDestination", MedicalLogicModule.class, String.class);
+			getDestinationAs = ExecutionContext.class.getMethod("getDestinationAs", MedicalLogicModule.class, String.class, ObjectType.class);
+			getEvent = ExecutionContext.class.getMethod("getEvent", MedicalLogicModule.class, String.class);
 
+			findInterface = ExecutionContext.class.getMethod("findInterface", MedicalLogicModule.class, String.class);
 			findModule = ExecutionContext.class.getMethod("findModule", String.class, String.class);
 			findModules = ExecutionContext.class.getMethod("findModules", ArdenEvent.class);
-			findInterface = ExecutionContext.class.getMethod("findInterface", String.class);
-
-			write = ExecutionContext.class.getMethod("write", ArdenValue.class, ArdenValue.class, double.class);
-			call = ExecutionContext.class.getMethod("call", ArdenRunnable.class, ArdenValue[].class, ArdenValue.class,
-					Trigger.class, double.class);
-			callEvent = ExecutionContext.class.getMethod("call", ArdenEvent.class, ArdenValue.class, double.class);
 
 			getCurrentTime = ExecutionContext.class.getMethod("getCurrentTime");
+
+			write = ExecutionContext.class.getMethod("write", ArdenValue.class, ArdenValue.class, double.class);
+			call = ExecutionContext.class.getMethod("call", ArdenRunnable.class, ArdenValue[].class, ArdenValue.class, Trigger.class, double.class);
+			callEvent = ExecutionContext.class.getMethod("call", ArdenEvent.class, ArdenValue.class, double.class);
 		} catch (SecurityException e) {
 			throw new RuntimeException(e);
 		} catch (NoSuchMethodException e) {

@@ -271,6 +271,7 @@ final class DataCompiler extends VisitorBase {
 				context.writer.sequencePoint(lhs.getPosition().getLine());
 				context.writer.loadThis();
 				context.writer.loadVariable(context.executionContextVariable);
+				context.writer.loadVariable(context.selfMLMVariable);
 				context.writer.loadStringConstant(ParseHelpers.getStringForMapping(node.getMappingFactor()));
 				context.writer.invokeInstance(ExecutionContextMethods.findInterface);
 				context.writer.storeInstanceField(var.runnableField);
@@ -283,6 +284,7 @@ final class DataCompiler extends VisitorBase {
 				context.writer.sequencePoint(lhs.getPosition().getLine());
 				context.writer.loadThis();
 				context.writer.loadVariable(context.executionContextVariable);
+				context.writer.loadVariable(context.selfMLMVariable);
 				context.writer.loadStringConstant(ParseHelpers.getStringForMapping(node.getMappingFactor()));
 				context.writer.invokeInstance(ExecutionContextMethods.getEvent);
 				context.writer.loadThis();
@@ -298,6 +300,7 @@ final class DataCompiler extends VisitorBase {
 				MessageVariable v = MessageVariable.getVariable(context.codeGenerator, lhs);
 				context.writer.loadThis();
 				context.writer.loadVariable(context.executionContextVariable);
+				context.writer.loadVariable(context.selfMLMVariable);
 				String mappingString = ParseHelpers.getStringForMapping(node.getMappingFactor());
 				context.writer.loadStringConstant(mappingString);
 				context.writer.invokeInstance(ExecutionContextMethods.getMessage);
@@ -310,6 +313,8 @@ final class DataCompiler extends VisitorBase {
 				MessageVariable v = MessageVariable.getVariable(context.codeGenerator, lhs);
 				context.writer.loadThis();
 				context.writer.loadVariable(context.executionContextVariable);
+
+				context.writer.loadVariable(context.selfMLMVariable);
 				String mappingString = ParseHelpers.getStringForMapping(node.getMappingFactor());
 				context.writer.loadStringConstant(mappingString);
 
@@ -328,6 +333,7 @@ final class DataCompiler extends VisitorBase {
 				DestinationVariable v = DestinationVariable.getDestinationVariable(context.codeGenerator, lhs);
 				context.writer.loadThis();
 				context.writer.loadVariable(context.executionContextVariable);
+				context.writer.loadVariable(context.selfMLMVariable);
 				String mappingString = ParseHelpers.getStringForMapping(node.getMappingFactor());
 				context.writer.loadStringConstant(mappingString);
 				context.writer.invokeInstance(ExecutionContextMethods.getDestination);
@@ -340,6 +346,8 @@ final class DataCompiler extends VisitorBase {
 				DestinationVariable v = DestinationVariable.getDestinationVariable(context.codeGenerator, lhs);
 				context.writer.loadThis();
 				context.writer.loadVariable(context.executionContextVariable);
+
+				context.writer.loadVariable(context.selfMLMVariable);
 				String mappingString = ParseHelpers.getStringForMapping(node.getMappingFactor());
 				context.writer.loadStringConstant(mappingString);
 

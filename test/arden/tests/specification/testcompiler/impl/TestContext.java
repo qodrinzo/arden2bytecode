@@ -79,7 +79,7 @@ public class TestContext extends ExecutionContext {
 	}
 
 	@Override
-	public ArdenRunnable findInterface(String mapping) {
+	public ArdenRunnable findInterface(MedicalLogicModule mlm, String mapping) {
 		if (INTERFACE_MAPPING.equals(mapping)) {
 			return new ArdenRunnable() {
 
@@ -96,11 +96,11 @@ public class TestContext extends ExecutionContext {
 			};
 
 		}
-		return super.findInterface(mapping);
+		return super.findInterface(mlm, mapping);
 	}
 
 	@Override
-	public ArdenEvent getEvent(String mapping) {
+	public ArdenEvent getEvent(MedicalLogicModule mlm, String mapping) {
 		return new ArdenEvent(mapping, getCurrentTime().value);
 	}
 

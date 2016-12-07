@@ -73,11 +73,11 @@ public class TestContext extends ExecutionContext {
 	}
 	
 	@Override
-	public ArdenEvent getEvent(String mapping) {
+	public ArdenEvent getEvent(MedicalLogicModule mlm, String mapping) {
 		if (defaultEvent != null) {
 			return defaultEvent;
 		}
-		return super.getEvent(mapping);
+		return super.getEvent(mlm, mapping);
 	}
 	
 	@Override
