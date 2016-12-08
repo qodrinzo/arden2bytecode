@@ -147,8 +147,8 @@ knowledge:
 end:
 ```
 
-## Medical Logic Module (MLM) Structure
-A Medical Logic Module consists of three parts or categories, namely _maintenance_, _library_ and _knowledge_.  
+## Medical Logic Module Structure
+A Medical Logic Module (MLM) consists of three parts or categories, namely _maintenance_, _library_ and _knowledge_.  
 These categories are marked with their corresponding names and a colon.  
 The categories make up the top level of the MLM structure as presented in the following (incomplete) MLM:
 
@@ -200,7 +200,7 @@ All of these fields may be left blank if the information is not available.
 ### Knowledge category
 This is where the actual code goes.
 
-The Knowledge category consists of these slots:
+The knowledge category consists of these slots:
 
 - `type`: This is always `data_driven`.
 - `data`: In this slot, data may be read from a database or initialized from constants.
@@ -237,7 +237,7 @@ Another example would be:
 
 This example reads the last value of each of the two different data rows. As you can see, multiple values may be assigned at once.
 
-You can also assign values to variables:
+You can also assign constant values to variables:
 
 ```arden
 a_string := "a string";

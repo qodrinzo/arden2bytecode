@@ -18,11 +18,11 @@ maintenance:
     title: Hello World;;
     mlmname: hello_world;;
     arden: Version 2.5;;
-    version: 1.80;;
+    version: 1.81;;
     institution: arden2bytecode authors;;
     author: Hannes Flicka;;
     specialist: Mike Klimek;;
-    date: 2011-09-08;;
+    date: 2016-12-07;;
     validation: testing;;
 
 /*
@@ -38,16 +38,11 @@ library:
 
 // This section contains - among other stuff - the actual program logic.
 knowledge:
-    type: data-driven;;
+    type: data_driven;;
 
     data:
-        /*
-         * The part in the curly braces of the 'DESTINATION' statement is
-         * implementation specific. For further information, have a look at
-         * the documentation of your runtime environment. In our case, this
-         * is Arden2ByteCode.
-         */
-        stdout_dest := DESTINATION {stdout};
+        // Define the greeting variable to be the string "Hello world!"
+        LET greeting BE "Hello, World!";
     ;;
 
     evoke:
@@ -61,7 +56,7 @@ knowledge:
 
     action:
         // The actual output.
-        WRITE "Hello world!" AT stdout_dest;
+        WRITE greeting;
     ;;
 
 end:
@@ -77,7 +72,7 @@ The output should be:
 
     This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License.
 
-    Hello world!
+    Message: Hello, World!
     There was no return value.
 
 Now that you have a starting point for working with Arden Syntax, you can learn the Arden Syntax [basics]({{ baseurl }}/docs/basics/) or try out different [command line options]({{ baseurl }}/docs/command-line-options/).

@@ -10,8 +10,8 @@ title: _Sidebar
 - [Command Line Options]({{ baseurl }}/docs/command-line-options/)
 - [Arguments]({{ baseurl }}/docs/arguments/)
 - [Scheduling]({{ baseurl }}/docs/scheduling/)
-- [Eclipse Plugin]({{ baseurl }}/docs/eclipse-plugin/)
 - [Using Databases]({{ baseurl }}/docs/using-databases/)
+- [Eclipse Plugin]({{ baseurl }}/docs/eclipse-plugin/)
 
 **Arden Syntax**
 - [Basics]({{ baseurl }}/docs/basics/)
