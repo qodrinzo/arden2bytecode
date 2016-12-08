@@ -2,7 +2,7 @@
 # GENERATED - DO NOT EDIT
 title: Eclipse Plugin
 category: Getting Started
-nav_order: 8
+nav_order: 9
 ---
 {% include get_url.liquid %}
 If you want to express your medical knowledge with [Arden Syntax](https://en.wikipedia.org/wiki/Arden_syntax) you can use Arden4Eclipse, an Arden Syntax Editor for the [Eclipse IDE](https://eclipse.org/). It integrates Arden2ByteCode so Arden Syntax code can be easily written as well as executed.

@@ -2,7 +2,7 @@
 # GENERATED - DO NOT EDIT
 title: Using Databases
 category: Getting Started
-nav_order: 14
+nav_order: 13
 ---
 {% include get_url.liquid %}
 Arden2ByteCode supports usage of JDBC drivers in order to connect to external data sources. If properly set up, SQL statements can be issued in `READ` statements.

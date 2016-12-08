@@ -19,7 +19,7 @@ Compile the input files (must be of `.mlm` type) and write output of compiler to
 - **-r**, **--run**  
 Run the input files directly. The input files must be either `.mlm` files which will be compiled in-memory or already compiled `.class` MLMs. See **-a** for providing arguments to the MLMs.
 - **-e**, **--engine**  
-Run an event engine that waits for events or evoke triggers and executes the input MLMs when they are scheduled. It can be terminated via `ctrl+c`. See [Scheduling]({{ baseurl }}/docs/scheduling/) for more information about triggers and events. See **-p** on how to listen to external events.
+Run an evoke engine that waits for events or evoke triggers and executes the input MLMs when they are scheduled. It can be terminated via `ctrl+c`. See [Scheduling]({{ baseurl }}/docs/scheduling/) for more information about triggers and events. See **-p** on how to listen to external events.
 
 **Control options**
 
@@ -32,7 +32,7 @@ Output directory into which compiled MLM class files are placed, when compiling 
 - **-a** _argument&hellip;_, **--arguments** _argument&hellip;_  
 Specify arguments to the MLM when running with **-r**. Arguments must be valid Arden Syntax constants, separated by spaces, and must be properly escaped by your command line interpreter. See [Arguments]({{ baseurl }}/docs/arguments/) for more information about passing arguments to MLMs.
 - **-p** _number_, **--port** _number_  
-If specified will start a server that listens for event strings on the given port. Intended to be used when running the event engine with **-e**.  
+If specified will start a server that listens for event strings on the given port. Intended to be used when running the evoke engine with **-e**.  
 See [Scheduling]({{ baseurl }}/docs/scheduling/) for more information.
 
 **Execution Context**
@@ -91,7 +91,7 @@ All further command line arguments will be regarded as input files.
   arden2bytecode -nvc *.mlm
   ```
 
-- Start the event engine for multiple MLMs, and listen verbosely for incoming events on port 9701:
+- Start the evoke engine for multiple MLMs, and listen verbosely for incoming events on port 9701:
 
   ```bash
   arden2bytecode -v -p 9701 -e *.mlm
@@ -103,7 +103,7 @@ All further command line arguments will be regarded as input files.
   arden2bytecode --cp lib/sqlite-jdbc-3.7.2.jar --dbdriver org.sqlite.JDBC --environment jdbc:sqlite:person.sqlite -r sql-example.mlm
   ```
 
-- Start the event engine, listen for events on a port, and use a database to handle MLM queries. Verbosely, no logo.
+- Start the evoke engine, listen for events on a port, and use a database to handle MLM queries. Verbosely, no logo.
 
   ```bash
   arden2bytecode -nv -p 9701 --cp lib/sqlite-jdbc-3.7.2.jar --db org.sqlite.JDBC --env jdbc:sqlite:person.sqlite -e sql-example.mlm

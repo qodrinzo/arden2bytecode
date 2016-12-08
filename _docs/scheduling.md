@@ -35,7 +35,7 @@ For the evoke slot, you may use:
 
 - Delayed triggers:  
 `evoke: 1 YEAR AFTER 2000-01-01;;`  
-`evoke: 15 SECONDS SECONDS AFTER TIME OF an_event;;`
+`evoke: 15 SECONDS AFTER TIME OF an_event;;`
 
 - Cyclic triggers:  
 `evoke: EVERY 5 SECONDS FOR 2 WEEKS STARTING 2016-07-16T16:21:00;;`  
@@ -46,7 +46,7 @@ For the evoke slot, you may use:
 `evoke: EVERY 5 SECONDS FOR 1 MINUTE STARTING 10 SECONDS AFTER TIME OF meh;;`  
 `evoke: EVERY 5 SECONDS FOR 2 WEEKS STARTING TIME OF (an_event OR another_event);;`  
 
-## Starting the Event Engine
+## Starting the Evoke Engine
 You can start Arden2ByteCode with the **-e** or **--engine** option instead of **-r** or **-c**. This will start an engine that invokes the MLM on the desired schedule. It will listen for events indefinitely or until closed with `ctrl+c`.
 
 The engine can be used together with the **--port** _number_ option. This will start a server, that listens for event mapping strings on the given port.  
