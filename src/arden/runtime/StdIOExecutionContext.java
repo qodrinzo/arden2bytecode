@@ -9,12 +9,14 @@ import arden.constants.ConstantParserException;
 /** Reads and prints queries from/to StdIO. */
 public class StdIOExecutionContext extends BaseExecutionContext {
 	private Scanner sc = new Scanner(System.in);
+	private boolean verbose;
 	private static final String PROMPT_SIGN = "> ";
 
 	public StdIOExecutionContext(CommandLineOptions options) {
 		super(options);
+		this.verbose = options.getVerbose();
 	}
-	
+
 	@Override
 	public DatabaseQuery createQuery(MedicalLogicModule mlm, String mapping) {
 		System.out.println(
@@ -49,31 +51,39 @@ public class StdIOExecutionContext extends BaseExecutionContext {
 
 	@Override
 	public ArdenValue getMessage(MedicalLogicModule mlm, String mapping) {
-		System.out.println("Message, mapping: " + mapping);
+		if (verbose) {
+			System.out.println("Message, mapping: " + mapping);
+		}
 		return new ArdenString(mapping);
 	}
-	
+
 	@Override
 	public ArdenObject getMessageAs(MedicalLogicModule mlm, String mapping, ObjectType type) {
-		System.out.println("Message, mapping: " + mapping + ", type: " + type.name);
+		if (verbose) {
+			System.out.println("Message, mapping: " + mapping + ", type: " + type.name);
+		}
 		ArdenObject object = new ArdenObject(type);
-		if(object.fields.length > 0) {
+		if (object.fields.length > 0) {
 			object.fields[0] = new ArdenString(mapping);
 		}
 		return object;
 	}
-	
+
 	@Override
 	public ArdenValue getDestination(MedicalLogicModule mlm, String mapping) {
-		System.out.println("Destination, mapping: " + mapping);
+		if (verbose) {
+			System.out.println("Destination, mapping: " + mapping);
+		}
 		return new ArdenString(mapping);
 	}
-	
+
 	@Override
 	public ArdenObject getDestinationAs(MedicalLogicModule mlm, String mapping, ObjectType type) {
-		System.out.println("Destination, mapping: " + mapping + ", type: " + type.name);
+		if (verbose) {
+			System.out.println("Destination, mapping: " + mapping + ", type: " + type.name);
+		}
 		ArdenObject object = new ArdenObject(type);
-		if(object.fields.length > 0) {
+		if (object.fields.length > 0) {
 			object.fields[0] = new ArdenString(mapping);
 		}
 		return object;
@@ -82,7 +92,7 @@ public class StdIOExecutionContext extends BaseExecutionContext {
 	@Override
 	public void write(ArdenValue message, ArdenValue destination, double urgency) {
 		String destString = ArdenString.getStringFromValue(destination);
-		if (destString != null  && "stdout".equalsIgnoreCase(destString)) {
+		if (destString != null && "stdout".equalsIgnoreCase(destString)) {
 			// just print string
 			if (message instanceof ArdenString) {
 				System.out.println(ArdenString.getStringFromValue(message));
@@ -90,10 +100,13 @@ public class StdIOExecutionContext extends BaseExecutionContext {
 				System.out.println(message);
 			}
 		} else {
-			// prepend destination to printed string
-			System.out.print("Destination: ");
-			System.out.print(destination);
-			System.out.print(" Message: ");
+			if (destination != null) {
+				// prepend destination to printed string
+				System.out.print("Destination: ");
+				System.out.print(destination);
+				System.out.print(" ");
+			}
+			System.out.print("Message: ");
 			if (message instanceof ArdenString) {
 				System.out.println(ArdenString.getStringFromValue(message));
 			} else {
