@@ -55,7 +55,6 @@ This compiler implements Arden Syntax 2.5 with the following exceptions:
 Languages features not implemented:
 
 * Include Statement
-* Some string formatting specificiers are not implemented.
 * Citation/links slots are not syntax checked.
 * The compiler does not check that no languages features newer than the specified 'Arden Version' are used.
 
