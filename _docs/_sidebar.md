@@ -20,4 +20,6 @@ title: _Sidebar
 
 **Development**
 - [Building]({{ baseurl }}/docs/building/)
+- [Project Structure]({{ baseurl }}/docs/project-structure/)
+- [Compiling and Running MLMs]({{ baseurl }}/docs/compiling-and-running-mlms/)
 - [Custom Execution Context]({{ baseurl }}/docs/custom-execution-context/)

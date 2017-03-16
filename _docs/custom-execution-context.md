@@ -2,7 +2,7 @@
 # GENERATED - DO NOT EDIT
 title: Custom Execution Context
 category: Development
-nav_order: 18
+nav_order: 20
 ---
 {% include get_url.liquid %}
 Replacing the execution context of Arden2ByteCode means providing a class that serves as information gateway to the "outer environment" of a Medical Logic Module. Thus, via an execution context, you can integrate Arden2ByteCode into your data infrastructure.
