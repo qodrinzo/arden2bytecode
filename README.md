@@ -1,6 +1,7 @@
 <p align="center">
 <a href="https://plri.github.io/arden2bytecode"><img src="https://plri.github.io/arden2bytecode/images/logo.png" alt="Arden2ByteCode" height="90"></a>
 </p>
+
 [Arden2ByteCode](https://plri.github.io/arden2bytecode/) is a compiler for [Arden Syntax](https://en.wikipedia.org/wiki/Arden_syntax) with [Java Bytecode](https://en.wikipedia.org/wiki/Java_bytecode) output.
 
 
@@ -54,7 +55,6 @@ This compiler implements Arden Syntax 2.5 with the following exceptions:
 Languages features not implemented:
 
 * Include Statement
-* Some string formatting specificiers are not implemented.
 * Citation/links slots are not syntax checked.
 * The compiler does not check that no languages features newer than the specified 'Arden Version' are used.
 
