@@ -234,12 +234,13 @@
             </fileset>
             <report format="noframes" todir="${test.report.dir}" />
         </junitreport>
+    	<fail if="test.failure" message="Unit test(s) failed. See reports!"/>
     </target>
     
     
     <target name="test.implementation" depends="compile">
         <mkdir dir="${test.report.dir}" />
-        <junit fork="yes" printsummary="withOutAndErr">
+        <junit fork="yes" printsummary="withOutAndErr" failureproperty="test.failure">
             <formatter type="xml" />
             <classpath refid="test.classpath" />
             <test name="${mainclass.test.implementation}" todir="${test.report.dir}" />
@@ -249,7 +250,7 @@
     
     <target name="test.specification" depends="compile">
         <mkdir dir="${test.report.dir}" />
-        <junit fork="yes" printsummary="withOutAndErr">
+        <junit fork="yes" printsummary="withOutAndErr" failureproperty="test.failure">
             <formatter type="xml" />
             <classpath refid="test.classpath" />
             <test name="${mainclass.test.specification}" todir="${test.report.dir}" />
