@@ -53,6 +53,19 @@ public class EvokeSlotTest extends SpecificationTest {
 	}
 
 	@Test(timeout = 5000)
+	public void testMultipleTriggers() throws Exception {
+		String eventMapping = getMappings().createEventMapping();
+		String code = createCodeBuilder()
+				.addData("test_event := EVENT {" + eventMapping + "};")
+				.addEvoke("TIME OF test_event;")
+				.addEvoke(".5 SECONDS AFTER TIME OF test_event;")
+				.addEvoke("1 SECOND AFTER TIME OF test_event;")
+				.addAction("WRITE \"success\";")
+				.toString();
+		assertDelayedBy(code, eventMapping, 0, 500, 1000);
+	}
+
+	@Test(timeout = 5000)
 	public void testDelayedEventTrigger() throws Exception {
 		// duration
 		assertDelayedBy(".5 SECONDS AFTER TIME OF test_event", 500);
