@@ -137,7 +137,7 @@ public class EvokeSlotTest extends SpecificationTest {
 		assertValidEvokeStatement("MONDAY AT 02:30");
 	}
 
-	@Test(timeout = 10000)
+	@Test(timeout = 8000)
 	public void testPeriodicEventTrigger() throws Exception {
 		String eventMapping = getMappings().createEventMapping();
 		String data = createCodeBuilder()
@@ -155,11 +155,11 @@ public class EvokeSlotTest extends SpecificationTest {
 				.toString();
 		assertDelayedBy(complex, eventMapping, 700, 1700, 2700);
 
-		String condition = new ArdenCodeBuilder(data)
-				.addData("a := 0;")
-				.addEvoke("EVERY 1 WEEK FOR 6 MONTHS STARTING 1990-01-01T12:00:00 UNTIL a > 5")
+		String until = new ArdenCodeBuilder(data)
+				.addEvoke("EVERY .5 SECONDS FOR 2 SECONDS STARTING TIME OF test_event UNTIL TRIGGERTIME > EVENTTIME + 1.1 SECONDS;")
+				.addEvoke("2.5 SECONDS AFTER TIME OF test_event;")
 				.toString();
-		assertValid(condition);
+		assertDelayedBy(until, eventMapping, 0, 500, 1000, 2500);
 	}
 
 	@Test(timeout = 10000)
