@@ -86,7 +86,9 @@ Helpers
   letter                = [['a'..'z']+['A'..'Z']];
 
   nosemicr = [[printable + tab] - semicol];
+  noapostr = [all - '''];
   ttext  = [all - semicol]+ (semicol [all - semicol]+)*;
+  tterm  = [noapostr - semicol]+ (semicol [noapostr - semicol]+)*;
   linktext = (nosemicr+ (semicol nosemicr+)* eol?)* nosemicr+ (semicol nosemicr+)*;
   simplestring = [all - '"']+;
   sstring = simplestring+ ('"' '"' simplestring+)*;
@@ -454,7 +456,7 @@ Tokens
   {datamap} data_mapping =  datamaptext;
 
   /* any string of characters enclosed in single quotes (�, ASCII 44) without semicolons */
-  {normal}term =  ''' ttext ''';
+  {normal}term =  ''' tterm ''';
 
   traditional_comment = '/*' not_star+ '*'+ (not_star_not_slash not_star* '*'+)* '/';
   documentation_comment =    '/**' '*'* (not_star_not_slash not_star* '*'+)* '/';
